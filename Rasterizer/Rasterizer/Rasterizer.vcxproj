@@ -29,6 +29,7 @@
     <ClInclude Include="src\Math\Vec3.h" />
     <ClInclude Include="src\Math\Vec4.h" />
     <ClInclude Include="src\Viewer\Application.h" />
+    <ClInclude Include="src\Viewer\Menu.h" />
     <ClInclude Include="src\Viewer\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +39,7 @@
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Viewer\Application.cpp" />
+    <ClCompile Include="src\Viewer\Menu.cpp" />
     <ClCompile Include="src\Viewer\Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

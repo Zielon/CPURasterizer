@@ -14,5 +14,6 @@ namespace Viewer
 
 	private:
 		std::unique_ptr<class Window> window;
+		std::unique_ptr<class Menu> menu;
 	};
 }

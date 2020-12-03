@@ -48,6 +48,9 @@
     <ClInclude Include="src\ImGui\imgui_impl_opengl3.h">
       <Filter>ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Viewer\Menu.h">
+      <Filter>Viewer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -68,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp">
       <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Viewer\Menu.cpp">
+      <Filter>Viewer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
