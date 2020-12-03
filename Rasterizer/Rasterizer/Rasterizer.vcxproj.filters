@@ -15,9 +15,6 @@
     <ClInclude Include="src\Viewer\Application.h">
       <Filter>Viewer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Viewer\Scene.h">
-      <Filter>Viewer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Renderer.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -36,8 +33,26 @@
     <ClInclude Include="src\Math\Vec4.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Scene.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Viewer\Window.h">
+      <Filter>Viewer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Engine\Renderer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Viewer\Application.cpp">
+      <Filter>Viewer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Viewer\Window.cpp">
+      <Filter>Viewer</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

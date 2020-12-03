@@ -1,6 +1,8 @@
-#include <iostream>
+#include "Viewer/Application.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	Viewer::Application app;
+
+	app.Run();
 }

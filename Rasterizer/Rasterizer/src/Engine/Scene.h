@@ -2,5 +2,5 @@
 
 namespace Engine
 {
-	class Renderer final {};
+	class Scene final {};
 }
