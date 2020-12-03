@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="src\Engine\Renderer.h" />
     <ClInclude Include="src\Engine\Scene.h" />
+    <ClInclude Include="src\ImGui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\ImGui\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Math\Vec.h" />
     <ClInclude Include="src\Math\Vec2.h" />
@@ -32,6 +34,8 @@
   <ItemGroup>
     <ClCompile Include="src\Engine\Renderer.cpp" />
     <ClCompile Include="src\Engine\Scene.cpp" />
+    <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Viewer\Application.cpp" />
     <ClCompile Include="src\Viewer\Window.cpp" />

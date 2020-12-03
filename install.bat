@@ -6,6 +6,7 @@ git checkout 2020.11
 call bootstrap-vcpkg.bat
 
 vcpkg.exe install ^
+	glad:x64-windows ^
 	glfw3:x64-windows ^
 	glm:x64-windows ^
 	imgui:x64-windows ^

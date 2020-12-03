@@ -1,10 +1,18 @@
 #pragma once
 
+#include <memory>
+
 namespace Viewer
 {
 	class Application final
 	{
 	public:
-		void Run();
+		Application();
+		~Application();
+		
+		void Run() const;
+
+	private:
+		std::unique_ptr<class Window> window;
 	};
 }
