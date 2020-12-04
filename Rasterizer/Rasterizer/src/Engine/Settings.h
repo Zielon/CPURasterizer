@@ -2,6 +2,9 @@
 
 #include <cstdint>
 
+constexpr int Width = 1024;
+constexpr int Height = 720;
+
 namespace Engine
 {
 	struct Settings final

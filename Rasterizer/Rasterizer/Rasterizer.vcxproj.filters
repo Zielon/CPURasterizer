@@ -16,6 +16,9 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{174750f0-d7a8-4bc7-9192-3f9ad006ab0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Viewer\Shaders">
+      <UniqueIdentifier>{91d65a58-e373-4c15-bf0f-08adc9b6d917}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Viewer\Application.h">
@@ -69,6 +72,12 @@
     <ClInclude Include="src\Viewer\Camera.h">
       <Filter>Viewer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Assets\Color4b.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Viewer\Shader.h">
+      <Filter>Viewer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -102,5 +111,13 @@
     <ClCompile Include="src\Viewer\Camera.cpp">
       <Filter>Viewer</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Assets\Shaders\Quad.frag">
+      <Filter>Viewer\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\Quad.vert">
+      <Filter>Viewer\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

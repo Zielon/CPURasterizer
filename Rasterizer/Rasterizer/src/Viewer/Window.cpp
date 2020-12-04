@@ -72,8 +72,6 @@ namespace Viewer
 		glfwSetMouseButtonCallback(window, GlfwMouseButtonCallback);
 		glfwSetScrollCallback(window, GlfwScrollCallback);
 
-		glEnable(GL_DEPTH_TEST);
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glViewport(0, 0, width, height);
 	}
 

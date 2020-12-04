@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\Color4b.h" />
     <ClInclude Include="src\Assets\Mesh.h" />
     <ClInclude Include="src\Assets\Texture.h" />
     <ClInclude Include="src\Assets\Vertex.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="src\Viewer\Application.h" />
     <ClInclude Include="src\Viewer\Camera.h" />
     <ClInclude Include="src\Viewer\Menu.h" />
+    <ClInclude Include="src\Viewer\Shader.h" />
     <ClInclude Include="src\Viewer\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +51,10 @@
     <ClCompile Include="src\Viewer\Camera.cpp" />
     <ClCompile Include="src\Viewer\Menu.cpp" />
     <ClCompile Include="src\Viewer\Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Assets\Shaders\Quad.frag" />
+    <None Include="..\Assets\Shaders\Quad.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
