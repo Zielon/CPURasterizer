@@ -12,7 +12,6 @@ namespace Viewer
 	class Shader
 	{
 	public:
-
 		Shader(const std::string& vertexPath, const std::string& fragmentPath)
 		{
 			std::string vertexCode;
@@ -28,7 +27,7 @@ namespace Viewer
 			{
 				vShaderFile.open("../Assets/Shaders/" + vertexPath);
 				fShaderFile.open("../Assets/Shaders/" + fragmentPath);
-				
+
 				std::stringstream vShaderStream, fShaderStream;
 
 				vShaderStream << vShaderFile.rdbuf();

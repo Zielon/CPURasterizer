@@ -75,6 +75,14 @@ namespace Viewer
 		glViewport(0, 0, width, height);
 	}
 
+	Window::~Window()
+	{
+		glfwDestroyWindow(window);
+		glfwTerminate();
+	}
+
+	GLFWwindow* Window::Get() const { return window; }
+
 	void Window::AddOnKeyChanged(std::function<void(int key, int scancode, int action, int mods)> callback)
 	{
 		onKeyChanged.emplace_back(callback);
@@ -94,12 +102,4 @@ namespace Viewer
 	{
 		onScrollChanged.emplace_back(callback);
 	}
-
-	Window::~Window()
-	{
-		glfwDestroyWindow(window);
-		glfwTerminate();
-	}
-
-	GLFWwindow* Window::Get() const { return window; }
 }

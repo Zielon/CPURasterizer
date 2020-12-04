@@ -1,6 +1,6 @@
 #pragma once
 
-#include <smmintrin.h>
+#include <immintrin.h>
 
 namespace Math
 {
