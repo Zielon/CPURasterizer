@@ -7,7 +7,7 @@ namespace Viewer
 {
 	void Window::GlfwErrorCallback(const int error, const char* const description)
 	{
-		std::cerr << "ERROR: GLFW: " << description << " (code: " << error << ")" << std::endl;
+		std::cerr << "[ERROR] GLFW: " << description << " (code: " << error << ")" << std::endl;
 	}
 
 	void Window::GlfwKeyCallback(GLFWwindow* window, const int key, const int scancode, const int action,
@@ -81,8 +81,6 @@ namespace Viewer
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
-
-	GLFWwindow* Window::Get() const { return window; }
 	
 	void Window::AddOnKeyChanged(std::function<void(int key, int scancode, int action, int mods)> callback)
 	{

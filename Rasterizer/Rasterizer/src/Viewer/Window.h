@@ -12,7 +12,7 @@ namespace Viewer
 		Window(int width, int height);
 		~Window();
 
-		[[nodiscard]] GLFWwindow* Get() const;
+		[[nodiscard]] GLFWwindow* Get() const { return window; }
 
 		void AddOnKeyChanged(std::function<void(int key, int scancode, int action, int mods)> callback);
 		void AddOnCursorPositionChanged(std::function<void(double xpos, double ypos)> callback);

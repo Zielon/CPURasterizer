@@ -31,21 +31,9 @@ namespace Viewer
 
 	void Menu::Render(Engine::Settings& settings) const
 	{
-		const static char* mssa[3] = {
-			"off",
-			"2x",
-			"4x"
-		};
-
-		const static char* lightModels[2] = {
-			"Phong-Blinn",
-			"Oren-Nayar"
-		};
-
-		const static char* scenes[2] = {
-			"Bunny",
-			"Spheres"
-		};
+		const static char* mssa[3] = { "off", "2x", "4x" };
+		const static char* lightModels[2] = { "Phong-Blinn", "Oren-Nayar" };
+		const static char* scenes[2] = { "Bunny", "Spheres" };
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -73,7 +61,7 @@ namespace Viewer
 			ImGui::Text("# spheres       %7i  ", settings.spheresCount);
 			ImGui::Text("# triangles     %7i  ", settings.trianglesCount);
 			ImGui::Text("# threads       %7i  ", std::thread::hardware_concurrency());
-			ImGui::Text("# Frame [ms]    %7.1f", settings.fpms);
+			ImGui::Text("# frame [ms]    %7.1f", settings.fpms);
 
 			// ==================================
 
