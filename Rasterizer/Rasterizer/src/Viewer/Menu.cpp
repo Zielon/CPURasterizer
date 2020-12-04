@@ -26,7 +26,7 @@ namespace Viewer
 			ImGui::SetNextWindowPos(pos, ImGuiCond_Always, posPivot);
 			ImGui::SetNextWindowSize(ImVec2(185, 450), ImGuiCond_Always);
 
-			ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+			ImGui::Begin("Menu", nullptr, flags);
 			ImGui::Text("CPU Rasterizer");
 			ImGui::Separator();
 			ImGui::End();
