@@ -13,6 +13,9 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{322287ad-d245-4af7-bf45-f6ca38408cc2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{174750f0-d7a8-4bc7-9192-3f9ad006ab0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Viewer\Application.h">
@@ -51,6 +54,15 @@
     <ClInclude Include="src\Viewer\Menu.h">
       <Filter>Viewer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Assets\Mesh.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\Texture.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\Vertex.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -74,6 +86,12 @@
     </ClCompile>
     <ClCompile Include="src\Viewer\Menu.cpp">
       <Filter>Viewer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Assets\Mesh.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Assets\Texture.cpp">
+      <Filter>Assets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
