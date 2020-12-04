@@ -63,6 +63,12 @@
     <ClInclude Include="src\Assets\Vertex.h">
       <Filter>Assets</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Settings.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Viewer\Camera.h">
+      <Filter>Viewer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -92,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="src\Assets\Texture.cpp">
       <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Viewer\Camera.cpp">
+      <Filter>Viewer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

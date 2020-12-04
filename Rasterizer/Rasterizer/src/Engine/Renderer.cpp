@@ -1,3 +1,9 @@
 #include "Renderer.h"
 
-namespace Engine { }
+namespace Engine
+{
+	void Renderer::Render(const Settings& settings)
+	{
+		this->settings = settings;
+	}
+}

@@ -24,6 +24,7 @@
     <ClInclude Include="src\Assets\Vertex.h" />
     <ClInclude Include="src\Engine\Renderer.h" />
     <ClInclude Include="src\Engine\Scene.h" />
+    <ClInclude Include="src\Engine\Settings.h" />
     <ClInclude Include="src\ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="src\ImGui\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Math\Math.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="src\Math\Vec3.h" />
     <ClInclude Include="src\Math\Vec4.h" />
     <ClInclude Include="src\Viewer\Application.h" />
+    <ClInclude Include="src\Viewer\Camera.h" />
     <ClInclude Include="src\Viewer\Menu.h" />
     <ClInclude Include="src\Viewer\Window.h" />
   </ItemGroup>
@@ -44,6 +46,7 @@
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Viewer\Application.cpp" />
+    <ClCompile Include="src\Viewer\Camera.cpp" />
     <ClCompile Include="src\Viewer\Menu.cpp" />
     <ClCompile Include="src\Viewer\Window.cpp" />
   </ItemGroup>
