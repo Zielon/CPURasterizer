@@ -73,6 +73,7 @@ namespace Viewer
 		glfwSetScrollCallback(window, GlfwScrollCallback);
 
 		glViewport(0, 0, width, height);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	Window::~Window()
@@ -82,7 +83,7 @@ namespace Viewer
 	}
 
 	GLFWwindow* Window::Get() const { return window; }
-
+	
 	void Window::AddOnKeyChanged(std::function<void(int key, int scancode, int action, int mods)> callback)
 	{
 		onKeyChanged.emplace_back(callback);

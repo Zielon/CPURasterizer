@@ -14,7 +14,7 @@ namespace Engine
 		int sceneId{};
 		uint32_t trianglesCount{};
 		uint32_t spheresCount{};
-		float fps{};
+		float fpms{};
 		bool useShadows;
 	};
 }

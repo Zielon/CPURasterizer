@@ -32,9 +32,9 @@ namespace Viewer
 	void Menu::Render(Engine::Settings& settings) const
 	{
 		const static char* mssa[3] = {
-			"none",
-			"2x2",
-			"4x4"
+			"off",
+			"2x",
+			"4x"
 		};
 
 		const static char* lightModels[2] = {
@@ -73,10 +73,10 @@ namespace Viewer
 			ImGui::Text("# spheres       %7i  ", settings.spheresCount);
 			ImGui::Text("# triangles     %7i  ", settings.trianglesCount);
 			ImGui::Text("# threads       %7i  ", std::thread::hardware_concurrency());
-			ImGui::Text("# FPS           %7.1f", settings.fps);
+			ImGui::Text("# Frame [ms]    %7.1f", settings.fpms);
 
 			// ==================================
-	
+
 			ImGui::Text("Settings");
 			ImGui::Separator();
 
@@ -85,7 +85,7 @@ namespace Viewer
 			ImGui::PushItemWidth(-1);
 			ImGui::Combo("", &settings.sceneId, scenes, 2);
 			ImGui::PopItemWidth();
-			
+
 			ImGui::Text("MSSA mode");
 
 			ImGui::PushItemWidth(-1);
@@ -99,7 +99,7 @@ namespace Viewer
 			ImGui::PopItemWidth();
 
 			ImGui::Checkbox("Use shadows", &settings.useShadows);
-			
+
 			// ==================================
 
 			ImGui::Text("Controls");

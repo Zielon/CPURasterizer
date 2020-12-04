@@ -10,8 +10,6 @@ namespace Engine
 
 	void Renderer::Render(const Settings& settings)
 	{
-		this->settings = settings;
-
 		std::fill(framebufferArray.begin(), framebufferArray.end(), Assets::Color4b(50, 50, 50));
 	}
 

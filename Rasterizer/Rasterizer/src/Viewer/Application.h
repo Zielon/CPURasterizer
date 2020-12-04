@@ -23,9 +23,10 @@ namespace Viewer
 		void DrawQuad() const;
 		void CreatePipeline();
 		void RegisterCallbacks();
+		void MeasureTime();
 
-		// OpenGL
-		unsigned int VBO, VAO, EBO, texture;
+		// OpenGL handlers
+		unsigned int VBO{}, VAO{}, EBO{}, texture{};
 		
 		Engine::Settings settings{};
 		

@@ -9,6 +9,9 @@
 
 #include "../Engine/Renderer.h"
 
+float lastTime = 0;
+int nbFrames = 0;
+
 namespace Viewer
 {
 	Application::Application()
@@ -27,27 +30,35 @@ namespace Viewer
 
 	void Application::Run()
 	{
+		lastTime = glfwGetTime();
+		
 		while (!glfwWindowShouldClose(window->Get()))
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			camera->OnBeforeRender();
+
 			renderer->Render(settings);
+
 			DrawQuad();
+
 			menu->Render(settings);
 
 			glfwSwapBuffers(window->Get());
 			glfwPollEvents();
+
+			MeasureTime();
 		}
 	}
 
 	void Application::DrawQuad() const
 	{
-		// Copy to texture
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-		             renderer->GetFrameBuffer());
+		// Copy framebuffer to texture
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, renderer->GetFrameBuffer());
 
 		glBindTexture(GL_TEXTURE_2D, texture);
+
 		shader->Use();
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
@@ -80,6 +91,20 @@ namespace Viewer
 		});
 
 		window->AddOnScrollChanged([this](const double xoffset, const double yoffset)-> void { });
+	}
+
+	void Application::MeasureTime()
+	{
+		float currentTime = glfwGetTime();
+		float delta = currentTime - lastTime;
+		
+		nbFrames++;
+		if (delta >= 1.f)
+		{
+			settings.fpms = 1000.f / nbFrames;
+			nbFrames = 0;
+			lastTime += 1.f;
+		}
 	}
 
 	void Application::CreatePipeline()
