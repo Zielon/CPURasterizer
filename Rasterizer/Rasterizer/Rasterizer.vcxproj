@@ -29,6 +29,7 @@
     <ClInclude Include="src\Engine\Settings.h" />
     <ClInclude Include="src\Engine\Shaders\FragmentShader.h" />
     <ClInclude Include="src\Engine\Tile.h" />
+    <ClInclude Include="src\Engine\Triangle.h" />
     <ClInclude Include="src\ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="src\ImGui\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Math\Math.h" />

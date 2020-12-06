@@ -23,7 +23,7 @@ namespace Viewer
 		renderer.reset(new Engine::Renderer(*scene, *camera));
 
 		// Viewer composition
-		window.reset(new Window(Width, Height));
+		window.reset(new Window(WIDTH, HEIGHT));
 		menu.reset(new Menu(*window));
 		shader.reset(new Shader("Quad.vert", "Quad.frag"));
 
@@ -62,7 +62,7 @@ namespace Viewer
 	{
 		// Copy framebuffer to texture
 		glTexImage2D(
-			GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, renderer->GetFrameBuffer());
+			GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, renderer->GetFrameBuffer());
 
 		glBindTexture(GL_TEXTURE_2D, texture);
 

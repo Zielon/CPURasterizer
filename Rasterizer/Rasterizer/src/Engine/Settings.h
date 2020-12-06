@@ -2,8 +2,9 @@
 
 #include <cstdint>
 
-constexpr int Width = 1024;
-constexpr int Height = 720;
+constexpr int TILE = 32;
+constexpr int WIDTH = 1024;
+constexpr int HEIGHT = 1024;
 
 namespace Engine
 {

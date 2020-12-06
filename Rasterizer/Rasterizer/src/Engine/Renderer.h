@@ -5,13 +5,14 @@
 #include <thread>
 
 #include "Settings.h"
+#include "Tile.h"
 
 #include "../Assets/Color4b.h"
 #include "../Assets/Vertex.h"
 
 #include "Shaders/FragmentShader.h"
 
-using FrameBuffer = std::array<Assets::Color4b, Width * Height>;
+using FrameBuffer = std::array<Assets::Color4b, WIDTH * HEIGHT>;
 using VertexBuffer = std::vector<Assets::Vertex>;
 
 namespace Engine
@@ -33,15 +34,17 @@ namespace Engine
 		void RunFragmentShader();
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);
+		void CreateTiles();
 
 		const Scene& scene;
 		const Camera& camera;
 
-		uint32_t coresNum = std::thread::hardware_concurrency();
 		Settings settings{};
 		FrameBuffer framebuffer;
 		VertexBuffer projectedVertexBuffer;
 
+		std::vector<uint32_t> coreIds;
+		std::vector<Tile> tiles;
 		std::unique_ptr<FragmentShader> fragmentShader;
 	};
 }
