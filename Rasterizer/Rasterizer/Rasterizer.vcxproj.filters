@@ -84,9 +84,6 @@
     <ClInclude Include="src\Engine\Shaders\FragmentShader.h">
       <Filter>Engine\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Shaders\VertexShader.h">
-      <Filter>Engine\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Camera.h">
       <Filter>Engine</Filter>
     </ClInclude>

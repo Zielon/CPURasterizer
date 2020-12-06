@@ -11,6 +11,10 @@ namespace Assets
 	class Vertex;
 }
 
+using MeshBuffer = std::vector<std::unique_ptr<Assets::Mesh>>;
+using IndexBuffer = std::vector<uint32_t>;
+using VertexBuffer = std::vector<Assets::Vertex>;
+
 namespace Engine
 {
 	class Scene final
@@ -24,10 +28,13 @@ namespace Engine
 		void Complete();
 		void CreateBuffers();
 
-	private:
-		std::vector<std::unique_ptr<Assets::Mesh>> meshes;
+		[[nodiscard]] uint32_t GetTriangleCount() const;
+		[[nodiscard]] const VertexBuffer& GetVertexBuffer() const { return vertexBuffer; }
+		[[nodiscard]] const IndexBuffer& GetIndexBuffer() const { return indexBuffer; }
 
-		std::vector<Assets::Vertex> vertexBuffer;
-		std::vector<uint32_t> indexBuffer;
+	private:
+		MeshBuffer meshBuffer;
+		IndexBuffer indexBuffer;
+		VertexBuffer vertexBuffer;
 	};
 }

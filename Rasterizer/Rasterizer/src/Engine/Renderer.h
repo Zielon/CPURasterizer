@@ -2,13 +2,17 @@
 
 #include <array>
 #include <memory>
+#include <thread>
 
 #include "Settings.h"
 
 #include "../Assets/Color4b.h"
+#include "../Assets/Vertex.h"
 
 #include "Shaders/FragmentShader.h"
-#include "Shaders/VertexShader.h"
+
+using FrameBuffer = std::array<Assets::Color4b, Width * Height>;
+using VertexBuffer = std::vector<Assets::Vertex>;
 
 namespace Engine
 {
@@ -32,11 +36,12 @@ namespace Engine
 
 		const Scene& scene;
 		const Camera& camera;
-		
-		Settings settings{};
-		std::array<Assets::Color4b, Width * Height> framebuffer;
 
-		std::unique_ptr<VertexShader> vertexShader;
+		uint32_t coresNum = std::thread::hardware_concurrency();
+		Settings settings{};
+		FrameBuffer framebuffer;
+		VertexBuffer projectedVertexBuffer;
+
 		std::unique_ptr<FragmentShader> fragmentShader;
 	};
 }

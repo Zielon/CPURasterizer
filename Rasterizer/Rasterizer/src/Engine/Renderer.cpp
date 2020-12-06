@@ -12,8 +12,9 @@ namespace Engine
 {
 	Renderer::Renderer(const Scene& scene, const Camera& camera) : scene(scene), camera(camera)
 	{
-		vertexShader.reset(new BasicVertexShader());
 		fragmentShader.reset(new PhongBlinnShader());
+
+		projectedVertexBuffer.resize(scene.GetVertexBuffer().size());
 	}
 
 	void Renderer::Render(const Settings& settings)
@@ -36,10 +37,27 @@ namespace Engine
 
 	void Renderer::Clear()
 	{
-		std::fill(framebuffer.begin(), framebuffer.end(), Assets::Color4b(50, 50, 50));
+		std::fill(framebuffer.begin(), framebuffer.end(), Assets::Color4b(0, 0, 0));
 	}
 
-	void Renderer::RunVertexShader() {}
+	void Renderer::RunVertexShader()
+	{
+		const auto& buffer = scene.GetVertexBuffer();
+
+		std::for_each(
+			std::execution::par, buffer.begin(), buffer.end(),
+			[this](const Assets::Vertex& inVertex)
+			{
+				auto& outVertex = projectedVertexBuffer[inVertex.id];
+
+				outVertex.projectedPosition =
+					camera.GetProjection() * camera.GetView() * glm::vec4(inVertex.position, 1.f);
+				outVertex.position = inVertex.position;
+				outVertex.normal = inVertex.normal;
+				outVertex.texCoords = inVertex.texCoords;
+			});
+	}
+
 	void Renderer::RunClipping() {}
 	void Renderer::TiledRasterization() {}
 	void Renderer::RunFragmentShader() {}

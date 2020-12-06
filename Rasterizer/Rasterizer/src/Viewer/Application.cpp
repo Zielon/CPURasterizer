@@ -19,7 +19,7 @@ namespace Viewer
 	{
 		// Renderer composition
 		scene.reset(new Engine::Scene());
-		camera.reset(new Engine::Camera({}, {}, 0, 0));
+		camera.reset(new Engine::Camera({ .276f, .275f, - .75f }, { .276f, .275f, .10 }, 40, 1.f));
 		renderer.reset(new Engine::Renderer(*scene, *camera));
 
 		// Viewer composition
@@ -29,6 +29,8 @@ namespace Viewer
 
 		CreatePipeline();
 		RegisterCallbacks();
+
+		settings.trianglesCount = scene->GetTriangleCount();
 	}
 
 	Application::~Application() = default;
