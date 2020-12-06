@@ -19,6 +19,9 @@
     <Filter Include="Viewer\Shaders">
       <UniqueIdentifier>{91d65a58-e373-4c15-bf0f-08adc9b6d917}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Shaders">
+      <UniqueIdentifier>{9c0e8784-f27f-4a70-ad7b-a63ee3a24147}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Viewer\Application.h">
@@ -69,14 +72,23 @@
     <ClInclude Include="src\Engine\Settings.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Viewer\Camera.h">
-      <Filter>Viewer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Assets\Color4b.h">
       <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="src\Viewer\Shader.h">
       <Filter>Viewer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Tile.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Shaders\FragmentShader.h">
+      <Filter>Engine\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Shaders\VertexShader.h">
+      <Filter>Engine\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Camera.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -108,8 +120,8 @@
     <ClCompile Include="src\Assets\Texture.cpp">
       <Filter>Assets</Filter>
     </ClCompile>
-    <ClCompile Include="src\Viewer\Camera.cpp">
-      <Filter>Viewer</Filter>
+    <ClCompile Include="src\Engine\Camera.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

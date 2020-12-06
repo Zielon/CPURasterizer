@@ -7,6 +7,8 @@
 namespace Engine
 {
 	class Renderer;
+	class Camera;
+	class Scene;
 }
 
 namespace Viewer
@@ -27,13 +29,17 @@ namespace Viewer
 
 		// OpenGL handlers
 		unsigned int VBO{}, VAO{}, EBO{}, texture{};
-		
+
 		Engine::Settings settings{};
-		
+
+		// Viewer
 		std::unique_ptr<class Window> window;
-		std::unique_ptr<class Camera> camera;
 		std::unique_ptr<class Menu> menu;
 		std::unique_ptr<class Shader> shader;
+
+		// Engine
+		std::unique_ptr<Engine::Camera> camera;
 		std::unique_ptr<Engine::Renderer> renderer;
+		std::unique_ptr<Engine::Scene> scene;
 	};
 }

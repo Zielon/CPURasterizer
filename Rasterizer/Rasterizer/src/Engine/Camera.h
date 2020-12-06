@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Viewer
+namespace Engine
 {
 	enum class Action
 	{

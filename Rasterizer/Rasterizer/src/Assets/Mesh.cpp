@@ -27,7 +27,10 @@ namespace Assets
 		std::vector<tinyobj::material_t> materials;
 		std::string warn, err;
 
-		if (!LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str())) { throw std::runtime_error(warn + err); }
+		if (!LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str()))
+		{
+			throw std::runtime_error(warn + err);
+		}
 
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 

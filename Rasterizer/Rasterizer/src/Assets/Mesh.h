@@ -14,25 +14,10 @@ namespace Assets
 
 		void Wait();
 
-		[[nodiscard]] std::vector<Vertex>& GetVertices()
-		{
-			return vertices;
-		}
-
-		[[nodiscard]] uint32_t GetVerticesSize() const
-		{
-			return vertices.size();
-		}
-
-		[[nodiscard]] const std::vector<uint32_t>& GetIndecies() const
-		{
-			return indices;
-		}
-
-		[[nodiscard]] uint32_t GetIndeciesSize() const
-		{
-			return indices.size();
-		}
+		[[nodiscard]] std::vector<Vertex>& GetVertices() { return vertices; }
+		[[nodiscard]] uint32_t GetVerticesSize() const { return vertices.size(); }
+		[[nodiscard]] const std::vector<uint32_t>& GetIndecies() const { return indices; }
+		[[nodiscard]] uint32_t GetIndeciesSize() const { return indices.size(); }
 
 	private:
 		std::vector<Vertex> vertices;
@@ -42,4 +27,3 @@ namespace Assets
 		void Load(const std::string& path);
 	};
 }
-

@@ -11,6 +11,7 @@ namespace Engine
 	{
 		int MSSA{};
 		int lightModelId{};
+		int textureFilterId{};
 		int sceneId{};
 		uint32_t trianglesCount{};
 		uint32_t spheresCount{};

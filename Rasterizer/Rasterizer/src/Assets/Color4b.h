@@ -10,8 +10,7 @@ namespace Assets
 		uint8_t r{}, g{}, b{}, a{};
 
 		Color4b() = default;
-		Color4b(uint8_t R, uint8_t G, uint8_t B, uint8_t A = 255)
-			: r(R), g(G), b(B), a(A) {}
+		Color4b(uint8_t R, uint8_t G, uint8_t B, uint8_t A = 255): r(R), g(G), b(B), a(A) {}
 
 		__forceinline Color4b operator *(float val) const
 		{

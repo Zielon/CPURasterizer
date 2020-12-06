@@ -4,12 +4,12 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-float Viewer::Camera::DELTA_TIME = 0;
-float Viewer::Camera::LAST_FRAME_TIME = 0;
+float Engine::Camera::DELTA_TIME = 0;
+float Engine::Camera::LAST_FRAME_TIME = 0;
 float SPEED = 5.f;
 float SENSITIVITY = 0.10f;
 
-namespace Viewer
+namespace Engine
 {
 	Camera::Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect)
 		: position(eye), fov(fov), aspect(aspect)

@@ -4,10 +4,11 @@
 
 #include "Window.h"
 #include "Menu.h"
-#include "Camera.h"
 #include "Shader.h"
 
 #include "../Engine/Renderer.h"
+#include "../Engine/Camera.h"
+#include "../Engine/Scene.h"
 
 float lastTime = 0;
 int nbFrames = 0;
@@ -16,11 +17,15 @@ namespace Viewer
 {
 	Application::Application()
 	{
+		// Renderer composition
+		scene.reset(new Engine::Scene());
+		camera.reset(new Engine::Camera({}, {}, 0, 0));
+		renderer.reset(new Engine::Renderer(*scene, *camera));
+
+		// Viewer composition
 		window.reset(new Window(Width, Height));
 		menu.reset(new Menu(*window));
-		renderer.reset(new Engine::Renderer());
 		shader.reset(new Shader("Quad.vert", "Quad.frag"));
-		camera.reset(new Camera({}, {}, 0, 0));
 
 		CreatePipeline();
 		RegisterCallbacks();
@@ -31,7 +36,7 @@ namespace Viewer
 	void Application::Run()
 	{
 		lastTime = glfwGetTime();
-		
+
 		while (!glfwWindowShouldClose(window->Get()))
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -97,7 +102,7 @@ namespace Viewer
 	{
 		float currentTime = glfwGetTime();
 		float delta = currentTime - lastTime;
-		
+
 		nbFrames++;
 		if (delta >= 1.f)
 		{
@@ -109,7 +114,7 @@ namespace Viewer
 
 	void Application::CreatePipeline()
 	{
-		float vertices[] =
+		static float vertices[] =
 		{
 			1.f, 1.f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
 			1.f, -1.f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
@@ -117,7 +122,7 @@ namespace Viewer
 			-1.f, 1.f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f // top left 
 		};
 
-		unsigned int indices[] =
+		static unsigned int indices[] =
 		{
 			0, 1, 3,
 			1, 2, 3

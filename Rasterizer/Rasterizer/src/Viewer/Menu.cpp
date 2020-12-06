@@ -34,6 +34,7 @@ namespace Viewer
 		const static char* mssa[3] = { "off", "2x", "4x" };
 		const static char* lightModels[2] = { "Phong-Blinn", "Oren-Nayar" };
 		const static char* scenes[2] = { "Bunny", "Spheres" };
+		const static char* filter[2] = { "Nearst", "Linear" };
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -84,6 +85,12 @@ namespace Viewer
 
 			ImGui::PushItemWidth(-1);
 			ImGui::Combo("  ", &settings.lightModelId, lightModels, 2);
+			ImGui::PopItemWidth();
+
+			ImGui::Text("Texture filter");
+
+			ImGui::PushItemWidth(-1);
+			ImGui::Combo("   ", &settings.textureFilterId, filter, 2);
 			ImGui::PopItemWidth();
 
 			ImGui::Checkbox("Use shadows", &settings.useShadows);
