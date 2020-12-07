@@ -6,14 +6,12 @@
 
 #include "Settings.h"
 #include "Tile.h"
+#include "Triangle.h"
 
 #include "../Assets/Color4b.h"
 #include "../Assets/Vertex.h"
 
 #include "Shaders/FragmentShader.h"
-
-using FrameBuffer = std::array<Assets::Color4b, WIDTH * HEIGHT>;
-using VertexBuffer = std::vector<Assets::Vertex>;
 
 namespace Engine
 {
@@ -28,21 +26,28 @@ namespace Engine
 
 	private:
 		void Clear();
-		void RunVertexShader();
-		void RunClipping();
-		void TiledRasterization();
-		void RunFragmentShader();
+		void VertexShaderStage();
+		void ClippingStage();
+		void TiledRasterizationStage();
+		void FragmentShaderStage();
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);
+
 		void CreateTiles();
+		void CreateBuffers();
 
 		const Scene& scene;
 		const Camera& camera;
 
 		Settings settings{};
-		FrameBuffer framebuffer;
-		VertexBuffer projectedVertexBuffer;
+		std::vector<Assets::Vertex> projectedVertexStorage;
 
+		// Lock-free distributed structures. Each tread operates on its own bin.
+		std::vector<std::deque<Assets::Vertex>> clippedProjectedVertexBuffer;
+		std::vector<std::deque<Triangle>> rasterTrianglesBuffer;
+		std::array<Assets::Color4b, WIDTH * HEIGHT> frameBuffer;
+
+		uint32_t numCores{};
 		std::vector<uint32_t> coreIds;
 		std::vector<Tile> tiles;
 		std::unique_ptr<FragmentShader> fragmentShader;

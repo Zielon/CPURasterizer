@@ -9,7 +9,7 @@ namespace Engine
 {
 	Scene::Scene()
 	{
-		for (const auto& entry : std::filesystem::directory_iterator("../Assets/Scenes/cornell_box/"))
+		for (const auto& entry : std::filesystem::directory_iterator("../Assets/Scenes/bunny/"))
 			AddMesh(entry.path().string());
 
 		Complete();

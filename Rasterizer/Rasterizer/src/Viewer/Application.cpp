@@ -60,7 +60,7 @@ namespace Viewer
 
 	void Application::DrawQuad() const
 	{
-		// Copy framebuffer to texture
+		// Copy frameBuffer to texture
 		glTexImage2D(
 			GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, renderer->GetFrameBuffer());
 

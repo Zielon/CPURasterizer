@@ -1,10 +1,11 @@
 #include "Renderer.h"
 
 #include <array>
-#include <execution>
 
 #include "Scene.h"
 #include "Camera.h"
+#include "Concurrency.h"
+#include "Clipper.h"
 
 #include "../Assets/Color4b.h"
 
@@ -13,10 +14,8 @@ namespace Engine
 	Renderer::Renderer(const Scene& scene, const Camera& camera) : scene(scene), camera(camera)
 	{
 		fragmentShader.reset(new PhongBlinnShader());
-		projectedVertexBuffer.resize(scene.GetVertexBuffer().size());
 
-		coreIds.resize(std::thread::hardware_concurrency());
-		std::iota(coreIds.begin(), coreIds.end(), 0);
+		CreateBuffers();
 		CreateTiles();
 	}
 
@@ -26,33 +25,40 @@ namespace Engine
 
 		// Full rendering pass
 		Clear();
-		RunVertexShader();
-		RunClipping();
-		TiledRasterization();
-		RunFragmentShader();
+
+		VertexShaderStage();
+		ClippingStage();
+		TiledRasterizationStage();
+		FragmentShaderStage();
+
 		UpdateFrameBuffer();
 	}
 
 	const uint8_t* Renderer::GetFrameBuffer() const
 	{
-		return reinterpret_cast<const uint8_t*>(framebuffer.data());
+		return reinterpret_cast<const uint8_t*>(frameBuffer.data());
 	}
 
 	void Renderer::Clear()
 	{
-		std::fill(std::execution::par, framebuffer.begin(), framebuffer.end(), Assets::Color4b(0, 0, 0));
-		std::for_each(std::execution::par, tiles.begin(), tiles.end(), [this](Tile& tile) { tile.Clear(); });
+		Concurrency::Fill(frameBuffer.begin(), frameBuffer.end(), Assets::Color4b(0, 0, 0));
+		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile) { tile.Clear(); });
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
+		{
+			clippedProjectedVertexBuffer[bin].clear();
+			rasterTrianglesBuffer[bin].clear();
+		});
 	}
 
-	void Renderer::RunVertexShader()
+	void Renderer::VertexShaderStage()
 	{
 		const auto& buffer = scene.GetVertexBuffer();
 
-		std::for_each(
-			std::execution::par, buffer.begin(), buffer.end(),
+		Concurrency::ForEach(
+			buffer.begin(), buffer.end(),
 			[this](const Assets::Vertex& inVertex)
 			{
-				auto& outVertex = projectedVertexBuffer[inVertex.id];
+				auto& outVertex = projectedVertexStorage[inVertex.id];
 
 				outVertex.projectedPosition =
 					camera.GetProjection() * camera.GetView() * glm::vec4(inVertex.position, 1.f);
@@ -63,23 +69,50 @@ namespace Engine
 			});
 	}
 
-	void Renderer::RunClipping() {}
-
-	void Renderer::TiledRasterization()
+	void Renderer::ClippingStage()
 	{
-		std::for_each(std::execution::par, coreIds.begin(), coreIds.end(), [this](int bin)
+		uint32_t size = scene.GetIndexBuffer().size();
+		uint32_t interval = (size + numCores - 1) / numCores;
+
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this, interval, size](int bin)
 		{
-			for (auto& tile : tiles)
+			// Assign each thread to separate chunk of buffer
+			const auto startIdx = bin * interval;
+			const auto endIdx = (bin + 1) * interval;
+
+			auto& clippedBuffer = clippedProjectedVertexBuffer[bin];
+
+			for (uint32_t i = startIdx; i < endIdx; i += 3)
 			{
-				for (int i = 0; i < 1000; ++i)
-				{
-					tile.Add(bin, i);
-				}
+				if (i + 3 >= size)
+					return;
+
+				auto& v0 = projectedVertexStorage[scene.GetIndexBuffer()[i + 0]];
+				auto& v1 = projectedVertexStorage[scene.GetIndexBuffer()[i + 1]];
+				auto& v2 = projectedVertexStorage[scene.GetIndexBuffer()[i + 2]];
+
+				uint32_t clipCode0 = Clipper::ClipCode(v0.projectedPosition);
+				uint32_t clipCode1 = Clipper::ClipCode(v1.projectedPosition);
+				uint32_t clipCode2 = Clipper::ClipCode(v2.projectedPosition);
+
+				if (clipCode0 | clipCode1 | clipCode2) continue;
+
+				int idx0 = clippedBuffer.size();
+				clippedBuffer.push_back(v0);
+				int idx1 = clippedBuffer.size();
+				clippedBuffer.push_back(v1);
+				int idx2 = clippedBuffer.size();
+				clippedBuffer.push_back(v2);
 			}
 		});
 	}
 
-	void Renderer::RunFragmentShader() {}
+	void Renderer::TiledRasterizationStage()
+	{
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) { });
+	}
+
+	void Renderer::FragmentShaderStage() {}
 
 	void Renderer::UpdateFrameBuffer() {}
 
@@ -106,5 +139,17 @@ namespace Engine
 				++id;
 			}
 		}
+	}
+
+	void Renderer::CreateBuffers()
+	{
+		numCores = std::thread::hardware_concurrency();
+
+		projectedVertexStorage.resize(scene.GetVertexBuffer().size());
+		rasterTrianglesBuffer.resize(numCores);
+		clippedProjectedVertexBuffer.resize(numCores);
+
+		coreIds.resize(numCores);
+		std::iota(coreIds.begin(), coreIds.end(), 0);
 	}
 }
