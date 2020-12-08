@@ -19,7 +19,7 @@ namespace Viewer
 	{
 		// Renderer composition
 		scene.reset(new Engine::Scene());
-		camera.reset(new Engine::Camera({ .276f, .275f, - .75f }, { .276f, .275f, .10 }, 40, 1.f));
+		camera.reset(new Engine::Camera({ .276f, .275f, - .75f }, { .276f, .275f, .10 }, 40, 1.f, WIDTH, HEIGHT));
 		renderer.reset(new Engine::Renderer(*scene, *camera));
 
 		// Viewer composition
@@ -41,6 +41,8 @@ namespace Viewer
 
 		while (!glfwWindowShouldClose(window->Get()))
 		{
+			Engine::Camera::TimeDeltaUpdate();
+			
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			camera->OnBeforeRender();

@@ -15,7 +15,7 @@ namespace Engine
 	class Camera
 	{
 	public:
-		Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect);
+		Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect, uint32_t width, uint32_t height);
 		~Camera() = default;
 
 		void OnKeyChanged(int key, int scanCode, int action, int mod);
@@ -24,8 +24,9 @@ namespace Engine
 		bool OnBeforeRender();
 		void static TimeDeltaUpdate();
 
-		[[nodiscard]] glm::mat4 GetView() const;
-		[[nodiscard]] glm::mat4 GetProjection() const;
+		[[nodiscard]] glm::mat4 GetViewMatrix() const;
+		[[nodiscard]] glm::mat4 GetProjectionMatrix() const;
+		[[nodiscard]] glm::mat4 GetRasterMatrix() const;
 		[[nodiscard]] glm::vec3 GetDirection() const;
 		[[nodiscard]] glm::vec3 GetPosition() const;
 
@@ -42,8 +43,12 @@ namespace Engine
 
 		glm::vec3 pivot{};
 
+		glm::mat4 raster;
+
 		float lastX{};
 		float lastY{};
+		uint32_t width;
+		uint32_t height;
 
 		bool isFirstMouseEvent = false;
 		bool isMousePressed = false;

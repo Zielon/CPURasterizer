@@ -6,6 +6,9 @@
 #include "Camera.h"
 #include "Concurrency.h"
 #include "Clipper.h"
+#include "Triangle.h"
+
+#include <glm/gtx/component_wise.hpp>
 
 #include "../Assets/Color4b.h"
 
@@ -61,7 +64,7 @@ namespace Engine
 				auto& outVertex = projectedVertexStorage[inVertex.id];
 
 				outVertex.projectedPosition =
-					camera.GetProjection() * camera.GetView() * glm::vec4(inVertex.position, 1.f);
+					camera.GetProjectionMatrix() * camera.GetViewMatrix() * glm::vec4(inVertex.position, 1.f);
 				outVertex.position = inVertex.position;
 				outVertex.normal = inVertex.normal;
 				outVertex.texCoords = inVertex.texCoords;
@@ -97,24 +100,93 @@ namespace Engine
 
 				if (clipCode0 | clipCode1 | clipCode2) continue;
 
-				int idx0 = clippedBuffer.size();
+				uint32_t idx0 = clippedBuffer.size();
 				clippedBuffer.push_back(v0);
-				int idx1 = clippedBuffer.size();
+				uint32_t idx1 = clippedBuffer.size();
 				clippedBuffer.push_back(v1);
-				int idx2 = clippedBuffer.size();
+				uint32_t idx2 = clippedBuffer.size();
 				clippedBuffer.push_back(v2);
+
+				// Perspective division
+				float inv = 1.f / v0.projectedPosition.w;
+				glm::vec4 hv0 = v0.projectedPosition * inv;
+
+				inv = 1.f / v1.projectedPosition.w;
+				glm::vec4 hv1 = v1.projectedPosition * inv;
+
+				inv = 1.f / v2.projectedPosition.w;
+				glm::vec4 hv2 = v2.projectedPosition * inv;
+
+				auto raster = camera.GetRasterMatrix();
+
+				glm::vec4 r0 = raster * hv0;
+				glm::vec4 r1 = raster * hv1;
+				glm::vec4 r2 = raster * hv2;
+
+				Triangle triangle(r0, r1, r2, bin, { idx0, idx1, idx2 });
+
+				if (triangle.IsValid())
+				{
+					rasterTrianglesBuffer[bin].push_back(triangle);
+				}
 			}
 		});
 	}
 
 	void Renderer::TiledRasterizationStage()
 	{
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) { });
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
+		{
+			for (int i = 0; i < rasterTrianglesBuffer[bin].size(); ++i)
+			{
+				const Triangle& triangle = rasterTrianglesBuffer[bin][i];
+
+				int minX = std::max(0, std::min(triangle.v0.x, std::min(triangle.v1.x, triangle.v2.x)));
+				int maxX = std::min(WIDTH - 1, std::max(triangle.v0.x, std::max(triangle.v1.x, triangle.v2.x)));
+				int minY = std::max(0, std::min(triangle.v0.y, std::min(triangle.v1.y, triangle.v2.y)));
+				int maxY = std::min(HEIGHT - 1, std::max(triangle.v0.y, std::max(triangle.v1.y, triangle.v2.y)));
+
+				for (auto x = minX; x <= maxX; x++)
+				{
+					for (auto y = minY; y <= maxY; y++)
+					{
+						glm::ivec2 pixelBase(x, y);
+
+						frameBuffer[y * WIDTH + x] = {255, 0, 0};
+					}
+				}
+			}
+		});
 	}
 
 	void Renderer::FragmentShaderStage() {}
 
-	void Renderer::UpdateFrameBuffer() {}
+	void Renderer::UpdateFrameBuffer()
+	{
+		//Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile)
+		//{
+		//	for (int i = tile.minRaster.x; i < tile.maxRaster.x; ++i)
+		//	{
+		//		for (int j = tile.minRaster.y; j < tile.maxRaster.y; ++j)
+		//		{
+		//			frameBuffer[i * WIDTH + j] = tile.color;
+		//		}
+		//	}
+		//});
+
+		/*		for (int i = 0; i < HEIGHT; ++i)
+				{
+					for (int j = 0; j < WIDTH; ++j)
+					{
+						int x = i / TILE;
+						int y = j / TILE;
+		
+						Tile& tile = tiles[x * TILE + y];
+		
+						frameBuffer[i * WIDTH + j] = tile.color;
+					}
+				}*/
+	}
 
 	void Renderer::UpdateState(const Settings& settings)
 	{
@@ -123,22 +195,16 @@ namespace Engine
 
 	void Renderer::CreateTiles()
 	{
-		tiles.resize(HEIGHT / TILE * WIDTH / TILE);
-
 		int id = 0;
 
 		for (int i = 0; i < HEIGHT; i += TILE)
-		{
 			for (int j = 0; j < WIDTH; j += TILE)
 			{
 				const auto maxX = std::min(j + TILE, WIDTH);
 				const auto maxY = std::min(i + TILE, HEIGHT);
-
-				tiles[id] = Tile(glm::ivec2(j, i), glm::ivec2(maxX, maxY), id);
-
+				tiles.emplace_back(glm::ivec2(j, i), glm::ivec2(maxX, maxY), id);
 				++id;
 			}
-		}
 	}
 
 	void Renderer::CreateBuffers()

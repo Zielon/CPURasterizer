@@ -96,6 +96,9 @@
     <ClInclude Include="src\Engine\Concurrency.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Shaders\Fragment.h">
+      <Filter>Engine\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />

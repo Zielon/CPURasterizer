@@ -1,18 +1,20 @@
 #include "Camera.h"
 
+
+#include <iostream>
 #include <GLFW/glfw3.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
 float Engine::Camera::DELTA_TIME = 0;
 float Engine::Camera::LAST_FRAME_TIME = 0;
-float SPEED = 5.f;
+float SPEED = 2.f;
 float SENSITIVITY = 0.10f;
 
 namespace Engine
 {
-	Camera::Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect)
-		: position(eye), fov(fov), aspect(aspect)
+	Camera::Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect, uint32_t width, uint32_t height)
+		: position(eye), width(width), height(height), fov(fov), aspect(aspect)
 	{
 		position = eye;
 		pivot = lookAt;
@@ -27,6 +29,16 @@ namespace Engine
 
 		focalDist = 0.1f;
 		aperture = 0.0;
+
+		auto trans = glm::mat4(1);
+
+		trans[0][3] = 1.f;
+		trans[1][3] = -1.f;
+
+		raster = glm::mat4(1);
+		raster *= glm::vec4(width, height, 1.f, 1.f);
+		raster *= glm::vec4(0.5f, -0.5f, 1.f, 1.f);
+		raster = transpose(trans * raster);
 
 		Update();
 	}
@@ -102,14 +114,22 @@ namespace Engine
 		return isCameraDown | isCameraLeft | isCameraRight | isCameraUp;
 	}
 
-	glm::mat4 Camera::GetView() const
+	glm::mat4 Camera::GetViewMatrix() const
 	{
 		return lookAt(position, position + front, up);
 	}
 
-	glm::mat4 Camera::GetProjection() const
+	glm::mat4 Camera::GetProjectionMatrix() const
 	{
-		return glm::perspective(glm::radians(fov), aspect, 0.1f, 1000.0f);
+		auto projection = glm::perspective(glm::radians(fov), aspect, 0.1f, 1000.0f);
+		projection[1][1] *= -1;
+
+		return projection;
+	}
+
+	glm::mat4 Camera::GetRasterMatrix() const
+	{
+		return raster;
 	}
 
 	glm::vec3 Camera::GetDirection() const

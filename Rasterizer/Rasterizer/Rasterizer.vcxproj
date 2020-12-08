@@ -29,6 +29,7 @@
     <ClInclude Include="src\Engine\Renderer.h" />
     <ClInclude Include="src\Engine\Scene.h" />
     <ClInclude Include="src\Engine\Settings.h" />
+    <ClInclude Include="src\Engine\Shaders\Fragment.h" />
     <ClInclude Include="src\Engine\Shaders\FragmentShader.h" />
     <ClInclude Include="src\Engine\Tile.h" />
     <ClInclude Include="src\Engine\Triangle.h" />
