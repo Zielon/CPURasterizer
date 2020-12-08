@@ -40,6 +40,7 @@ namespace Engine
 		const Scene& scene;
 		const Camera& camera;
 
+		glm::ivec2 tileDim;
 		Settings settings{};
 		std::vector<Assets::Vertex> projectedVertexStorage;
 

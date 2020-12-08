@@ -180,12 +180,14 @@ namespace Engine
 	{
 		int id = 0;
 
+		tiles.resize(HEIGHT / TILE_SIZE * WIDTH / TILE_SIZE);
+
 		for (int i = 0; i < HEIGHT; i += TILE_SIZE)
 			for (int j = 0; j < WIDTH; j += TILE_SIZE)
 			{
 				const auto maxX = std::min(j + TILE_SIZE, WIDTH);
 				const auto maxY = std::min(i + TILE_SIZE, HEIGHT);
-				tiles.emplace_back(glm::ivec2(j, i), glm::ivec2(maxX, maxY), id);
+				tiles[id] = Tile(glm::ivec2(j, i), glm::ivec2(maxX, maxY), id);
 				++id;
 			}
 	}

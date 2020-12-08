@@ -15,7 +15,8 @@ namespace Engine
 			uint32_t id,
 			uint32_t binId,
 			uint32_t textureId,
-			std::array<uint32_t, 3> ids): id(id), binId(binId), textureId(textureId), vertexIds(ids) { }
+			std::array<uint32_t, 3> ids):
+			v0(v0), v1(v1), v2(v2), id(id), binId(binId), textureId(textureId), vertexIds(ids) { }
 
 		glm::ivec2 v0{};
 		glm::ivec2 v1{};
@@ -41,13 +42,7 @@ namespace Engine
 			uint32_t id,
 			uint32_t binId,
 			uint32_t textureId,
-			std::array<uint32_t, 3> ids): Triangle(v0, v1, v2, id, binId, textureId, ids)
-		{
-			// Convert to fixed point
-			this->v0 = v0 * 16.f;
-			this->v1 = v1 * 16.f;
-			this->v2 = v2 * 16.f;
-		}
+			std::array<uint32_t, 3> ids): Triangle(v0, v1, v2, id, binId, textureId, ids) { }
 
 		[[nodiscard]] __forceinline int TopLeftEdge(const glm::ivec2& v1, const glm::ivec2& v2) const
 		{
@@ -74,6 +69,18 @@ namespace Engine
 			return (EdgeFunc0(p) | EdgeFunc1(p) | EdgeFunc2(p)) >= 0;
 		}
 
+		[[nodiscard]] __forceinline float GetDepth(float z0, float z1, float z2) const
+		{
+			const float lambda2 = 1.0f - lambda0 - lambda1;
+			return lambda0 * z0 + lambda1 * z1 + lambda2 * z2;
+		}
+
+		__forceinline void CalcBarycentricCoord(const int x, const int y)
+		{
+			lambda0 = (B1 * (x - v2.x) + C1 * (y - v2.y)) * invDet;
+			lambda1 = (B2 * (x - v2.x) + C2 * (y - v2.y)) * invDet;
+		}
+
 		/**
 		 * \brief Larrabee rasterizers performs set of tests to define with which tiles a given triangle intersects.
 		 * This methods sets values for accepted and rejected tiles.
@@ -94,12 +101,12 @@ namespace Engine
 			if (det <= 0)
 				return false;
 
-			stepB0 = 16 * B0;
-			stepC0 = 16 * C0;
-			stepB1 = 16 * B1;
-			stepC1 = 16 * C1;
-			stepB2 = 16 * B2;
-			stepC2 = 16 * C2;
+			stepB0 = B0;
+			stepC0 = C0;
+			stepB1 = B1;
+			stepC1 = C1;
+			stepB2 = B2;
+			stepC2 = C2;
 
 			invDet = 1.0f / static_cast<float>(det);
 

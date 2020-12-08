@@ -6,6 +6,8 @@ constexpr int TILE = 5;
 constexpr int TILE_SIZE = 1 << TILE;
 constexpr int WIDTH = 1024;
 constexpr int HEIGHT = 1024;
+constexpr int TILE_DIM_X = (WIDTH + TILE_SIZE - 1) >> TILE;
+constexpr int TILE_DIM_Y = (HEIGHT + TILE_SIZE - 1) >> TILE;
 
 namespace Engine
 {
