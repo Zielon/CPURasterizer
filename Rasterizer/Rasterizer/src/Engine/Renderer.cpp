@@ -6,9 +6,8 @@
 #include "Camera.h"
 #include "Concurrency.h"
 #include "Clipper.h"
+#include "Larrabee.h"
 #include "Triangle.h"
-
-#include <glm/gtx/component_wise.hpp>
 
 #include "../Assets/Color4b.h"
 
@@ -32,6 +31,7 @@ namespace Engine
 		VertexShaderStage();
 		ClippingStage();
 		TiledRasterizationStage();
+		RasterizationStage();
 		FragmentShaderStage();
 
 		UpdateFrameBuffer();
@@ -123,9 +123,11 @@ namespace Engine
 				glm::vec4 r1 = raster * hv1;
 				glm::vec4 r2 = raster * hv2;
 
-				Triangle triangle(r0, r1, r2, bin, { idx0, idx1, idx2 });
+				auto triId = rasterTrianglesBuffer[bin].size();
 
-				if (triangle.IsValid())
+				LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { idx0, idx1, idx2 });
+
+				if (triangle.Setup())
 				{
 					rasterTrianglesBuffer[bin].push_back(triangle);
 				}
@@ -137,56 +139,37 @@ namespace Engine
 	{
 		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
 		{
-			for (int i = 0; i < rasterTrianglesBuffer[bin].size(); ++i)
+			Larrabee::AssignTriangles(bin, rasterTrianglesBuffer[bin], tiles);
+		});
+	}
+
+	void Renderer::RasterizationStage()
+	{
+		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile)
+		{
+			for (auto bin : coreIds)
 			{
-				const Triangle& triangle = rasterTrianglesBuffer[bin][i];
-
-				int minX = std::max(0, std::min(triangle.v0.x, std::min(triangle.v1.x, triangle.v2.x)));
-				int maxX = std::min(WIDTH - 1, std::max(triangle.v0.x, std::max(triangle.v1.x, triangle.v2.x)));
-				int minY = std::max(0, std::min(triangle.v0.y, std::min(triangle.v1.y, triangle.v2.y)));
-				int maxY = std::min(HEIGHT - 1, std::max(triangle.v0.y, std::max(triangle.v1.y, triangle.v2.y)));
-
-				for (auto x = minX; x <= maxX; x++)
+				for (int i = 0; i < tile.binsIndex[bin]; ++i)
 				{
-					for (auto y = minY; y <= maxY; y++)
-					{
-						glm::ivec2 pixelBase(x, y);
+					const uint32_t id = tile.trinagles[bin][i];
+					LarrabeeTriangle& triangle = rasterTrianglesBuffer[bin][id];
 
-						frameBuffer[y * WIDTH + x] = {255, 0, 0};
-					}
+					for (auto i = tile.minRaster.y; i < tile.maxRaster.y; ++i)
+						for (auto j = tile.minRaster.x; j < tile.maxRaster.x; ++j)
+						{
+							frameBuffer[i * WIDTH + j] = tile.color;
+						}
 				}
 			}
 		});
 	}
 
-	void Renderer::FragmentShaderStage() {}
-
-	void Renderer::UpdateFrameBuffer()
+	void Renderer::FragmentShaderStage()
 	{
-		//Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile)
-		//{
-		//	for (int i = tile.minRaster.x; i < tile.maxRaster.x; ++i)
-		//	{
-		//		for (int j = tile.minRaster.y; j < tile.maxRaster.y; ++j)
-		//		{
-		//			frameBuffer[i * WIDTH + j] = tile.color;
-		//		}
-		//	}
-		//});
-
-		/*		for (int i = 0; i < HEIGHT; ++i)
-				{
-					for (int j = 0; j < WIDTH; ++j)
-					{
-						int x = i / TILE;
-						int y = j / TILE;
-		
-						Tile& tile = tiles[x * TILE + y];
-		
-						frameBuffer[i * WIDTH + j] = tile.color;
-					}
-				}*/
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) { });
 	}
+
+	void Renderer::UpdateFrameBuffer() { }
 
 	void Renderer::UpdateState(const Settings& settings)
 	{
@@ -197,11 +180,11 @@ namespace Engine
 	{
 		int id = 0;
 
-		for (int i = 0; i < HEIGHT; i += TILE)
-			for (int j = 0; j < WIDTH; j += TILE)
+		for (int i = 0; i < HEIGHT; i += TILE_SIZE)
+			for (int j = 0; j < WIDTH; j += TILE_SIZE)
 			{
-				const auto maxX = std::min(j + TILE, WIDTH);
-				const auto maxY = std::min(i + TILE, HEIGHT);
+				const auto maxX = std::min(j + TILE_SIZE, WIDTH);
+				const auto maxY = std::min(i + TILE_SIZE, HEIGHT);
 				tiles.emplace_back(glm::ivec2(j, i), glm::ivec2(maxX, maxY), id);
 				++id;
 			}

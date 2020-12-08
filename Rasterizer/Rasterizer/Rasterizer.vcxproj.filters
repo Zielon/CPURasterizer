@@ -99,6 +99,9 @@
     <ClInclude Include="src\Engine\Shaders\Fragment.h">
       <Filter>Engine\Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Larrabee.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />

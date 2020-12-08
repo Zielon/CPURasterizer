@@ -26,6 +26,7 @@
     <ClInclude Include="src\Engine\Camera.h" />
     <ClInclude Include="src\Engine\Clipper.h" />
     <ClInclude Include="src\Engine\Concurrency.h" />
+    <ClInclude Include="src\Engine\Larrabee.h" />
     <ClInclude Include="src\Engine\Renderer.h" />
     <ClInclude Include="src\Engine\Scene.h" />
     <ClInclude Include="src\Engine\Settings.h" />

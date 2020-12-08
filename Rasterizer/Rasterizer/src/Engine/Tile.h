@@ -5,7 +5,6 @@
 
 #include <glm/glm.hpp>
 
-
 #include "../Assets/Color4b.h"
 #include "Shaders/Fragment.h"
 
@@ -46,7 +45,6 @@ namespace Engine
 			fragments.clear();
 		}
 
-	private:
 		std::array<uint32_t, 16> binsIndex{};
 		std::vector<std::array<uint32_t, 4096>> trinagles;
 		std::deque<Fragment> fragments;

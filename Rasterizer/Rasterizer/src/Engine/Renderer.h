@@ -29,6 +29,7 @@ namespace Engine
 		void VertexShaderStage();
 		void ClippingStage();
 		void TiledRasterizationStage();
+		void RasterizationStage();
 		void FragmentShaderStage();
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);
@@ -44,7 +45,7 @@ namespace Engine
 
 		// Lock-free distributed structures. Each tread operates on its own bin.
 		std::vector<std::deque<Assets::Vertex>> clippedProjectedVertexBuffer;
-		std::vector<std::deque<Triangle>> rasterTrianglesBuffer;
+		std::vector<std::deque<LarrabeeTriangle>> rasterTrianglesBuffer;
 		std::array<Assets::Color4b, WIDTH * HEIGHT> frameBuffer;
 
 		uint32_t numCores{};
