@@ -2,9 +2,9 @@
 
 #include <cstdint>
 
-#include "../SIMD/AVX.h"
+#include "../SIMD/SSE.h"
 
-using namespace AVX;
+using namespace SSE;
 
 namespace Engine
 {
@@ -40,6 +40,7 @@ namespace Engine
 	{
 	public:
 		int B0{}, C0{}, B1{}, C1{}, B2{}, C2{};
+		int stepB0, stepC0, stepB1, stepC1, stepB2, stepC2;
 		float invDet{};
 		// A tile trivial reject test.
 		uint32_t rejectCorner0{}, rejectCorner1{}, rejectCorner2{};
@@ -221,18 +222,19 @@ namespace Engine
 		};
 	};
 
-	struct AVXLarrabeeTriangle
+	struct SSELarrabeeTriangle
 	{
-		AVXVec2i v0, v1, v2;
-		AVXInt B0, C0, B1, C1, B2, C2;
-		AVXFloat lambda0, lambda1;
-		AVXFloat invDet;
+		SSEVec2i v0, v1, v2;
+		SSEInt B0, C0, B1, C1, B2, C2;
+		SSEInt stepB0, stepC0, stepB1, stepC1, stepB2, stepC2;
+		SSEFloat lambda0, lambda1;
+		SSEFloat invDet;
 		uint32_t id{};
 		uint32_t binId{};
 		uint32_t textureId{};
 		std::array<uint32_t, 3> vertexIds;
 
-		AVXLarrabeeTriangle(const LarrabeeTriangle& triangle) :
+		SSELarrabeeTriangle(const LarrabeeTriangle& triangle) :
 			v0(triangle.v0)
 			, v1(triangle.v1)
 			, v2(triangle.v2)
@@ -242,52 +244,58 @@ namespace Engine
 			, C1(triangle.C1)
 			, B2(triangle.B2)
 			, C2(triangle.C2)
+			, stepB0(2 * triangle.stepB0)
+			, stepC0(2 * triangle.stepC0)
+			, stepB1(2 * triangle.stepB1)
+			, stepC1(2 * triangle.stepC1)
+			, stepB2(2 * triangle.stepB2)
+			, stepC2(2 * triangle.stepC2)
 			, invDet(triangle.invDet)
 			, binId(triangle.binId)
 			, textureId(triangle.textureId)
 			, vertexIds(triangle.vertexIds) { }
 
-		[[nodiscard]] __forceinline AVXInt TopLeftEdge(const AVXVec2i& v1, const AVXVec2i& v2) const
+		[[nodiscard]] __forceinline SSEInt TopLeftEdge(const SSEVec2i& v1, const SSEVec2i& v2) const
 		{
-			return AVXInt(((v2.y > v1.y) | ((v1.y == v2.y) & (v1.x > v2.x))).m256);
+			return SSEInt(((v2.y > v1.y) | ((v1.y == v2.y) & (v1.x > v2.x))).m128);
 		}
 
-		[[nodiscard]] __forceinline AVXInt EdgeFunc0(const AVXVec2i& p) const
+		[[nodiscard]] __forceinline SSEInt EdgeFunc0(const SSEVec2i& p) const
 		{
 			return B0 * (p.x - v0.x) + C0 * (p.y - v0.y) + TopLeftEdge(v0, v1);
 		}
 
-		[[nodiscard]] __forceinline AVXInt EdgeFunc1(const AVXVec2i& p) const
+		[[nodiscard]] __forceinline SSEInt EdgeFunc1(const SSEVec2i& p) const
 		{
 			return B1 * (p.x - v1.x) + C1 * (p.y - v1.y) + TopLeftEdge(v1, v2);
 		}
 
-		[[nodiscard]] __forceinline AVXInt EdgeFunc2(const AVXVec2i& p) const
+		[[nodiscard]] __forceinline SSEInt EdgeFunc2(const SSEVec2i& p) const
 		{
 			return B2 * (p.x - v2.x) + C2 * (p.y - v2.y) + TopLeftEdge(v2, v0);
 		}
 
-		[[nodiscard]] __forceinline AVXBool Inside(const AVXVec2i& p) const
+		[[nodiscard]] __forceinline SSEBool Inside(const SSEVec2i& p) const
 		{
-			return (EdgeFunc0(p) | EdgeFunc1(p) | EdgeFunc2(p)) >= AVXInt(0);
+			return (EdgeFunc0(p) | EdgeFunc1(p) | EdgeFunc2(p)) >= SSEInt(0);
 		}
 
-		[[nodiscard]] __forceinline bool TrivialReject(const AVXVec2i& p) const
+		[[nodiscard]] __forceinline bool TrivialReject(const SSEVec2i& p) const
 		{
-			return Any((EdgeFunc0(p) & EdgeFunc1(p) & EdgeFunc2(p)) < AVXInt(0));
+			return Any((EdgeFunc0(p) & EdgeFunc1(p) & EdgeFunc2(p)) < SSEInt(0));
 		}
 
-		[[nodiscard]] __forceinline AVXFloat GetDepth(float z0, float z1, float z2) const
+		[[nodiscard]] __forceinline SSEFloat GetDepth(float z0, float z1, float z2) const
 		{
-			const auto One = AVXFloat(1);
-			const AVXFloat lambda2 = One - lambda0 - lambda1;
+			const auto One = SSEFloat(1);
+			const SSEFloat lambda2 = One - lambda0 - lambda1;
 			return lambda0 * z0 + lambda1 * z1 + lambda2 * z2;
 		}
 
-		__forceinline void CalcBarycentricCoord(const AVXInt& x, const AVXInt& y)
+		__forceinline void CalcBarycentricCoord(const SSEInt& x, const SSEInt& y)
 		{
-			lambda0 = AVXFloat((B1 * (x - v2.x) + C1 * (y - v2.y))) * invDet;
-			lambda1 = AVXFloat((B2 * (x - v2.x) + C2 * (y - v2.y))) * invDet;
+			lambda0 = SSEFloat((B1 * (x - v2.x) + C1 * (y - v2.y))) * invDet;
+			lambda1 = SSEFloat((B2 * (x - v2.x) + C2 * (y - v2.y))) * invDet;
 		}
 	};
 }

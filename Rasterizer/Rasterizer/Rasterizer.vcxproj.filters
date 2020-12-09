@@ -114,6 +114,18 @@
     <ClInclude Include="src\SIMD\AVXInt.h">
       <Filter>SIMD</Filter>
     </ClInclude>
+    <ClInclude Include="src\SIMD\SSEBool.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\SSEFloat.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\SSEInt.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\SSE.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />

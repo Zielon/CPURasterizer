@@ -44,6 +44,10 @@
     <ClInclude Include="src\SIMD\AVXBool.h" />
     <ClInclude Include="src\SIMD\AVXFloat.h" />
     <ClInclude Include="src\SIMD\AVXInt.h" />
+    <ClInclude Include="src\SIMD\SSE.h" />
+    <ClInclude Include="src\SIMD\SSEBool.h" />
+    <ClInclude Include="src\SIMD\SSEFloat.h" />
+    <ClInclude Include="src\SIMD\SSEInt.h" />
     <ClInclude Include="src\Viewer\Application.h" />
     <ClInclude Include="src\Viewer\Menu.h" />
     <ClInclude Include="src\Viewer\Shader.h" />
