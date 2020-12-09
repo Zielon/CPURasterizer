@@ -42,7 +42,14 @@ namespace Engine
 			uint32_t id,
 			uint32_t binId,
 			uint32_t textureId,
-			std::array<uint32_t, 3> ids): Triangle(v0, v1, v2, id, binId, textureId, ids) { }
+			std::array<uint32_t, 3> ids): Triangle(v0, v1, v2, id, binId, textureId, ids)
+		{
+			fixed = static_cast<float>(1 << FIXED_POINT);
+
+			this->v0 = v0 * fixed;
+			this->v1 = v1 * fixed;
+			this->v2 = v2 * fixed;
+		}
 
 		[[nodiscard]] __forceinline int TopLeftEdge(const glm::ivec2& v1, const glm::ivec2& v2) const
 		{
@@ -81,6 +88,10 @@ namespace Engine
 			lambda1 = (B2 * (x - v2.x) + C2 * (y - v2.y)) * invDet;
 		}
 
+		[[nodiscard]] glm::ivec2 GetV0() const { return v0 >> FIXED_POINT; }
+		[[nodiscard]] glm::ivec2 GetV1() const { return v1 >> FIXED_POINT; }
+		[[nodiscard]] glm::ivec2 GetV2() const { return v2 >> FIXED_POINT; }
+
 		/**
 		 * \brief Larrabee rasterizers performs set of tests to define with which tiles a given triangle intersects.
 		 * This methods sets values for accepted and rejected tiles.
@@ -101,12 +112,12 @@ namespace Engine
 			if (det <= 0)
 				return false;
 
-			stepB0 = B0;
-			stepC0 = C0;
-			stepB1 = B1;
-			stepC1 = C1;
-			stepB2 = B2;
-			stepC2 = C2;
+			stepB0 = fixed * B0;
+			stepC0 = fixed * C0;
+			stepB1 = fixed * B1;
+			stepC1 = fixed * C1;
+			stepB2 = fixed * B2;
+			stepC2 = fixed * C2;
 
 			invDet = 1.0f / static_cast<float>(det);
 
@@ -216,5 +227,7 @@ namespace Engine
 
 		// Triangle completely inside a tile
 		bool isTrivial{};
+
+		float fixed;
 	};
 }

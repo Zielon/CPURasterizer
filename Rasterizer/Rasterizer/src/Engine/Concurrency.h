@@ -2,6 +2,14 @@
 
 #include <execution>
 
+#define PARALLEL
+
+#ifdef PARALLEL
+constexpr std::execution::parallel_policy policy = std::execution::par;
+#else
+constexpr std::execution::sequenced_policy policy = std::execution::seq;
+#endif
+
 namespace Engine
 {
 	class Concurrency final
@@ -10,13 +18,13 @@ namespace Engine
 		template <class It, class Fn>
 		__forceinline static void ForEach(It first, It last, Fn func)
 		{
-			std::for_each(std::execution::par, first, last, func);
+			std::for_each(policy, first, last, func);
 		}
 
 		template <class It, class Ty>
 		__forceinline static void Fill(It first, It last, const Ty& val)
 		{
-			std::fill(std::execution::par, first, last, val);
+			std::fill(policy, first, last, val);
 		};
 	};
 }

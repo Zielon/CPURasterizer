@@ -121,10 +121,7 @@ namespace Engine
 
 	glm::mat4 Camera::GetProjectionMatrix() const
 	{
-		auto projection = glm::perspective(glm::radians(fov), aspect, 0.1f, 1000.0f);
-		projection[1][1] *= -1;
-
-		return projection;
+		return glm::perspective(glm::radians(fov), aspect, 0.1f, 1000.0f);
 	}
 
 	glm::mat4 Camera::GetRasterMatrix() const

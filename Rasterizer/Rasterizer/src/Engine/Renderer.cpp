@@ -57,14 +57,20 @@ namespace Engine
 	{
 		const auto& buffer = scene.GetVertexBuffer();
 
+		glm::mat4 model(1);
+		// Left handed system
+		model[0][0] = -1.f;
+		model[1][1] = 1.f;
+		model[2][2] = 1.f;
+
 		Concurrency::ForEach(
 			buffer.begin(), buffer.end(),
-			[this](const Assets::Vertex& inVertex)
+			[this, model](const Assets::Vertex& inVertex)
 			{
 				auto& outVertex = projectedVertexStorage[inVertex.id];
 
 				outVertex.projectedPosition =
-					camera.GetProjectionMatrix() * camera.GetViewMatrix() * glm::vec4(inVertex.position, 1.f);
+					camera.GetProjectionMatrix() * camera.GetViewMatrix() * model * glm::vec4(inVertex.position, 1.f);
 				outVertex.position = inVertex.position;
 				outVertex.normal = inVertex.normal;
 				outVertex.texCoords = inVertex.texCoords;
@@ -74,7 +80,7 @@ namespace Engine
 
 	void Renderer::ClippingStage()
 	{
-		uint32_t size = scene.GetIndexBuffer().size();
+		uint32_t size = scene.GetTriangleCount();
 		uint32_t interval = (size + numCores - 1) / numCores;
 
 		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this, interval, size](int bin)
@@ -85,14 +91,14 @@ namespace Engine
 
 			auto& clippedBuffer = clippedProjectedVertexBuffer[bin];
 
-			for (uint32_t i = startIdx; i < endIdx; i += 3)
+			for (uint32_t i = startIdx; i < endIdx; ++i)
 			{
-				if (i + 3 >= size)
-					return;
+				if (3 * i + 2 > scene.GetIndexBuffer().size())
+					break;
 
-				auto& v0 = projectedVertexStorage[scene.GetIndexBuffer()[i + 0]];
-				auto& v1 = projectedVertexStorage[scene.GetIndexBuffer()[i + 1]];
-				auto& v2 = projectedVertexStorage[scene.GetIndexBuffer()[i + 2]];
+				auto& v0 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 0]];
+				auto& v1 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 1]];
+				auto& v2 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 2]];
 
 				uint32_t clipCode0 = Clipper::ClipCode(v0.projectedPosition);
 				uint32_t clipCode1 = Clipper::ClipCode(v1.projectedPosition);
@@ -157,7 +163,14 @@ namespace Engine
 					for (auto i = tile.minRaster.y; i < tile.maxRaster.y; ++i)
 						for (auto j = tile.minRaster.x; j < tile.maxRaster.x; ++j)
 						{
-							frameBuffer[i * WIDTH + j] = tile.color;
+							glm::ivec2 pixelSample = glm::vec2(j + 0.5, i + 0.5) * 16.f;
+
+							int w0 = triangle.EdgeFunc0(pixelSample);
+							int w1 = triangle.EdgeFunc1(pixelSample);
+							int w2 = triangle.EdgeFunc2(pixelSample);
+
+							if (w0 >= 0 && w1 >= 0 && w2 >= 0)
+								frameBuffer[i * WIDTH + j] = tile.color;
 						}
 				}
 			}
