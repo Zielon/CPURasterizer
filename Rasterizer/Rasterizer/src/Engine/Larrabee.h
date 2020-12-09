@@ -25,6 +25,8 @@ namespace Engine
 			std::deque<LarrabeeTriangle>& rasterTrianglesBuffer,
 			Tile& tile)
 		{
+			SSEVec2i centerOffset(SSEInt(8, 24, 8, 24), SSEInt(8, 8, 24, 24));
+
 			for (int i = 0; i < tile.binsIndex[bin]; ++i)
 			{
 				const uint32_t id = tile.trinagles[bin][i];
@@ -45,13 +47,42 @@ namespace Engine
 				if (maxX < minX || maxY < minY)
 					return;
 
-				SSELarrabeeTriangle triangleAVX(rasterTrianglesBuffer[id]);
+				SSELarrabeeTriangle SSEtriangle(rasterTrianglesBuffer[id]);
 
 				SSEVec2i pixelBase(minX << FIXED_POINT, minY << FIXED_POINT);
-				SSEVec2i pixelCenter = pixelBase;
-				SSEInt edgeVal0 = triangleAVX.EdgeFunc0(pixelCenter);
-				SSEInt edgeVal1 = triangleAVX.EdgeFunc1(pixelCenter);
-				SSEInt edgeVal2 = triangleAVX.EdgeFunc2(pixelCenter);
+				SSEVec2i pixelCenter = pixelBase + centerOffset;
+				SSEInt edgeVal0 = SSEtriangle.EdgeFunc0(pixelCenter);
+				SSEInt edgeVal1 = SSEtriangle.EdgeFunc1(pixelCenter);
+				SSEInt edgeVal2 = SSEtriangle.EdgeFunc2(pixelCenter);
+
+				glm::ivec2 pixelCrd;
+				SSEInt pixelBaseStep = SSEInt(32);
+				for (pixelCrd.y = minY; pixelCrd.y <= maxY; pixelCrd.y += 2, pixelBase.y += pixelBaseStep)
+				{
+					SSEInt edgeYBase0 = edgeVal0;
+					SSEInt edgeYBase1 = edgeVal1;
+					SSEInt edgeYBase2 = edgeVal2;
+
+					pixelBase.x = SSEInt(minX << 4);
+					for (pixelCrd.x = minX; pixelCrd.x <= maxX; pixelCrd.x += 2, pixelBase.x += pixelBaseStep)
+					{
+						pixelCenter = pixelBase + centerOffset;
+						SSEBool covered = (edgeVal0 | edgeVal1 | edgeVal2) >= SSEInt(0);
+
+						if (Any(covered))
+						{
+							SSEtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
+						}
+
+						edgeVal0 += SSEtriangle.stepB0;
+						edgeVal1 += SSEtriangle.stepB1;
+						edgeVal2 += SSEtriangle.stepB2;
+					}
+
+					edgeVal0 = edgeYBase0 + SSEtriangle.stepC0;
+					edgeVal1 = edgeYBase1 + SSEtriangle.stepC1;
+					edgeVal2 = edgeYBase2 + SSEtriangle.stepC2;
+				}
 			}
 		}
 

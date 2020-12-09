@@ -42,6 +42,8 @@ public:
 	__forceinline SSEInt operator -(const uint32_t& rhs) const { return *this - SSEInt(rhs); }
 	__forceinline SSEInt operator *(const SSEInt& rhs) const { return _mm_mullo_epi32(m128, rhs.m128); }
 	__forceinline SSEInt operator *(const uint32_t& rhs) const { return *this * SSEInt(rhs); }
+	__forceinline SSEInt& operator +=(const SSEInt& rhs) { return *this = *this + rhs; }
+	__forceinline SSEInt& operator +=(const uint32_t& rhs) { return *this = *this + rhs; }
 	__forceinline SSEInt operator &(const SSEInt& rhs) const { return _mm_and_si128(m128, rhs.m128); }
 	__forceinline SSEInt operator &(const uint32_t& rhs) const { return *this & SSEInt(rhs); }
 	__forceinline SSEInt operator |(const SSEInt& rhs) const { return _mm_or_si128(m128, rhs.m128); }
