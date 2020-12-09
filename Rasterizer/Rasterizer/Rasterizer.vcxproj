@@ -41,6 +41,10 @@
     <ClInclude Include="src\Math\Vec2.h" />
     <ClInclude Include="src\Math\Vec3.h" />
     <ClInclude Include="src\Math\Vec4.h" />
+    <ClInclude Include="src\SIMD\AVX.h" />
+    <ClInclude Include="src\SIMD\BoolAVX.h" />
+    <ClInclude Include="src\SIMD\FloatAVX.h" />
+    <ClInclude Include="src\SIMD\IntAVX.h" />
     <ClInclude Include="src\Viewer\Application.h" />
     <ClInclude Include="src\Viewer\Menu.h" />
     <ClInclude Include="src\Viewer\Shader.h" />

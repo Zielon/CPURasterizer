@@ -22,6 +22,9 @@
     <Filter Include="Engine\Shaders">
       <UniqueIdentifier>{9c0e8784-f27f-4a70-ad7b-a63ee3a24147}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SIMD">
+      <UniqueIdentifier>{eb4b3d14-c7f4-48c1-8e5d-487f5634a0bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Viewer\Application.h">
@@ -101,6 +104,18 @@
     </ClInclude>
     <ClInclude Include="src\Engine\Larrabee.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\BoolAVX.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\FloatAVX.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\IntAVX.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVX.h">
+      <Filter>SIMD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
