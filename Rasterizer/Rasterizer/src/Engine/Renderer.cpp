@@ -154,26 +154,7 @@ namespace Engine
 		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile)
 		{
 			for (auto bin : coreIds)
-			{
-				for (int i = 0; i < tile.binsIndex[bin]; ++i)
-				{
-					const uint32_t id = tile.trinagles[bin][i];
-					LarrabeeTriangle& triangle = rasterTrianglesBuffer[bin][id];
-
-					for (auto i = tile.minRaster.y; i < tile.maxRaster.y; ++i)
-						for (auto j = tile.minRaster.x; j < tile.maxRaster.x; ++j)
-						{
-							glm::ivec2 pixelSample = glm::vec2(j + 0.5, i + 0.5) * 16.f;
-
-							int w0 = triangle.EdgeFunc0(pixelSample);
-							int w1 = triangle.EdgeFunc1(pixelSample);
-							int w2 = triangle.EdgeFunc2(pixelSample);
-
-							if (w0 >= 0 && w1 >= 0 && w2 >= 0)
-								frameBuffer[i * WIDTH + j] = tile.color;
-						}
-				}
-			}
+				Larrabee::RasterizeTile(bin, rasterTrianglesBuffer[bin], tile);
 		});
 	}
 

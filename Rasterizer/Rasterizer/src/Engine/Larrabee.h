@@ -15,6 +15,24 @@ namespace Engine
 	{
 	public:
 		/**
+		 * \brief 
+		 * \param bin 
+		 * \param rasterTrianglesBuffer 
+		 * \param tile 
+		 */
+		static void RasterizeTile(
+			uint32_t bin,
+			std::deque<LarrabeeTriangle>& rasterTrianglesBuffer,
+			Tile& tile)
+		{
+			for (int i = 0; i < tile.binsIndex[bin]; ++i)
+			{
+				const uint32_t id = tile.trinagles[bin][i];
+				AVXLarrabeeTriangle triangle(rasterTrianglesBuffer[id]);
+			}
+		}
+
+		/**
 		 * \brief Assign triangles to tiles
 		 * \param bin Current coreId/bin
 		 * \param rasterTrianglesBuffer Previously clipped triangles

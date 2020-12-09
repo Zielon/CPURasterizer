@@ -2,6 +2,10 @@
 
 #include <cstdint>
 
+#include "../SIMD/AVX.h"
+
+using namespace AVX;
+
 namespace Engine
 {
 	struct Triangle
@@ -35,6 +39,18 @@ namespace Engine
 	struct LarrabeeTriangle final : Triangle
 	{
 	public:
+		int B0{}, C0{}, B1{}, C1{}, B2{}, C2{};
+		float invDet{};
+		// A tile trivial reject test.
+		uint32_t rejectCorner0{}, rejectCorner1{}, rejectCorner2{};
+		// The tile trivial accept test.
+		uint32_t acceptCorner0{}, acceptCorner1{}, acceptCorner2{};
+		// Barycentrinc coordinates
+		float lambda0{}, lambda1{};
+		// Triangle completely inside a tile
+		bool isTrivial{};
+		float fixed;
+
 		LarrabeeTriangle(
 			const glm::vec2& v0,
 			const glm::vec2& v1,
@@ -111,13 +127,6 @@ namespace Engine
 
 			if (det <= 0)
 				return false;
-
-			stepB0 = fixed * B0;
-			stepC0 = fixed * C0;
-			stepB1 = fixed * B1;
-			stepC1 = fixed * C1;
-			stepB2 = fixed * B2;
-			stepC2 = fixed * C2;
 
 			invDet = 1.0f / static_cast<float>(det);
 
@@ -210,24 +219,75 @@ namespace Engine
 
 			return true;
 		};
+	};
 
-		int B0{}, C0{}, B1{}, C1{}, B2{}, C2{};
-		int stepB0{}, stepC0{}, stepB1{}, stepC1{}, stepB2{}, stepC2{};
+	struct AVXLarrabeeTriangle
+	{
+		AVXVec2i v0, v1, v2;
+		AVXInt B0, C0, B1, C1, B2, C2;
+		AVXFloat lambda0, lambda1;
+		AVXFloat invDet;
+		uint32_t id{};
+		uint32_t binId{};
+		uint32_t textureId{};
+		std::array<uint32_t, 3> vertexIds;
 
-		float invDet{};
+		AVXLarrabeeTriangle(const LarrabeeTriangle& triangle) :
+			v0(triangle.v0)
+			, v1(triangle.v1)
+			, v2(triangle.v2)
+			, B0(triangle.B0)
+			, C0(triangle.C0)
+			, B1(triangle.B1)
+			, C1(triangle.C1)
+			, B2(triangle.B2)
+			, C2(triangle.C2)
+			, invDet(triangle.invDet)
+			, binId(triangle.binId)
+			, textureId(triangle.textureId)
+			, vertexIds(triangle.vertexIds) { }
 
-		// A tile trivial reject test.
-		uint32_t rejectCorner0{}, rejectCorner1{}, rejectCorner2{};
+		[[nodiscard]] __forceinline AVXInt TopLeftEdge(const AVXVec2i& v1, const AVXVec2i& v2) const
+		{
+			return AVXInt(((v2.y > v1.y) | ((v1.y == v2.y) & (v1.x > v2.x))).m256);
+		}
 
-		// The tile trivial accept test.
-		uint32_t acceptCorner0{}, acceptCorner1{}, acceptCorner2{};
+		[[nodiscard]] __forceinline AVXInt EdgeFunc0(const AVXVec2i& p) const
+		{
+			return B0 * (p.x - v0.x) + C0 * (p.y - v0.y) + TopLeftEdge(v0, v1);
+		}
 
-		// Barycentrinc coordinates
-		float lambda0{}, lambda1{};
+		[[nodiscard]] __forceinline AVXInt EdgeFunc1(const AVXVec2i& p) const
+		{
+			return B1 * (p.x - v1.x) + C1 * (p.y - v1.y) + TopLeftEdge(v1, v2);
+		}
 
-		// Triangle completely inside a tile
-		bool isTrivial{};
+		[[nodiscard]] __forceinline AVXInt EdgeFunc2(const AVXVec2i& p) const
+		{
+			return B2 * (p.x - v2.x) + C2 * (p.y - v2.y) + TopLeftEdge(v2, v0);
+		}
 
-		float fixed;
+		[[nodiscard]] __forceinline AVXBool Inside(const AVXVec2i& p) const
+		{
+			return (EdgeFunc0(p) | EdgeFunc1(p) | EdgeFunc2(p)) >= AVXInt(0);
+		}
+
+		[[nodiscard]] __forceinline bool TrivialReject(const AVXVec2i& p) const
+		{
+			return Any((EdgeFunc0(p) & EdgeFunc1(p) & EdgeFunc2(p)) < AVXInt(0));
+		}
+
+		[[nodiscard]] __forceinline AVXFloat GetDepth(float z0, float z1, float z2) const
+		{
+			const auto One = AVXFloat(1);
+			const AVXFloat lambda2 = One - lambda0 - lambda1;
+			return lambda0 * z0 + lambda1 * z1 + lambda2 * z2;
+		}
+
+		__forceinline void CalcBarycentricCoord(const AVXInt& x, const AVXInt& y)
+		{
+			lambda0 = AVXFloat((B1 * (x - v2.x) + C1 * (y - v2.y))) * invDet;
+			lambda1 = AVXFloat((B2 * (x - v2.x) + C2 * (y - v2.y))) * invDet;
+		}
 	};
 }

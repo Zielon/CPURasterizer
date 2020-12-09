@@ -45,9 +45,6 @@
     <ClInclude Include="src\Math\Vec3.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="src\Math\Vec4.h">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Scene.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -105,16 +102,16 @@
     <ClInclude Include="src\Engine\Larrabee.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\SIMD\BoolAVX.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\FloatAVX.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\IntAVX.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
     <ClInclude Include="src\SIMD\AVX.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVXBool.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVXFloat.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVXInt.h">
       <Filter>SIMD</Filter>
     </ClInclude>
   </ItemGroup>
