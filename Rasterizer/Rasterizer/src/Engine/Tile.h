@@ -5,8 +5,9 @@
 
 #include <glm/glm.hpp>
 
+
+#include "Pixel.h"
 #include "../Assets/Color4b.h"
-#include "Shaders/Fragment.h"
 
 namespace Engine
 {
@@ -47,6 +48,6 @@ namespace Engine
 
 		std::array<uint32_t, 16> binsIndex{};
 		std::vector<std::array<uint32_t, 4096>> trinagles;
-		std::deque<Fragment> fragments;
+		std::deque<Pixel> fragments;
 	};
 }

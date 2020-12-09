@@ -16,6 +16,7 @@ namespace Engine
 	Renderer::Renderer(const Scene& scene, const Camera& camera) : scene(scene), camera(camera)
 	{
 		fragmentShader.reset(new PhongBlinnShader());
+		vertexShader.reset(new DefaultVertexShader(camera));
 
 		CreateBuffers();
 		CreateTiles();
@@ -57,25 +58,10 @@ namespace Engine
 	{
 		const auto& buffer = scene.GetVertexBuffer();
 
-		glm::mat4 model(1);
-		// Left handed system
-		model[0][0] = -1.f;
-		model[1][1] = 1.f;
-		model[2][2] = 1.f;
-
-		Concurrency::ForEach(
-			buffer.begin(), buffer.end(),
-			[this, model](const Assets::Vertex& inVertex)
-			{
-				auto& outVertex = projectedVertexStorage[inVertex.id];
-
-				outVertex.projectedPosition =
-					camera.GetProjectionMatrix() * camera.GetViewMatrix() * model * glm::vec4(inVertex.position, 1.f);
-				outVertex.position = inVertex.position;
-				outVertex.normal = inVertex.normal;
-				outVertex.texCoords = inVertex.texCoords;
-				outVertex.id = inVertex.id;
-			});
+		Concurrency::ForEach(buffer.begin(), buffer.end(), [this](const Assets::Vertex& inVertex)
+		{
+			vertexShader->Process(inVertex, projectedVertexStorage[inVertex.id]);
+		});
 	}
 
 	void Renderer::ClippingStage()

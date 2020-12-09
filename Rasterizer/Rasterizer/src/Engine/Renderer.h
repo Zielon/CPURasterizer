@@ -12,6 +12,7 @@
 #include "../Assets/Vertex.h"
 
 #include "Shaders/FragmentShader.h"
+#include "Shaders/VertexShader.h"
 
 namespace Engine
 {
@@ -52,6 +53,7 @@ namespace Engine
 		uint32_t numCores{};
 		std::vector<uint32_t> coreIds;
 		std::vector<Tile> tiles;
-		std::unique_ptr<FragmentShader> fragmentShader;
+		std::unique_ptr<class FragmentShader> fragmentShader;
+		std::unique_ptr<class VertexShader> vertexShader;
 	};
 }

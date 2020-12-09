@@ -12,8 +12,6 @@ namespace Engine
 	class PhongBlinnShader : public FragmentShader
 	{
 	public:
-		PhongBlinnShader() {}
-		~PhongBlinnShader() {}
 		void Shade() override {}
 	};
 }

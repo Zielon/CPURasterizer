@@ -2,5 +2,5 @@
 
 namespace Engine
 {
-	class Fragment {};
+	class Pixel {};
 }

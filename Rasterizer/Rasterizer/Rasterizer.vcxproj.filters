@@ -81,9 +81,6 @@
     <ClInclude Include="src\Engine\Tile.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Shaders\FragmentShader.h">
-      <Filter>Engine\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Camera.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -95,9 +92,6 @@
     </ClInclude>
     <ClInclude Include="src\Engine\Concurrency.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Shaders\Fragment.h">
-      <Filter>Engine\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Larrabee.h">
       <Filter>Engine</Filter>
@@ -125,6 +119,15 @@
     </ClInclude>
     <ClInclude Include="src\SIMD\SSE.h">
       <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Shaders\VertexShader.h">
+      <Filter>Engine\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Shaders\FragmentShader.h">
+      <Filter>Engine\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Pixel.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
