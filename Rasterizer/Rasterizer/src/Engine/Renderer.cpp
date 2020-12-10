@@ -6,20 +6,20 @@
 #include "Camera.h"
 #include "Concurrency.h"
 #include "Clipper.h"
-#include "Larrabee.h"
 #include "Triangle.h"
-
-#include "../Assets/Color4b.h"
 
 namespace Engine
 {
 	Renderer::Renderer(const Scene& scene, const Camera& camera) : scene(scene), camera(camera)
 	{
-		fragmentShader.reset(new PhongBlinnShader());
-		vertexShader.reset(new DefaultVertexShader(camera));
-
 		CreateBuffers();
 		CreateTiles();
+
+		colorBuffer.reset(new ColorBuffer());
+		depthBuffer.reset(new DepthBuffer());
+		fragmentShader.reset(new PhongBlinnShader());
+		vertexShader.reset(new DefaultVertexShader(camera));
+		rasterizer.reset(new LarrabeeRasterizer(std::ref(rasterTrianglesBuffer), std::ref(tiles)));
 	}
 
 	void Renderer::Render(const Settings& settings)
@@ -38,14 +38,13 @@ namespace Engine
 		UpdateFrameBuffer();
 	}
 
-	const uint8_t* Renderer::GetFrameBuffer() const
+	const uint8_t* Renderer::GetColorBuffer() const
 	{
-		return reinterpret_cast<const uint8_t*>(frameBuffer.data());
+		return colorBuffer->Get();
 	}
 
 	void Renderer::Clear()
 	{
-		Concurrency::Fill(frameBuffer.begin(), frameBuffer.end(), Assets::Color4b(0, 0, 0));
 		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile) { tile.Clear(); });
 		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
 		{
@@ -131,7 +130,7 @@ namespace Engine
 	{
 		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
 		{
-			Larrabee::AssignTriangles(bin, rasterTrianglesBuffer[bin], tiles);
+			rasterizer->AssignTriangles(bin);
 		});
 	}
 
@@ -140,7 +139,7 @@ namespace Engine
 		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile)
 		{
 			for (auto bin : coreIds)
-				Larrabee::RasterizeTile(bin, rasterTrianglesBuffer[bin], tile);
+				rasterizer->RasterizeTile(bin, tile);
 		});
 	}
 

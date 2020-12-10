@@ -8,7 +8,7 @@ namespace Assets
 {
 	class Mesh;
 	class Texture;
-	class Vertex;
+	struct Vertex;
 }
 
 using MeshBuffer = std::vector<std::unique_ptr<Assets::Mesh>>;

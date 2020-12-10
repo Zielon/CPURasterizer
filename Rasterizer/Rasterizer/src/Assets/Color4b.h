@@ -14,7 +14,7 @@ namespace Assets
 
 		__forceinline Color4b operator *(float val) const
 		{
-			return Color4b(val * r, val * g, val * b);
+			return Color4b(uint8_t(val * r), uint8_t(val * g), uint8_t(val * b));
 		}
 
 		__forceinline Color4b operator +(const Color4b& color) const
@@ -27,14 +27,15 @@ namespace Assets
 			r += color.r;
 			g += color.g;
 			b += color.b;
-			a = 1.0f;
+			a = 1;
+
 			return *this;
 		}
 
 		__forceinline Color4b operator /(float val) const
 		{
 			float fInv = 1.0f / val;
-			return Color4b(r * fInv, g * fInv, b * fInv);
+			return Color4b(uint8_t(r * fInv), uint8_t(g * fInv), uint8_t(b * fInv));
 		}
 
 		__forceinline Color4b operator >>(const int shift) const

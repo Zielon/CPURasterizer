@@ -25,8 +25,10 @@
     <ClInclude Include="src\Assets\Vertex.h" />
     <ClInclude Include="src\Engine\Camera.h" />
     <ClInclude Include="src\Engine\Clipper.h" />
+    <ClInclude Include="src\Engine\ColorBuffer.h" />
     <ClInclude Include="src\Engine\Concurrency.h" />
-    <ClInclude Include="src\Engine\Larrabee.h" />
+    <ClInclude Include="src\Engine\DepthBuffer.h" />
+    <ClInclude Include="src\Engine\LarrabeeRasterizer.h" />
     <ClInclude Include="src\Engine\Pixel.h" />
     <ClInclude Include="src\Engine\Renderer.h" />
     <ClInclude Include="src\Engine\Scene.h" />
@@ -58,6 +60,9 @@
     <ClCompile Include="src\Assets\Mesh.cpp" />
     <ClCompile Include="src\Assets\Texture.cpp" />
     <ClCompile Include="src\Engine\Camera.cpp" />
+    <ClCompile Include="src\Engine\ColorBuffer.cpp" />
+    <ClCompile Include="src\Engine\DepthBuffer.cpp" />
+    <ClCompile Include="src\Engine\LarrabeeRaasterizer.cpp" />
     <ClCompile Include="src\Engine\Renderer.cpp" />
     <ClCompile Include="src\Engine\Scene.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
@@ -171,6 +176,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -188,6 +194,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

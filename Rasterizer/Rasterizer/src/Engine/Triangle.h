@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
+#include <glm/glm.hpp>
 
 #include "../SIMD/SSE.h"
 
@@ -61,7 +63,7 @@ namespace Engine
 			uint32_t textureId,
 			std::array<uint32_t, 3> ids): Triangle(v0, v1, v2, id, binId, textureId, ids)
 		{
-			fixed = static_cast<float>(1 << FIXED_POINT);
+			fixed = 16.f;
 
 			this->v0 = v0 * fixed;
 			this->v1 = v1 * fixed;
@@ -104,10 +106,6 @@ namespace Engine
 			lambda0 = (B1 * (x - v2.x) + C1 * (y - v2.y)) * invDet;
 			lambda1 = (B2 * (x - v2.x) + C2 * (y - v2.y)) * invDet;
 		}
-
-		[[nodiscard]] glm::ivec2 GetV0() const { return v0 >> FIXED_POINT; }
-		[[nodiscard]] glm::ivec2 GetV1() const { return v1 >> FIXED_POINT; }
-		[[nodiscard]] glm::ivec2 GetV2() const { return v2 >> FIXED_POINT; }
 
 		/**
 		 * \brief Larrabee rasterizers performs set of tests to define with which tiles a given triangle intersects.

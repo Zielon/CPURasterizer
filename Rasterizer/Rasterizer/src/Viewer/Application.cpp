@@ -64,7 +64,7 @@ namespace Viewer
 	{
 		// Copy frameBuffer to texture
 		glTexImage2D(
-			GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, renderer->GetFrameBuffer());
+			GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, renderer->GetColorBuffer());
 
 		glBindTexture(GL_TEXTURE_2D, texture);
 

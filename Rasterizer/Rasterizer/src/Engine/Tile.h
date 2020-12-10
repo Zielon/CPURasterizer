@@ -1,10 +1,10 @@
 #pragma once
 
-#include <deque>
-#include <vector>
-
 #include <glm/glm.hpp>
 
+#include <deque>
+#include <vector>
+#include <array>
 
 #include "Pixel.h"
 #include "../Assets/Color4b.h"

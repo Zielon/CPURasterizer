@@ -21,10 +21,7 @@ public:
 	__forceinline SSEInt(const __m128i& val) : m128(val) {}
 	__forceinline SSEInt(uint32_t a, uint32_t b) : m128(_mm_set_epi32(b, a, b, a)) {}
 	__forceinline SSEInt(uint32_t a, uint32_t b, uint32_t c, uint32_t d) : m128(_mm_set_epi32(d, c, b, a)) {}
-
-	__forceinline SSEInt(const uint32_t& a): m128(
-		_mm_shuffle_epi32(_mm_castps_si128(_mm_load_ss((float*)&a)), _MM_SHUFFLE(0, 0, 0, 0))) {}
-
+	__forceinline SSEInt(const uint32_t& a): m128(_mm_castps_si128(_mm_broadcast_ss((const float*)&a))) {}
 	__forceinline SSEInt(const __m128& val) : m128(_mm_cvtps_epi32(val)) {}
 
 	__forceinline SSEInt& operator =(const SSEInt& copyFrom)

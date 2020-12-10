@@ -1,14 +1,15 @@
 #pragma once
 
-#include <array>
 #include <memory>
 #include <thread>
 
 #include "Settings.h"
 #include "Tile.h"
+#include "LarrabeeRasterizer.h"
 #include "Triangle.h"
+#include "ColorBuffer.h"
+#include "DepthBuffer.h"
 
-#include "../Assets/Color4b.h"
 #include "../Assets/Vertex.h"
 
 #include "Shaders/FragmentShader.h"
@@ -23,7 +24,7 @@ namespace Engine
 
 		void Render(const Settings& settings);
 
-		[[nodiscard]] const uint8_t* GetFrameBuffer() const;
+		[[nodiscard]] const uint8_t* GetColorBuffer() const;
 
 	private:
 		void Clear();
@@ -43,17 +44,20 @@ namespace Engine
 
 		glm::ivec2 tileDim;
 		Settings settings{};
-		std::vector<Assets::Vertex> projectedVertexStorage;
 
-		// Lock-free distributed structures. Each tread operates on its own bin.
-		std::vector<std::deque<Assets::Vertex>> clippedProjectedVertexBuffer;
-		std::vector<std::deque<LarrabeeTriangle>> rasterTrianglesBuffer;
-		std::array<Assets::Color4b, WIDTH * HEIGHT> frameBuffer;
+		// Lock-free distributed structures. Each thread operates on its own bin.
+		Buffer2D<Assets::Vertex> clippedProjectedVertexBuffer;
+		Buffer2D<LarrabeeTriangle> rasterTrianglesBuffer;
 
 		uint32_t numCores{};
-		std::vector<uint32_t> coreIds;
 		std::vector<Tile> tiles;
-		std::unique_ptr<class FragmentShader> fragmentShader;
-		std::unique_ptr<class VertexShader> vertexShader;
+		std::vector<uint32_t> coreIds;
+		std::vector<Assets::Vertex> projectedVertexStorage;
+
+		std::unique_ptr<FragmentShader> fragmentShader;
+		std::unique_ptr<VertexShader> vertexShader;
+		std::unique_ptr<LarrabeeRasterizer> rasterizer;
+		std::unique_ptr<ColorBuffer> colorBuffer;
+		std::unique_ptr<DepthBuffer> depthBuffer;
 	};
 }

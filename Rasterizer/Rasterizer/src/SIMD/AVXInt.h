@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <immintrin.h>
 
 class AVXInt
@@ -16,7 +17,7 @@ public:
 	__forceinline AVXInt(): m256(_mm256_setzero_si256()) {}
 	__forceinline AVXInt(const AVXInt& copyFrom): m256(copyFrom.m256) {}
 	__forceinline AVXInt(const __m256i& val) : m256(val) {}
-	__forceinline AVXInt(const uint32_t& a): m256(_mm256_castps_si256(_mm256_broadcast_ss((float*)&a))) {}
+	__forceinline AVXInt(const uint32_t& a): m256(_mm256_castps_si256(_mm256_broadcast_ss((const float*)&a))) {}
 	__forceinline AVXInt(const __m256& val) : m256(_mm256_cvtps_epi32(val)) {}
 
 	__forceinline AVXInt(
