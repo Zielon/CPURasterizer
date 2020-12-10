@@ -19,7 +19,7 @@ namespace Engine
 		depthBuffer.reset(new DepthBuffer());
 		fragmentShader.reset(new PhongBlinnShader());
 		vertexShader.reset(new DefaultVertexShader(camera));
-		rasterizer.reset(new LarrabeeRasterizer(std::ref(rasterTrianglesBuffer), std::ref(tiles)));
+		rasterizer.reset(new LarrabeeRasterizer(rasterTrianglesBuffer, tiles, *depthBuffer));
 	}
 
 	void Renderer::Render(const Settings& settings)

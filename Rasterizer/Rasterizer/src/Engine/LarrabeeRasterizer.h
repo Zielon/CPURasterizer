@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DepthBuffer.h"
 #include "Triangle.h"
 #include "Tile.h"
 
@@ -17,8 +18,11 @@ namespace Engine
 	class LarrabeeRasterizer final
 	{
 	public:
-		LarrabeeRasterizer(Ref<Buffer2D<LarrabeeTriangle>> trianglesBuffer, Ref<std::vector<Tile>> tiles):
-			rasterTrianglesBuffer(trianglesBuffer), tiles(tiles) {}
+		LarrabeeRasterizer(
+			Buffer2D<LarrabeeTriangle>& trianglesBuffer,
+			std::vector<Tile>& tiles,
+			DepthBuffer& depthBuffer):
+			rasterTrianglesBuffer(trianglesBuffer), tiles(tiles), depthBuffer(depthBuffer) {}
 
 		~LarrabeeRasterizer();
 
@@ -27,7 +31,8 @@ namespace Engine
 		void AssignTriangles(uint32_t bin) const;
 
 	private:
-		const Ref<Buffer2D<LarrabeeTriangle>> rasterTrianglesBuffer;
-		const Ref<std::vector<Tile>> tiles;
+		Buffer2D<LarrabeeTriangle>& rasterTrianglesBuffer;
+		std::vector<Tile>& tiles;
+		class DepthBuffer& depthBuffer;
 	};
 }

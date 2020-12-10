@@ -1,6 +1,7 @@
 #include "Scene.h"
 
 #include <filesystem>
+#include <iostream>
 
 #include "../Assets/Mesh.h"
 #include "../Assets/Texture.h"
@@ -9,17 +10,24 @@ namespace Engine
 {
 	Scene::Scene()
 	{
+		std::cout << "[SCENE] Scene loading has begun" << std::endl;
+
 		for (const auto& entry : std::filesystem::directory_iterator("../Assets/Scenes/bunny/"))
+		{
 			AddMesh(entry.path().string());
+		}
 
 		Complete();
 		CreateBuffers();
+
+		std::cout << "[SCENE] Scene has been loaded" << std::endl;
 	}
 
 	Scene::~Scene() {}
 
 	void Scene::AddMesh(const std::string& path)
 	{
+		std::cout << "[SCENE] Mesh: " << path << " has been requested" << std::endl;
 		meshBuffer.emplace_back(new Assets::Mesh(path));
 	}
 

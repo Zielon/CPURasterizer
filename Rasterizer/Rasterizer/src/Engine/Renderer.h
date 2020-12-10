@@ -42,7 +42,7 @@ namespace Engine
 		const Scene& scene;
 		const Camera& camera;
 
-		glm::ivec2 tileDim;
+		glm::ivec2 tileDim{};
 		Settings settings{};
 
 		// Lock-free distributed structures. Each thread operates on its own bin.

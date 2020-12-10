@@ -9,6 +9,7 @@
 #include "Settings.h"
 #include "Triangle.h"
 #include "Tile.h"
+#include "DepthBuffer.h"
 
 namespace Engine
 {
@@ -22,7 +23,7 @@ namespace Engine
 		{
 			const uint32_t id = tile.trinagles[bin][i];
 
-			LarrabeeTriangle triangle = rasterTrianglesBuffer.get()[bin][id];
+			LarrabeeTriangle triangle = rasterTrianglesBuffer[bin][id];
 
 			int minX = std::max(tile.minRaster.x,
 			                    std::min(triangle.v0.x, std::min(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
@@ -38,7 +39,7 @@ namespace Engine
 			if (maxX < minX || maxY < minY)
 				return;
 
-			SSELarrabeeTriangle SSEtriangle(rasterTrianglesBuffer.get()[bin][id]);
+			SSELarrabeeTriangle SSEtriangle(rasterTrianglesBuffer[bin][id]);
 
 			SSEVec2i pixelBase(minX << FIXED_POINT, minY << FIXED_POINT);
 			SSEVec2i pixelCenter = pixelBase + centerOffset;
@@ -63,16 +64,18 @@ namespace Engine
 					if (Any(covered))
 					{
 						SSEtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
+
+						SSEBool ztest = depthBuffer.ZTest();
 					}
 
-					edgeVal0 += SSEtriangle.stepB0;
-					edgeVal1 += SSEtriangle.stepB1;
-					edgeVal2 += SSEtriangle.stepB2;
+					edgeVal0 += SSEtriangle.deltaY0;
+					edgeVal1 += SSEtriangle.deltaY1;
+					edgeVal2 += SSEtriangle.deltaY2;
 				}
 
-				edgeVal0 = edgeYBase0 + SSEtriangle.stepC0;
-				edgeVal1 = edgeYBase1 + SSEtriangle.stepC1;
-				edgeVal2 = edgeYBase2 + SSEtriangle.stepC2;
+				edgeVal0 = edgeYBase0 + SSEtriangle.deltaX0;
+				edgeVal1 = edgeYBase1 + SSEtriangle.deltaX1;
+				edgeVal2 = edgeYBase2 + SSEtriangle.deltaX2;
 			}
 		}
 	}
@@ -81,7 +84,7 @@ namespace Engine
 	{
 		const int shift = TILE + FIXED_POINT;
 
-		for (auto& T : rasterTrianglesBuffer.get()[bin])
+		for (auto& T : rasterTrianglesBuffer[bin])
 		{
 			uint32_t minX = std::max(0, std::min(T.v0.x, std::min(T.v1.x, T.v2.x)) >> shift);
 			uint32_t maxX = std::min(TILE_DIM_X - 1, std::max(T.v0.x, std::max(T.v1.x, T.v2.x)) >> shift);
@@ -93,7 +96,7 @@ namespace Engine
 			{
 				for (uint32_t y = minY; y <= maxY; y++)
 					for (uint32_t x = minX; x <= maxX; x++)
-						tiles.get()[y * TILE_DIM_X + x].Add(bin, T.id);
+						tiles[y * TILE_DIM_X + x].Add(bin, T.id);
 
 				continue;
 			}
@@ -128,7 +131,7 @@ namespace Engine
 						T.EdgeFunc1(acptCorner1) >= 0 &&
 						T.EdgeFunc2(acptCorner2) >= 0;
 
-					tiles.get()[y * TILE_DIM_X + x].Add(bin, T.id);
+					tiles[y * TILE_DIM_X + x].Add(bin, T.id);
 				}
 			}
 		}

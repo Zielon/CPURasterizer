@@ -2,5 +2,8 @@
 
 namespace Engine
 {
-	
+	SSEBool DepthBuffer::ZTest() const
+	{
+		return SSEBool(true);
+	}
 }

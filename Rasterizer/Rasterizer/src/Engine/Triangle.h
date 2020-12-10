@@ -4,6 +4,8 @@
 #include <array>
 #include <glm/glm.hpp>
 
+#include "Settings.h"
+
 #include "../SIMD/SSE.h"
 
 using namespace SSE;
@@ -42,7 +44,7 @@ namespace Engine
 	{
 	public:
 		int B0{}, C0{}, B1{}, C1{}, B2{}, C2{};
-		int stepB0, stepC0, stepB1, stepC1, stepB2, stepC2;
+		int deltaY0, deltaX0, deltaY1, deltaX1, detalY2, deltaX2;
 		float invDet{};
 		// A tile trivial reject test.
 		uint32_t rejectCorner0{}, rejectCorner1{}, rejectCorner2{};
@@ -126,6 +128,13 @@ namespace Engine
 
 			if (det <= 0)
 				return false;
+
+			deltaY0 = 16 * B0;
+			deltaX0 = 16 * C0;
+			deltaY1 = 16 * B1;
+			deltaX1 = 16 * C1;
+			detalY2 = 16 * B2;
+			deltaX2 = 16 * C2;
 
 			invDet = 1.0f / static_cast<float>(det);
 
@@ -224,7 +233,7 @@ namespace Engine
 	{
 		SSEVec2i v0, v1, v2;
 		SSEInt B0, C0, B1, C1, B2, C2;
-		SSEInt stepB0, stepC0, stepB1, stepC1, stepB2, stepC2;
+		SSEInt deltaY0, deltaX0, deltaY1, deltaX1, deltaY2, deltaX2;
 		SSEFloat lambda0, lambda1;
 		SSEFloat invDet;
 		uint32_t id{};
@@ -242,12 +251,12 @@ namespace Engine
 			, C1(triangle.C1)
 			, B2(triangle.B2)
 			, C2(triangle.C2)
-			, stepB0(2 * triangle.stepB0)
-			, stepC0(2 * triangle.stepC0)
-			, stepB1(2 * triangle.stepB1)
-			, stepC1(2 * triangle.stepC1)
-			, stepB2(2 * triangle.stepB2)
-			, stepC2(2 * triangle.stepC2)
+			, deltaY0(2 * triangle.deltaY0)
+			, deltaX0(2 * triangle.deltaX0)
+			, deltaY1(2 * triangle.deltaY1)
+			, deltaX1(2 * triangle.deltaX1)
+			, deltaY2(2 * triangle.detalY2)
+			, deltaX2(2 * triangle.deltaX2)
 			, invDet(triangle.invDet)
 			, binId(triangle.binId)
 			, textureId(triangle.textureId)

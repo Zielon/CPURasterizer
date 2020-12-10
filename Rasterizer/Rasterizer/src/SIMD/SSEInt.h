@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <smmintrin.h>
+#include <immintrin.h>
 
 class SSEBool;
 
