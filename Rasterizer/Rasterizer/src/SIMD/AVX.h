@@ -21,6 +21,11 @@ namespace AVX
 	__forceinline bool Any(const AVXBool& rhs) { return _mm256_movemask_ps(rhs) != 0x0; }
 	__forceinline bool None(const AVXBool& rhs) { return _mm256_movemask_ps(rhs) == 0x0; }
 
+	__forceinline AVXFloat Select(const AVXBool& m, const AVXFloat& t, const AVXFloat& f)
+	{
+		return _mm256_blendv_ps(f, t, m);
+	}
+
 	__forceinline AVXFloat operator +(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) + rhs; }
 	__forceinline AVXFloat operator -(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) - rhs; }
 	__forceinline AVXFloat operator *(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) * rhs; }

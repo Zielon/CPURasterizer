@@ -16,10 +16,11 @@ namespace Engine
 		CreateTiles();
 
 		colorBuffer.reset(new ColorBuffer());
-		depthBuffer.reset(new DepthBuffer());
+		depthBuffer.reset(new DepthBuffer(settings));
 		fragmentShader.reset(new PhongBlinnShader());
 		vertexShader.reset(new DefaultVertexShader(camera));
-		rasterizer.reset(new LarrabeeRasterizer(rasterTrianglesBuffer, tiles, *depthBuffer));
+		rasterizer.reset(new LarrabeeRasterizer(
+			rasterTrianglesBuffer, tiles, clippedProjectedVertexBuffer, *depthBuffer));
 	}
 
 	void Renderer::Render(const Settings& settings)
@@ -45,6 +46,9 @@ namespace Engine
 
 	void Renderer::Clear()
 	{
+		colorBuffer->Clear();
+		depthBuffer->Clear();
+
 		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile) { tile.Clear(); });
 		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
 		{
@@ -145,7 +149,15 @@ namespace Engine
 
 	void Renderer::FragmentShaderStage()
 	{
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) { });
+		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile)
+		{
+			for (int i = tile.minRaster.x; i < tile.maxRaster.x; ++i)
+				for (int j = tile.minRaster.y; j < tile.maxRaster.y; ++j)
+				{
+					if (!tile.fragments.empty())
+						colorBuffer->SetColor(i, j, {255, 0, 0});
+				}
+		});
 	}
 
 	void Renderer::UpdateFrameBuffer() { }
@@ -159,7 +171,7 @@ namespace Engine
 	{
 		int id = 0;
 
-		tiles.resize(HEIGHT / TILE_SIZE * WIDTH / TILE_SIZE);
+		tiles.resize(TILE_DIM_X * TILE_DIM_Y);
 
 		for (int i = 0; i < HEIGHT; i += TILE_SIZE)
 			for (int j = 0; j < WIDTH; j += TILE_SIZE)

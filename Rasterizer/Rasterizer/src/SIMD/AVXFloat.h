@@ -2,6 +2,8 @@
 
 #include <immintrin.h>
 
+#include "AVXComp.h"
+
 class AVXInt;
 class AVXBool;
 
@@ -40,4 +42,11 @@ public:
 	__forceinline AVXFloat operator *(const float& rhs) const { return *this * AVXFloat(rhs); }
 	__forceinline AVXFloat operator /(const AVXFloat& rhs) const { return *this * _mm256_rcp_ps(rhs); }
 	__forceinline AVXFloat operator /(const float& rhs) const { return *this * (1.0f / rhs); }
+
+	__forceinline AVXBool operator >=(const AVXFloat& rhs) const { return AVX::_mm256_cmpnlt_ps(m256, rhs); }
+	__forceinline AVXBool operator >(const AVXFloat& rhs) const { return AVX::_mm256_cmpnle_ps(m256, rhs); }
+	__forceinline AVXBool operator >(const float& rhs) const { return *this > AVXFloat(rhs); }
+	__forceinline AVXBool operator >=(const float& rhs) const { return *this >= AVXFloat(rhs); }
+	__forceinline AVXBool operator <=(const AVXFloat& rhs) const { return AVX::_mm256_cmple_ps(m256, rhs); }
+	__forceinline AVXBool operator <=(const float& rhs) const { return *this <= AVXFloat(rhs); }
 };

@@ -42,4 +42,11 @@ public:
 	__forceinline SSEFloat operator *(const float& rhs) const { return *this * SSEFloat(rhs); }
 	__forceinline SSEFloat operator /(const SSEFloat& rhs) const { return *this * _mm_rcp_ps(rhs); }
 	__forceinline SSEFloat operator /(const float& rhs) const { return *this * (1.0f / rhs); }
+
+	__forceinline SSEBool operator >=(const SSEFloat& rhs) const { return _mm_cmpnlt_ps(m128, rhs.m128); }
+	__forceinline SSEBool operator >(const SSEFloat& rhs) const { return _mm_cmpnle_ps(m128, rhs.m128); }
+	__forceinline SSEBool operator >(const float& rhs) const { return *this > SSEFloat(rhs); }
+	__forceinline SSEBool operator >=(const float& rhs) const { return *this >= SSEFloat(rhs); }
+	__forceinline SSEBool operator <=(const SSEFloat& rhs) const { return _mm_cmple_ps(m128, rhs.m128); }
+	__forceinline SSEBool operator <=(const float& rhs) const { return *this <= SSEFloat(rhs); }
 };

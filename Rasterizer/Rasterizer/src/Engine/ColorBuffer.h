@@ -13,6 +13,7 @@ namespace Engine
 	public:
 		void Clear();
 
+		void SetColor(uint32_t x, uint32_t y, Assets::Color4b color);
 		[[nodiscard]] const uint8_t* Get() const;
 
 	private:

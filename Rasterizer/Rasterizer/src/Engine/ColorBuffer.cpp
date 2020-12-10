@@ -9,6 +9,11 @@ namespace Engine
 		Concurrency::Fill(frameBuffer.begin(), frameBuffer.end(), Assets::Color4b(0, 0, 0));
 	}
 
+	void ColorBuffer::SetColor(uint32_t x, uint32_t y, Assets::Color4b color)
+	{
+		frameBuffer[y * WIDTH + x] = color;
+	}
+
 	const uint8_t* ColorBuffer::Get() const
 	{
 		return reinterpret_cast<const uint8_t*>(frameBuffer.data());

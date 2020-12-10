@@ -65,7 +65,21 @@ namespace Engine
 					{
 						SSEtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
 
-						SSEBool ztest = depthBuffer.ZTest();
+						auto tbin = SSEtriangle.binId;
+						auto& ids = SSEtriangle.vertexIds;
+
+						float v0 = clippedProjectedVertexBuffer[tbin][ids[0]].projectedPosition.z;
+						float v1 = clippedProjectedVertexBuffer[tbin][ids[1]].projectedPosition.z;
+						float v2 = clippedProjectedVertexBuffer[tbin][ids[2]].projectedPosition.z;
+
+						SSEBool ztest =
+							depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), pixelCrd.x, pixelCrd.y, 0, covered);
+
+						SSEBool visible = ztest & covered;
+						if (Any(visible))
+						{
+							tile.fragments.push_back(Pixel());
+						}
 					}
 
 					edgeVal0 += SSEtriangle.deltaY0;

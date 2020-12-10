@@ -3,6 +3,7 @@
 #include "DepthBuffer.h"
 #include "Triangle.h"
 #include "Tile.h"
+#include "../Assets/Vertex.h"
 
 namespace Engine
 {
@@ -21,8 +22,12 @@ namespace Engine
 		LarrabeeRasterizer(
 			Buffer2D<LarrabeeTriangle>& trianglesBuffer,
 			std::vector<Tile>& tiles,
+			Buffer2D<Assets::Vertex>& clippedProjectedVertexBuffer,
 			DepthBuffer& depthBuffer):
-			rasterTrianglesBuffer(trianglesBuffer), tiles(tiles), depthBuffer(depthBuffer) {}
+			rasterTrianglesBuffer(trianglesBuffer),
+			clippedProjectedVertexBuffer(clippedProjectedVertexBuffer),
+			tiles(tiles),
+			depthBuffer(depthBuffer) {}
 
 		~LarrabeeRasterizer();
 
@@ -32,6 +37,7 @@ namespace Engine
 
 	private:
 		Buffer2D<LarrabeeTriangle>& rasterTrianglesBuffer;
+		Buffer2D<Assets::Vertex>& clippedProjectedVertexBuffer;
 		std::vector<Tile>& tiles;
 		class DepthBuffer& depthBuffer;
 	};

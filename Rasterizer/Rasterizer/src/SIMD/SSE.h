@@ -21,6 +21,11 @@ namespace SSE
 	__forceinline bool Any(const SSEBool& rhs) { return _mm_movemask_ps(rhs) != 0x0; }
 	__forceinline bool None(const SSEBool& rhs) { return _mm_movemask_ps(rhs) == 0x0; }
 
+	__forceinline SSEFloat Select(const SSEBool& m, const SSEFloat& t, const SSEFloat& f)
+	{
+		return _mm_blendv_ps(f, t, m);
+	}
+
 	__forceinline SSEFloat operator +(const float& lhs, const SSEFloat& rhs) { return SSEFloat(lhs) + rhs; }
 	__forceinline SSEFloat operator -(const float& lhs, const SSEFloat& rhs) { return SSEFloat(lhs) - rhs; }
 	__forceinline SSEFloat operator *(const float& lhs, const SSEFloat& rhs) { return SSEFloat(lhs) * rhs; }

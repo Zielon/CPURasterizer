@@ -135,6 +135,9 @@
     <ClInclude Include="src\Engine\LarrabeeRasterizer.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\SIMD\AVXComp.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
