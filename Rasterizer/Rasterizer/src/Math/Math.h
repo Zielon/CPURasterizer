@@ -12,6 +12,17 @@ namespace Math
 		                             _mm_mul_ps(r, r)));
 	}
 
+	__forceinline const AVXFloat Rsqrt(const AVXFloat& rhs)
+	{
+		const AVXFloat r = _mm256_rsqrt_ps(rhs.m256);
+		return _mm256_add_ps(_mm256_mul_ps(_mm256_set_ps(1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f), r),
+		                     _mm256_mul_ps(
+			                     _mm256_mul_ps(_mm256_mul_ps(
+				                                   rhs, _mm256_set_ps(-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
+				                                                      -0.5f)), r),
+			                     _mm256_mul_ps(r, r)));
+	}
+
 	template <class T>
 	__forceinline T Dot(const Vec<3, T>& vec1, const Vec<3, T>& vec2)
 	{

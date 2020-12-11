@@ -50,7 +50,7 @@ namespace Engine
 
 		uint32_t numCores{};
 		std::vector<Pixel> pixels;
-		std::vector<std::vector<SSEInt>> tiledPixels;
+		std::vector<std::vector<AVXInt>> tiledPixels;
 		std::vector<Tile> tiles;
 		std::vector<uint32_t> coreIds;
 		std::vector<Assets::Vertex> projectedVertexStorage;

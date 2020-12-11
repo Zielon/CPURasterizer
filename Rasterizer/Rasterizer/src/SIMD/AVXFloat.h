@@ -31,6 +31,9 @@ public:
 		return *this;
 	}
 
+	__forceinline const float& operator [](const size_t i) const { return v[i]; }
+	__forceinline float& operator [](const size_t i) { return v[i]; }
+
 	__forceinline operator const __m256&(void) const { return m256; }
 	__forceinline operator __m256&(void) { return m256; }
 

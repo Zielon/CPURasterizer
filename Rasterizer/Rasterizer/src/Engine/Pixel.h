@@ -1,22 +1,27 @@
 #pragma once
 
 #include "../Assets/Vertex.h"
+#include "../SIMD/AVX.h"
 #include "../SIMD/SSE.h"
 
 namespace Engine
 {
 	struct CoverageMask
 	{
-		int bits[4]; // For up to 32x MSAA coverage mask
+		int bits[8]; // For up to 32x MSAA coverage mask
 		CoverageMask()
 		{
 			bits[0] = 0;
 			bits[1] = 0;
 			bits[2] = 0;
 			bits[3] = 0;
+			bits[4] = 0;
+			bits[5] = 0;
+			bits[6] = 0;
+			bits[7] = 0;
 		}
 
-		CoverageMask(const SSEBool& mask, uint32_t sampleId)
+		CoverageMask(const AVXBool& mask, uint32_t sampleId)
 			: CoverageMask()
 		{
 			SetBit(mask, sampleId);
@@ -24,12 +29,11 @@ namespace Engine
 
 		void SetBit(int i)
 		{
-			int id = i >> 5;
 			int shift = i & 31;
-			bits[id] |= (1 << shift);
+			bits[i] = 1;
 		}
 
-		void SetBit(const SSEBool& mask, uint32_t sampleId)
+		void SetBit(const AVXBool& mask, uint32_t sampleId)
 		{
 			uint32_t sampleOffset = sampleId << 2;
 			if (mask[0] != 0)
@@ -48,25 +52,35 @@ namespace Engine
 			{
 				SetBit(sampleOffset + 3);
 			}
+			if (mask[4] != 0)
+			{
+				SetBit(sampleOffset + 4);
+			}
+			if (mask[5] != 0)
+			{
+				SetBit(sampleOffset + 5);
+			}
+			if (mask[6] != 0)
+			{
+				SetBit(sampleOffset + 6);
+			}
+			if (mask[7] != 0)
+			{
+				SetBit(sampleOffset + 7);
+			}
 		}
 
 		int GetBit(int i) const
 		{
-			int id = i >> 5;
 			int shift = i & 31;
-			return bits[id] & (1 << shift);
-		}
-
-		int Merge() const
-		{
-			return bits[0] | bits[1] | bits[2] | bits[3];
+			return bits[i];
 		}
 	};
 
 	class Pixel
 	{
 	public:
-		SSEFloat lambda0, lambda1;
+		AVXFloat lambda0, lambda1;
 		CoverageMask coverageMask;
 
 		unsigned short x, y;
@@ -75,8 +89,8 @@ namespace Engine
 		uint32_t tileId;
 		uint32_t intraTileIdx;
 
-		Pixel(const SSEFloat& l0,
-		      const SSEFloat& l1,
+		Pixel(const AVXFloat& l0,
+		      const AVXFloat& l1,
 		      const int id0,
 		      const int id1,
 		      const int id2,
@@ -102,31 +116,31 @@ namespace Engine
 		void Interpolate(const Assets::Vertex& v0,
 		                 const Assets::Vertex& v1,
 		                 const Assets::Vertex& v2,
-		                 SSEFloat& b0,
-		                 SSEFloat& b1,
-		                 SSEVec3f& position,
-		                 SSEVec3f& normal,
-		                 SSEVec2f& texCoord)
+		                 AVXFloat& b0,
+		                 AVXFloat& b1,
+		                 AVXVec3f& position,
+		                 AVXVec3f& normal,
+		                 AVXVec2f& texCoord)
 		{
-			const auto One = SSEFloat(1);
-			SSEFloat b2 = One - b0 - b1;
+			const auto One = AVXFloat(1);
+			AVXFloat b2 = One - b0 - b1;
 			b0 = b0 * v0.invW;
 			b1 = b1 * v1.invW;
 			b2 = b2 * v2.invW;
-			SSEFloat invB = One / (b0 + b1 + b2);
+			AVXFloat invB = One / (b0 + b1 + b2);
 			b0 = b0 * invB;
 			b1 = b1 * invB;
 			b2 = One - b0 - b1;
 
-			position = b0 * SSEVec3f(v0.position.x, v0.position.y, v0.position.z) +
-				b1 * SSEVec3f(v1.position.x, v1.position.y, v1.position.z) +
-				b2 * SSEVec3f(v2.position.x, v2.position.y, v2.position.z);
-			normal = b0 * SSEVec3f(v0.normal.x, v0.normal.y, v0.normal.z) +
-				b1 * SSEVec3f(v1.normal.x, v1.normal.y, v1.normal.z) +
-				b2 * SSEVec3f(v2.normal.x, v2.normal.y, v2.normal.z);
-			texCoord = b0 * SSEVec2f(v0.texCoords.x, v0.texCoords.y) +
-				b1 * SSEVec2f(v1.texCoords.x, v1.texCoords.y) +
-				b2 * SSEVec2f(v2.texCoords.x, v2.texCoords.y);
+			position = b0 * AVXVec3f(v0.position.x, v0.position.y, v0.position.z) +
+				b1 * AVXVec3f(v1.position.x, v1.position.y, v1.position.z) +
+				b2 * AVXVec3f(v2.position.x, v2.position.y, v2.position.z);
+			normal = b0 * AVXVec3f(v0.normal.x, v0.normal.y, v0.normal.z) +
+				b1 * AVXVec3f(v1.normal.x, v1.normal.y, v1.normal.z) +
+				b2 * AVXVec3f(v2.normal.x, v2.normal.y, v2.normal.z);
+			texCoord = b0 * AVXVec2f(v0.texCoords.x, v0.texCoords.y) +
+				b1 * AVXVec2f(v1.texCoords.x, v1.texCoords.y) +
+				b2 * AVXVec2f(v2.texCoords.x, v2.texCoords.y);
 		}
 	};
 }

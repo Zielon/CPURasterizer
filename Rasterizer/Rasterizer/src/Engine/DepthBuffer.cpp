@@ -2,6 +2,8 @@
 
 #include "Concurrency.h"
 
+#include "../SIMD/AVX.h"
+
 namespace Engine
 {
 	DepthBuffer::DepthBuffer(const Settings& settings): settings(settings)
@@ -21,7 +23,7 @@ namespace Engine
 		});
 	}
 
-	SSEBool DepthBuffer::ZTest(const SSEFloat& depth, int x, int y, uint32_t sampleId, const SSEBool& mask)
+	AVXBool DepthBuffer::ZTest(const AVXFloat& depth, int x, int y, uint32_t sampleId, const AVXBool& mask)
 	{
 		const int tileX = x >> TILE;
 		const int tileY = y >> TILE;
@@ -31,10 +33,10 @@ namespace Engine
 		const int intraTileX = x & (TILE_SIZE - 1);
 		const int intraTileY = y & (TILE_SIZE - 1);
 
-		SSEFloat& currentDepth = tile3D[sampleId][intraTileX >> 1][(TILE_SIZE - 1 - intraTileY) >> 1];
+		AVXFloat& currentDepth = tile3D[sampleId][intraTileX >> 1][(TILE_SIZE - 1 - intraTileY) >> 1];
 
-		SSEBool ret = depth <= currentDepth;
-		currentDepth = SSE::Select(ret & mask, depth, currentDepth);
+		AVXBool ret = depth <= currentDepth;
+		currentDepth = AVX::Select(ret & mask, depth, currentDepth);
 
 		return ret;
 	}

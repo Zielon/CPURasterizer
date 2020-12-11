@@ -18,7 +18,6 @@ public:
 	__forceinline AVXInt(const AVXInt& copyFrom): m256(copyFrom.m256) {}
 	__forceinline AVXInt(const __m256i& val) : m256(val) {}
 	__forceinline AVXInt(const uint32_t& a): m256(_mm256_castps_si256(_mm256_broadcast_ss((const float*)&a))) {}
-	__forceinline AVXInt(const __m256& val) : m256(_mm256_cvtps_epi32(val)) {}
 
 	__forceinline AVXInt(
 		const uint32_t& a,
@@ -29,7 +28,7 @@ public:
 		const uint32_t& f,
 		const uint32_t& g,
 		const uint32_t& h): m256(
-		_mm256_set_epi32(a, b, c, d, e, f, g, h)) {}
+		_mm256_set_epi32(h, g, f, e, d, c, b, a)) {}
 
 	__forceinline AVXInt& operator =(const AVXInt& copyFrom)
 	{
@@ -46,6 +45,8 @@ public:
 	__forceinline AVXInt operator -(const uint32_t& rhs) const { return *this - AVXInt(rhs); }
 	__forceinline AVXInt operator *(const AVXInt& rhs) const { return _mm256_mullo_epi32(m256, rhs); }
 	__forceinline AVXInt operator *(const uint32_t& rhs) const { return *this * AVXInt(rhs); }
+	__forceinline AVXInt operator +=(const AVXInt& rhs) { return *this = *this + rhs; }
+	__forceinline AVXInt operator +=(const uint32_t& rhs) { return *this = *this + rhs; }
 	__forceinline AVXInt operator &(const AVXInt& rhs) const { return _mm256_and_si256(m256, rhs); }
 	__forceinline AVXInt operator &(const uint32_t& rhs) const { return *this & AVXInt(rhs); }
 	__forceinline AVXInt operator |(const AVXInt& rhs) const { return _mm256_or_si256(m256, rhs); }

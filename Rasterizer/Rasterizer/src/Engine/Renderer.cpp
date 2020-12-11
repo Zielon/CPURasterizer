@@ -11,6 +11,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "../SIMD/AVX.h"
+
 #include "../Math/Math.h"
 
 namespace Engine
@@ -174,16 +176,16 @@ namespace Engine
 		}
 	}
 
-	const __m128 absmask = _mm_castsi128_ps(_mm_set1_epi32(~(1 << 31)));
+	const __m256 absmask = _mm256_castsi256_ps(_mm256_set1_epi32(~(1 << 31)));
 
-	__m128 vecabs_and(__m128 v)
+	__m256 vecabs_and(__m256 v)
 	{
-		return _mm_and_ps(absmask, v);
+		return _mm256_and_ps(absmask, v);
 	}
 
-	SSEVec3f absVec(SSEVec3f& vec)
+	AVXVec3f absVec(AVXVec3f& vec)
 	{
-		SSEVec3f out;
+		AVXVec3f out;
 		out.x = vecabs_and(vec.x);
 		out.y = vecabs_and(vec.y);
 		out.z = vecabs_and(vec.z);
@@ -199,32 +201,36 @@ namespace Engine
 			const Assets::Vertex& v1 = clippedProjectedVertexBuffer[frag.coreId][frag.vId1];
 			const Assets::Vertex& v2 = clippedProjectedVertexBuffer[frag.coreId][frag.vId2];
 
-			SSEVec3f position;
-			SSEVec3f normal;
-			SSEVec2f texCoord;
+			AVXVec3f position;
+			AVXVec3f normal;
+			AVXVec2f texCoord;
 
 			frag.Interpolate(v0, v1, v2, frag.lambda0, frag.lambda1, position, normal, texCoord);
 
 			auto lightDir = glm::vec3(1, 1, -1);
 
-			SSEFloat w = Math::Rsqrt(Dot(normal, normal));
-			SSEVec3f _normal = normal * w;
-			SSEVec3f vecLightDir = SSEVec3f(lightDir);
+			AVXFloat w = Math::Rsqrt(Dot(normal, normal));
+			AVXVec3f _normal = normal * w;
+			AVXVec3f vecLightDir = AVXVec3f(lightDir);
 
-			SSEFloat diffuseAmount = Dot(vecLightDir, _normal);
-			SSEBool mask = diffuseAmount < SSEFloat(0);
-			diffuseAmount = Select(mask, SSEFloat(0), diffuseAmount);
-			SSEFloat diffuse = (diffuseAmount + 0.2f) * 3 * M_PI;
+			//AVXFloat diffuseAmount = Dot(vecLightDir, _normal);
+			//AVXBool mask = diffuseAmount < AVXFloat(0);
+			//diffuseAmount = AVX::Select(mask, AVXFloat(0), diffuseAmount);
+			//AVXFloat diffuse = (diffuseAmount + 0.2f) * 3 * M_PI;
 
-			SSEVec3f shadingResults = absVec(_normal);
+			AVXVec3f shadingResults = absVec(_normal);
 
-			Assets::Color4b colorByte[4];
+			Assets::Color4b colorByte[8];
 			colorByte[0].FromFloats(shadingResults.x[0], shadingResults.y[0], shadingResults.z[0]);
 			colorByte[1].FromFloats(shadingResults.x[1], shadingResults.y[1], shadingResults.z[1]);
 			colorByte[2].FromFloats(shadingResults.x[2], shadingResults.y[2], shadingResults.z[2]);
 			colorByte[3].FromFloats(shadingResults.x[3], shadingResults.y[3], shadingResults.z[3]);
+			colorByte[4].FromFloats(shadingResults.x[4], shadingResults.y[4], shadingResults.z[4]);
+			colorByte[5].FromFloats(shadingResults.x[5], shadingResults.y[5], shadingResults.z[5]);
+			colorByte[6].FromFloats(shadingResults.x[6], shadingResults.y[6], shadingResults.z[6]);
+			colorByte[7].FromFloats(shadingResults.x[7], shadingResults.y[7], shadingResults.z[7]);
 
-			tiledPixels[frag.tileId][frag.intraTileIdx] = _mm_loadu_si128((__m128i*)&colorByte);
+			tiledPixels[frag.tileId][frag.intraTileIdx] = _mm256_loadu_si256((__m256i*)&colorByte);
 		});
 	}
 
@@ -236,35 +242,67 @@ namespace Engine
 			{
 				const Pixel& frag = tiles[i].fragments[j];
 
-				int maskShift = 0 << 2;
-				const SSEInt& quadResults = tiledPixels[i][j];
+				int maskShift = 0;
+				const AVXInt& quadResults = tiledPixels[i][j];
+				
 				if (frag.coverageMask.GetBit(maskShift) != 0)
 				{
-					colorBuffer->SetColor(Assets::Color4b(quadResults.m128.m128i_u8[0],
-					                                      quadResults.m128.m128i_u8[1],
-					                                      quadResults.m128.m128i_u8[2]),
+					colorBuffer->SetColor(Assets::Color4b(quadResults.m256.m256i_u8[0],
+					                                      quadResults.m256.m256i_u8[1],
+					                                      quadResults.m256.m256i_u8[2]),
 					                      frag.x, frag.y);
 				}
 				if (frag.coverageMask.GetBit(maskShift + 1) != 0)
 				{
-					colorBuffer->SetColor(Assets::Color4b(quadResults.m128.m128i_u8[4],
-					                                      quadResults.m128.m128i_u8[5],
-					                                      quadResults.m128.m128i_u8[6]),
+					colorBuffer->SetColor(Assets::Color4b(quadResults.m256.m256i_u8[4],
+					                                      quadResults.m256.m256i_u8[5],
+					                                      quadResults.m256.m256i_u8[6]),
 					                      frag.x + 1, frag.y);
 				}
 				if (frag.coverageMask.GetBit(maskShift + 2) != 0)
 				{
-					colorBuffer->SetColor(Assets::Color4b(quadResults.m128.m128i_u8[8],
-					                                      quadResults.m128.m128i_u8[9],
-					                                      quadResults.m128.m128i_u8[10]),
+					colorBuffer->SetColor(Assets::Color4b(quadResults.m256.m256i_u8[8],
+					                                      quadResults.m256.m256i_u8[9],
+					                                      quadResults.m256.m256i_u8[10]),
 					                      frag.x, frag.y + 1);
 				}
 				if (frag.coverageMask.GetBit(maskShift + 3) != 0)
 				{
-					colorBuffer->SetColor(Assets::Color4b(quadResults.m128.m128i_u8[12],
-					                                      quadResults.m128.m128i_u8[13],
-					                                      quadResults.m128.m128i_u8[14]),
+					colorBuffer->SetColor(Assets::Color4b(quadResults.m256.m256i_u8[12],
+					                                      quadResults.m256.m256i_u8[13],
+					                                      quadResults.m256.m256i_u8[14]),
 					                      frag.x + 1, frag.y + 1);
+				}
+
+				// ===========================
+				
+				if (frag.coverageMask.GetBit(maskShift + 4) != 0)
+				{
+					colorBuffer->SetColor(Assets::Color4b(quadResults.m256.m256i_u8[16],
+					                                      quadResults.m256.m256i_u8[17],
+					                                      quadResults.m256.m256i_u8[18]),
+					                      frag.x + 2, frag.y);
+				}
+				if (frag.coverageMask.GetBit(maskShift + 5) != 0)
+				{
+					colorBuffer->SetColor(Assets::Color4b(quadResults.m256.m256i_u8[20],
+					                                      quadResults.m256.m256i_u8[21],
+					                                      quadResults.m256.m256i_u8[22]),
+					                      frag.x + 3, frag.y);
+				}
+				if (frag.coverageMask.GetBit(maskShift + 6) != 0)
+				{
+					colorBuffer->SetColor(Assets::Color4b(quadResults.m256.m256i_u8[24],
+					                                      quadResults.m256.m256i_u8[25],
+					                                      quadResults.m256.m256i_u8[26]),
+					                      frag.x + 2, frag.y + 1);
+				}
+				if (frag.coverageMask.GetBit(maskShift + 7) != 0)
+				{
+					colorBuffer->SetColor(Assets::Color4b(quadResults.m256.m256i_u8[28],
+					                                      quadResults.m256.m256i_u8[29],
+					                                      quadResults.m256.m256i_u8[30]),
+					                      frag.x + 3, frag.y + 1);
 				}
 			}
 		});

@@ -17,7 +17,7 @@ namespace Engine
 
 	void LarrabeeRasterizer::RasterizeTile(uint32_t bin, Tile& tile) const
 	{
-		SSEVec2i centerOffset(SSEInt(8, 24, 8, 24), SSEInt(8, 8, 24, 24));
+		AVXVec2i centerOffset(AVXInt(8, 24, 8, 24, 40, 56, 40, 56), AVXInt(8, 8, 24, 24, 8, 8, 24, 24));
 
 		for (int i = 0; i < tile.binsIndex[bin]; ++i)
 		{
@@ -29,7 +29,7 @@ namespace Engine
 			int maxX = std::min(tile.maxRaster.x - 1, std::max(triangle.v0.x, std::max(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
 			int minY = std::max(tile.minRaster.y, std::min(triangle.v0.y, std::min(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
 			int maxY = std::min(tile.maxRaster.y - 1, std::max(triangle.v0.y, std::max(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
-			minX -= minX % 2;
+			minX -= minX % 4;
 			minY -= minY % 2;
 
 			if (maxX < minX || maxY < minY)
@@ -37,29 +37,30 @@ namespace Engine
 
 			SSELarrabeeTriangle SSEtriangle(triangle);
 
-			SSEVec2i pixelBase(minX << FIXED_POINT, minY << FIXED_POINT);
-			SSEVec2i pixelCenter = pixelBase + centerOffset;
-			SSEInt edgeVal0 = SSEtriangle.EdgeFunc0(pixelCenter);
-			SSEInt edgeVal1 = SSEtriangle.EdgeFunc1(pixelCenter);
-			SSEInt edgeVal2 = SSEtriangle.EdgeFunc2(pixelCenter);
+			AVXVec2i pixelBase(minX << FIXED_POINT, minY << FIXED_POINT);
+			AVXVec2i pixelCenter = pixelBase + centerOffset;
+			AVXInt edgeVal0 = SSEtriangle.EdgeFunc0(pixelCenter);
+			AVXInt edgeVal1 = SSEtriangle.EdgeFunc1(pixelCenter);
+			AVXInt edgeVal2 = SSEtriangle.EdgeFunc2(pixelCenter);
 
-			SSEInt pixelBaseStep = SSEInt(32);
-			SSEInt zero = SSEInt(0);
+			AVXInt pixelBaseStepY = AVXInt(32);
+			AVXInt pixelBaseStepX = AVXInt(64);
+			AVXInt zero = AVXInt(0);
 			
-			for (int y = minY; y <= maxY; y += 2, pixelBase.y += pixelBaseStep)
+			for (int y = minY; y <= maxY; y += 2, pixelBase.y += pixelBaseStepY)
 			{
-				SSEInt edgeYBase0 = edgeVal0;
-				SSEInt edgeYBase1 = edgeVal1;
-				SSEInt edgeYBase2 = edgeVal2;
+				AVXInt edgeYBase0 = edgeVal0;
+				AVXInt edgeYBase1 = edgeVal1;
+				AVXInt edgeYBase2 = edgeVal2;
 
-				pixelBase.x = SSEInt(minX << FIXED_POINT);
-				for (int x = minX; x <= maxX; x += 2, pixelBase.x += pixelBaseStep)
+				pixelBase.x = AVXInt(minX << FIXED_POINT);
+				for (int x = minX; x <= maxX; x += 4, pixelBase.x += pixelBaseStepX)
 				{
 					pixelCenter = pixelBase + centerOffset;
 					auto sum = (edgeVal0 | edgeVal1 | edgeVal2);
-					SSEBool covered = sum >= zero;
+					AVXBool covered = sum >= zero;
 
-					if (Any(covered))
+					if (AVX::Any(covered))
 					{
 						SSEtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
 
@@ -70,10 +71,11 @@ namespace Engine
 						float v1 = clippedProjectedVertexBuffer[tbin][ids[1]].projectedPosition.z;
 						float v2 = clippedProjectedVertexBuffer[tbin][ids[2]].projectedPosition.z;
 
-						SSEBool ztest = depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
+						AVXBool ztest = depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
 
-						SSEBool visible = ztest & covered;
-						if (Any(visible))
+						AVXBool visible = ztest & covered;
+						
+						if (AVX::Any(visible))
 						{
 							tile.fragments.emplace_back(
 								SSEtriangle.lambda0,
@@ -90,9 +92,9 @@ namespace Engine
 						}
 					}
 
-					edgeVal0 += SSEtriangle.deltaY0;
-					edgeVal1 += SSEtriangle.deltaY1;
-					edgeVal2 += SSEtriangle.deltaY2;
+					edgeVal0 += SSEtriangle.deltaY0 * 2;
+					edgeVal1 += SSEtriangle.deltaY1 * 2;
+					edgeVal2 += SSEtriangle.deltaY2 * 2;
 				}
 
 				edgeVal0 = edgeYBase0 + SSEtriangle.deltaX0;

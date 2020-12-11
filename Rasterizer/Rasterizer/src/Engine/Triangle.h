@@ -6,9 +6,7 @@
 
 #include "Settings.h"
 
-#include "../SIMD/SSE.h"
-
-using namespace SSE;
+#include "../SIMD/AVX.h"
 
 namespace Engine
 {
@@ -231,11 +229,11 @@ namespace Engine
 
 	struct SSELarrabeeTriangle
 	{
-		SSEVec2i v0, v1, v2;
-		SSEInt B0, C0, B1, C1, B2, C2;
-		SSEInt deltaY0, deltaX0, deltaY1, deltaX1, deltaY2, deltaX2;
-		SSEFloat lambda0, lambda1;
-		SSEFloat invDet;
+		AVXVec2i v0, v1, v2;
+		AVXInt B0, C0, B1, C1, B2, C2;
+		AVXInt deltaY0, deltaX0, deltaY1, deltaX1, deltaY2, deltaX2;
+		AVXFloat lambda0, lambda1;
+		AVXFloat invDet;
 		uint32_t id{};
 		uint32_t binId{};
 		uint32_t textureId{};
@@ -262,48 +260,48 @@ namespace Engine
 			, textureId(triangle.textureId)
 			, vertexIds(triangle.vertexIds) { }
 
-		[[nodiscard]] __forceinline SSEInt TopLeftEdge(const SSEVec2i& v1, const SSEVec2i& v2) const
+		[[nodiscard]] __forceinline AVXInt TopLeftEdge(const AVXVec2i& v1, const AVXVec2i& v2) const
 		{
-			SSEBool r = ((v2.y > v1.y) | ((v1.y == v2.y) & (v1.x > v2.x)));
-			return SSEInt(r);
+			AVXBool r = ((v2.y > v1.y) | ((v1.y == v2.y) & (v1.x > v2.x)));
+			return AVXInt(r);
 		}
 
-		[[nodiscard]] __forceinline SSEInt EdgeFunc0(const SSEVec2i& p) const
+		[[nodiscard]] __forceinline AVXInt EdgeFunc0(const AVXVec2i& p) const
 		{
 			return B0 * (p.x - v0.x) + C0 * (p.y - v0.y) + TopLeftEdge(v0, v1);
 		}
 
-		[[nodiscard]] __forceinline SSEInt EdgeFunc1(const SSEVec2i& p) const
+		[[nodiscard]] __forceinline AVXInt EdgeFunc1(const AVXVec2i& p) const
 		{
 			return B1 * (p.x - v1.x) + C1 * (p.y - v1.y) + TopLeftEdge(v1, v2);
 		}
 
-		[[nodiscard]] __forceinline SSEInt EdgeFunc2(const SSEVec2i& p) const
+		[[nodiscard]] __forceinline AVXInt EdgeFunc2(const AVXVec2i& p) const
 		{
 			return B2 * (p.x - v2.x) + C2 * (p.y - v2.y) + TopLeftEdge(v2, v0);
 		}
 
-		[[nodiscard]] __forceinline SSEBool Inside(const SSEVec2i& p) const
+		[[nodiscard]] __forceinline AVXBool Inside(const AVXVec2i& p) const
 		{
-			return (EdgeFunc0(p) | EdgeFunc1(p) | EdgeFunc2(p)) >= SSEInt(0);
+			return (EdgeFunc0(p) | EdgeFunc1(p) | EdgeFunc2(p)) >= AVXInt(0);
 		}
 
-		[[nodiscard]] __forceinline bool TrivialReject(const SSEVec2i& p) const
+		[[nodiscard]] __forceinline bool TrivialReject(const AVXVec2i& p) const
 		{
-			return Any((EdgeFunc0(p) & EdgeFunc1(p) & EdgeFunc2(p)) < SSEInt(0));
+			return AVX::Any((EdgeFunc0(p) & EdgeFunc1(p) & EdgeFunc2(p)) < AVXInt(0));
 		}
 
-		[[nodiscard]] __forceinline SSEFloat GetDepth(float z0, float z1, float z2) const
+		[[nodiscard]] __forceinline AVXFloat GetDepth(float z0, float z1, float z2) const
 		{
-			const auto One = SSEFloat(1);
-			const SSEFloat lambda2 = One - lambda0 - lambda1;
+			const auto One = AVXFloat(1);
+			const AVXFloat lambda2 = One - lambda0 - lambda1;
 			return lambda0 * z0 + lambda1 * z1 + lambda2 * z2;
 		}
 
-		__forceinline void CalcBarycentricCoord(const SSEInt& x, const SSEInt& y)
+		__forceinline void CalcBarycentricCoord(const AVXInt& x, const AVXInt& y)
 		{
-			lambda0 = SSEFloat((B1 * (x - v2.x) + C1 * (y - v2.y))) * invDet;
-			lambda1 = SSEFloat((B2 * (x - v2.x) + C2 * (y - v2.y))) * invDet;
+			lambda0 = AVXFloat((B1 * (x - v2.x) + C1 * (y - v2.y))) * invDet;
+			lambda1 = AVXFloat((B2 * (x - v2.x) + C2 * (y - v2.y))) * invDet;
 		}
 	};
 }
