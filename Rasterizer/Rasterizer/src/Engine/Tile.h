@@ -20,8 +20,7 @@ namespace Engine
 
 		Tile(const glm::ivec2& min, const glm::ivec2 max, uint32_t id): maxRaster(max), minRaster(min), id(id)
 		{
-			trinagles.resize(16);
-			fragments.reserve(100);
+			fragments.reserve(256);
 			color = { uint8_t(rand() & 0xff), uint8_t(rand() & 0xff), uint8_t(rand() & 0xff) };
 		}
 
@@ -37,7 +36,7 @@ namespace Engine
 		 */
 		void Add(uint32_t bin, uint32_t elem)
 		{
-			trinagles[bin][binsIndex[bin]] = elem;
+			triangles[bin][binsIndex[bin]] = elem;
 			++binsIndex[bin];
 		};
 
@@ -48,7 +47,7 @@ namespace Engine
 		}
 
 		std::array<uint32_t, 16> binsIndex{};
-		std::vector<std::array<uint32_t, 4096>> trinagles;
+		std::array<std::array<uint32_t, 4096>, 16> triangles;
 		std::vector<Pixel> fragments;
 	};
 }

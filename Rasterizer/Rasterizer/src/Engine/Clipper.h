@@ -4,37 +4,25 @@
 
 #include <glm/glm.hpp>
 
+#include "Triangle.h"
+
+#include "../Assets/Vertex.h"
+
 namespace Engine
 {
 	class Clipper final
 	{
 	public:
-		static const uint32_t INSIDE_BIT = 0;
-		static const uint32_t LEFT_BIT = 1 << 0;
-		static const uint32_t RIGHT_BIT = 1 << 1;
-		static const uint32_t BOTTOM_BIT = 1 << 2;
-		static const uint32_t TOP_BIT = 1 << 3;
-		static const uint32_t FAR_BIT = 1 << 5;
-		static const uint32_t NEAR_BIT = 1 << 4;
+		Clipper(const class Scene& scene, const class Camera& camera, const std::vector<Assets::Vertex>& vertices);
+		
+		void Clip(int bin, std::vector<Assets::Vertex>& clippedBuffer, std::vector<LarrabeeTriangle>& triangles) const;
+	private:
+		uint32_t trianglesCount;
+		uint32_t coreInterval;
+		const Camera& camera;
+		const Scene& scene;
+		const std::vector<Assets::Vertex>& projectedVertexStorage;
 
-		static uint32_t ClipCode(const glm::vec4& v)
-		{
-			uint32_t code = INSIDE_BIT;
-
-			if (v.x < -v.w)
-				code |= LEFT_BIT;
-			if (v.x > v.w)
-				code |= RIGHT_BIT;
-			if (v.y < -v.w)
-				code |= BOTTOM_BIT;
-			if (v.y > v.w)
-				code |= TOP_BIT;
-			if (v.z > v.w)
-				code |= FAR_BIT;
-			if (v.z < 0.0f)
-				code |= NEAR_BIT;
-
-			return code;
-		}
+		static uint32_t GetClipCode(const glm::vec4& v);
 	};
 }

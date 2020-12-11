@@ -3,6 +3,8 @@
 #include <memory>
 #include <thread>
 
+
+#include "Clipper.h"
 #include "Settings.h"
 #include "Tile.h"
 #include "LarrabeeRasterizer.h"
@@ -27,12 +29,38 @@ namespace Engine
 		[[nodiscard]] const uint8_t* GetColorBuffer() const;
 
 	private:
+		/**
+		 * \brief Clear all buffer before rendering a next frame.
+		 */
 		void Clear();
+
+		/**
+		 * \brief Run vertex shader on all vertices.
+		 */
 		void VertexShaderStage();
+
+		/**
+		 * \brief Clip all triangles to the viewing frustum.
+		 * In the case of a triangle overlapping with one of the planes of the frustum
+		 * the methods creates new triangles and add them to the buffer.
+		 */
 		void ClippingStage();
+
+		/**
+		 * \brief Tile or binning rasterization. Assigns all triangles to the proper overlapping tile.
+		 */
 		void TiledRasterizationStage();
+
+		/**
+		 * \brief Rasterize triangles using z-buffer visibility test.
+		 */
 		void RasterizationStage();
+
+		/**
+		 * \brief Run fragments shader on every generate fragment/pixel.
+		 */
 		void FragmentShaderStage();
+
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);
 
@@ -58,6 +86,7 @@ namespace Engine
 		std::unique_ptr<FragmentShader> fragmentShader;
 		std::unique_ptr<VertexShader> vertexShader;
 		std::unique_ptr<LarrabeeRasterizer> rasterizer;
+		std::unique_ptr<Clipper> clipper;
 		std::unique_ptr<ColorBuffer> colorBuffer;
 		std::unique_ptr<DepthBuffer> depthBuffer;
 	};

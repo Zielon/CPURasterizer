@@ -61,6 +61,7 @@
     <ClCompile Include="src\Assets\Mesh.cpp" />
     <ClCompile Include="src\Assets\Texture.cpp" />
     <ClCompile Include="src\Engine\Camera.cpp" />
+    <ClCompile Include="src\Engine\Clipper.cpp" />
     <ClCompile Include="src\Engine\ColorBuffer.cpp" />
     <ClCompile Include="src\Engine\DepthBuffer.cpp" />
     <ClCompile Include="src\Engine\LarrabeeRaasterizer.cpp" />

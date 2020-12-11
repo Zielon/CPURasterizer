@@ -1,26 +1,30 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include "../SIMD/SSE.h"
+#include "../SIMD/AVX.h"
 
 namespace Math
 {
 	__forceinline const SSEFloat Rsqrt(const SSEFloat& rhs)
 	{
 		const SSEFloat r = _mm_rsqrt_ps(rhs.m128);
-		return _mm_add_ps(_mm_mul_ps(_mm_set_ps(1.5f, 1.5f, 1.5f, 1.5f), r),
-		                  _mm_mul_ps(_mm_mul_ps(_mm_mul_ps(rhs, _mm_set_ps(-0.5f, -0.5f, -0.5f, -0.5f)), r),
-		                             _mm_mul_ps(r, r)));
+		return _mm_add_ps(
+			_mm_mul_ps(_mm_set_ps(1.5f, 1.5f, 1.5f, 1.5f), r),
+			_mm_mul_ps(_mm_mul_ps(_mm_mul_ps(rhs, _mm_set_ps(-0.5f, -0.5f, -0.5f, -0.5f)), r),
+			           _mm_mul_ps(r, r)));
 	}
 
 	__forceinline const AVXFloat Rsqrt(const AVXFloat& rhs)
 	{
 		const AVXFloat r = _mm256_rsqrt_ps(rhs.m256);
-		return _mm256_add_ps(_mm256_mul_ps(_mm256_set_ps(1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f), r),
-		                     _mm256_mul_ps(
-			                     _mm256_mul_ps(_mm256_mul_ps(
-				                                   rhs, _mm256_set_ps(-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
-				                                                      -0.5f)), r),
-			                     _mm256_mul_ps(r, r)));
+		
+		return _mm256_add_ps(
+			_mm256_mul_ps(_mm256_set_ps(1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f), r),
+			_mm256_mul_ps(_mm256_mul_ps(_mm256_mul_ps(rhs, _mm256_set_ps(-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f)),r),
+			_mm256_mul_ps(r, r)));
 	}
 
 	template <class T>

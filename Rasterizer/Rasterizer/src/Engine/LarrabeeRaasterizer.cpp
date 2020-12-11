@@ -21,7 +21,7 @@ namespace Engine
 
 		for (int i = 0; i < tile.binsIndex[bin]; ++i)
 		{
-			const uint32_t id = tile.trinagles[bin][i];
+			const uint32_t id = tile.triangles[bin][i];
 
 			LarrabeeTriangle& triangle = rasterTrianglesBuffer[bin][id];
 
