@@ -70,8 +70,7 @@ namespace Engine
 						float v1 = clippedProjectedVertexBuffer[tbin][ids[1]].projectedPosition.z;
 						float v2 = clippedProjectedVertexBuffer[tbin][ids[2]].projectedPosition.z;
 
-						SSEBool ztest =
-							depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
+						SSEBool ztest = depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
 
 						SSEBool visible = ztest & covered;
 						if (Any(visible))

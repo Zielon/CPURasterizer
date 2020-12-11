@@ -8,7 +8,7 @@
 namespace Engine
 {
 	template <class T>
-	using Buffer2D = std::vector<std::deque<T>>;
+	using Buffer2D = std::vector<std::vector<T>>;
 
 	template <class T>
 	using Ref = std::reference_wrapper<T>;

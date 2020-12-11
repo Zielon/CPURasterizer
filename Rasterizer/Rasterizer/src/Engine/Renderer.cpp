@@ -300,6 +300,7 @@ namespace Engine
 		clippedProjectedVertexBuffer.resize(numCores);
 
 		tiledPixels.reserve(tiles.size());
+		pixels.reserve(tiles.size() * TILE_SIZE * TILE_SIZE / 4);
 
 		coreIds.resize(numCores);
 		std::iota(coreIds.begin(), coreIds.end(), 0);

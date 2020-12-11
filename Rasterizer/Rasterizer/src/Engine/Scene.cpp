@@ -12,7 +12,7 @@ namespace Engine
 	{
 		std::cout << "[SCENE] Scene loading has begun" << std::endl;
 
-		for (const auto& entry : std::filesystem::directory_iterator("../Assets/Scenes/coffee/"))
+		for (const auto& entry : std::filesystem::directory_iterator("../Assets/Scenes/panther/"))
 		{
 			AddMesh(entry.path().string());
 		}

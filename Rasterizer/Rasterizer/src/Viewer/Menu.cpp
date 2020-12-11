@@ -63,7 +63,7 @@ namespace Viewer
 			ImGui::Text("# spheres       %7i  ", settings.spheresCount);
 			ImGui::Text("# triangles     %7i  ", settings.trianglesCount);
 			ImGui::Text("# threads       %7i  ", cores);
-			ImGui::Text("# frame [ms]    %7.1f", settings.fpms);
+			ImGui::Text("# frames [s]    %7.1f", settings.fps);
 
 			// ==================================
 

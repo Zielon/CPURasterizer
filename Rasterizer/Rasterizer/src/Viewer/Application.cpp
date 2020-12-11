@@ -11,7 +11,7 @@
 #include "../Engine/Scene.h"
 
 float lastTime = 0;
-int nbFrames = 0;
+long int currentFrame = 0;
 
 namespace Viewer
 {
@@ -43,7 +43,7 @@ namespace Viewer
 		while (!glfwWindowShouldClose(window->Get()))
 		{
 			Engine::Camera::TimeDeltaUpdate();
-			
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			camera->OnBeforeRender();
@@ -105,15 +105,17 @@ namespace Viewer
 
 	void Application::MeasureTime()
 	{
-		float currentTime = glfwGetTime();
-		float delta = currentTime - lastTime;
+		currentFrame++;
 
-		nbFrames++;
-		if (delta >= 1.f)
+		const float currentTime = glfwGetTime();
+		const float delta = currentTime - lastTime;
+
+		if (delta > 1.0)
 		{
-			settings.fpms = 1000.f / nbFrames;
-			nbFrames = 0;
-			lastTime += 1.f;
+			double fFPS = currentFrame / delta;
+			lastTime = currentTime;
+			currentFrame = 0L;
+			settings.fps = static_cast<float>(fFPS);
 		}
 	}
 
