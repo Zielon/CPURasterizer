@@ -3,7 +3,7 @@
 #include <cstdint>
 
 constexpr int FIXED_POINT = 4;
-constexpr int TILE = 2;
+constexpr int TILE = 5;
 constexpr int TILE_SIZE = 1 << TILE;
 constexpr int WIDTH = 823;
 constexpr int HEIGHT = 800;

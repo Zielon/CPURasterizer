@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 
 namespace Assets
@@ -41,6 +42,14 @@ namespace Assets
 		__forceinline Color4b operator >>(const int shift) const
 		{
 			return Color4b(r >> shift, g >> shift, b >> shift, a);
+		}
+
+		__forceinline void FromFloats(float R, float G, float B, float A = 1.0f)
+		{
+			r = std::clamp(int(255.f * R), 0, 255);
+			g = std::clamp(int(255.f * G), 0, 255);
+			b = std::clamp(int(255.f * B), 0, 255);
+			a = std::clamp(int(255.f * A), 0, 255);
 		}
 	};
 }

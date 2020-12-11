@@ -19,7 +19,8 @@ namespace Viewer
 	{
 		// Renderer composition
 		scene.reset(new Engine::Scene());
-		camera.reset(new Engine::Camera({ .276f, .275f, -0.75f }, { .276f, .275f, .10 }, 40, 1.f, WIDTH, HEIGHT));
+		//camera.reset(new Engine::Camera({ .276f, .275f, -0.75f }, { .276f, .275f, .10 }, 40, 1.f, WIDTH, HEIGHT));
+		camera.reset(new Engine::Camera({ 0, 1.5, 2.5 }, { 0, 1, 0 }, 60, 1.f, WIDTH, HEIGHT));
 		renderer.reset(new Engine::Renderer(*scene, *camera));
 
 		// Viewer composition

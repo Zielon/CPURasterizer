@@ -39,4 +39,7 @@ namespace Math
 		__forceinline Vec operator /(const Vec& rhs) const { return Vec(x / rhs.x, y / rhs.y, z / rhs.z); }
 		__forceinline Vec operator /(const T& rhs) const { return Vec(x / rhs, y / rhs, z / rhs); }
 	};
+
+	template <class T>
+	__forceinline Vec<3, T> operator *(const T& lhs, const Vec<3, T>& rhs) { return rhs * lhs; }
 }

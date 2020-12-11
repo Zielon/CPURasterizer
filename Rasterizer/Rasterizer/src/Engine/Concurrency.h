@@ -1,6 +1,9 @@
 #pragma once
 
+#include <functional>
 #include <execution>
+#include <algorithm>
+#include <utility>
 
 #define PARALLEL
 
@@ -19,6 +22,13 @@ namespace Engine
 		__forceinline static void ForEach(It first, It last, Fn func)
 		{
 			std::for_each(policy, first, last, func);
+		}
+
+		__forceinline static void ForEach(uint32_t first, uint32_t last, std::function<void(int)> func)
+		{
+			std::vector<int> v(last - first);
+			std::iota(std::begin(v), std::end(v), first);
+			std::for_each(policy, v.begin(), v.end(), std::move(func));
 		}
 
 		template <class It, class Ty>

@@ -9,7 +9,7 @@ namespace Engine
 		Concurrency::Fill(frameBuffer.begin(), frameBuffer.end(), Assets::Color4b(0, 0, 0));
 	}
 
-	void ColorBuffer::SetColor(uint32_t x, uint32_t y, Assets::Color4b color)
+	void ColorBuffer::SetColor(Assets::Color4b color, uint32_t x, uint32_t y)
 	{
 		frameBuffer[y * WIDTH + x] = color;
 	}

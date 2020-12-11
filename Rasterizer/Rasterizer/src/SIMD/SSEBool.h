@@ -40,4 +40,7 @@ public:
 	__forceinline SSEBool operator &(const SSEBool& rhs) const { return _mm_and_ps(*this, rhs); }
 	__forceinline SSEBool operator |(const SSEBool& rhs) const { return _mm_or_ps(*this, rhs); }
 	__forceinline SSEBool operator ^(const SSEBool& rhs) const { return _mm_xor_ps(*this, rhs); }
+
+	__forceinline bool operator [](const size_t i) const { return (_mm_movemask_ps(m128) >> i) & 1; }
+	__forceinline int32_t& operator [](const size_t id) { return i[id]; }
 };

@@ -23,23 +23,19 @@ namespace Engine
 		{
 			const uint32_t id = tile.trinagles[bin][i];
 
-			LarrabeeTriangle triangle = rasterTrianglesBuffer[bin][id];
+			LarrabeeTriangle& triangle = rasterTrianglesBuffer[bin][id];
 
-			int minX = std::max(tile.minRaster.x,
-			                    std::min(triangle.v0.x, std::min(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
-			int maxX = std::min(tile.maxRaster.x - 1,
-			                    std::max(triangle.v0.x, std::max(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
-			int minY = std::max(tile.minRaster.y,
-			                    std::min(triangle.v0.y, std::min(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
-			int maxY = std::min(tile.maxRaster.y - 1,
-			                    std::max(triangle.v0.y, std::max(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
+			int minX = std::max(tile.minRaster.x, std::min(triangle.v0.x, std::min(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
+			int maxX = std::min(tile.maxRaster.x - 1, std::max(triangle.v0.x, std::max(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
+			int minY = std::max(tile.minRaster.y, std::min(triangle.v0.y, std::min(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
+			int maxY = std::min(tile.maxRaster.y - 1, std::max(triangle.v0.y, std::max(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
 			minX -= minX % 2;
 			minY -= minY % 2;
 
 			if (maxX < minX || maxY < minY)
 				return;
 
-			SSELarrabeeTriangle SSEtriangle(rasterTrianglesBuffer[bin][id]);
+			SSELarrabeeTriangle SSEtriangle(triangle);
 
 			SSEVec2i pixelBase(minX << FIXED_POINT, minY << FIXED_POINT);
 			SSEVec2i pixelCenter = pixelBase + centerOffset;
@@ -47,19 +43,21 @@ namespace Engine
 			SSEInt edgeVal1 = SSEtriangle.EdgeFunc1(pixelCenter);
 			SSEInt edgeVal2 = SSEtriangle.EdgeFunc2(pixelCenter);
 
-			glm::ivec2 pixelCrd;
 			SSEInt pixelBaseStep = SSEInt(32);
-			for (pixelCrd.y = minY; pixelCrd.y <= maxY; pixelCrd.y += 2, pixelBase.y += pixelBaseStep)
+			SSEInt zero = SSEInt(0);
+			
+			for (int y = minY; y <= maxY; y += 2, pixelBase.y += pixelBaseStep)
 			{
 				SSEInt edgeYBase0 = edgeVal0;
 				SSEInt edgeYBase1 = edgeVal1;
 				SSEInt edgeYBase2 = edgeVal2;
 
-				pixelBase.x = SSEInt(minX << 4);
-				for (pixelCrd.x = minX; pixelCrd.x <= maxX; pixelCrd.x += 2, pixelBase.x += pixelBaseStep)
+				pixelBase.x = SSEInt(minX << FIXED_POINT);
+				for (int x = minX; x <= maxX; x += 2, pixelBase.x += pixelBaseStep)
 				{
 					pixelCenter = pixelBase + centerOffset;
-					SSEBool covered = (edgeVal0 | edgeVal1 | edgeVal2) >= SSEInt(0);
+					auto sum = (edgeVal0 | edgeVal1 | edgeVal2);
+					SSEBool covered = sum >= zero;
 
 					if (Any(covered))
 					{
@@ -73,12 +71,23 @@ namespace Engine
 						float v2 = clippedProjectedVertexBuffer[tbin][ids[2]].projectedPosition.z;
 
 						SSEBool ztest =
-							depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), pixelCrd.x, pixelCrd.y, 0, covered);
+							depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
 
 						SSEBool visible = ztest & covered;
 						if (Any(visible))
 						{
-							tile.fragments.push_back(Pixel());
+							tile.fragments.emplace_back(
+								SSEtriangle.lambda0,
+								SSEtriangle.lambda1,
+								ids[0],
+								ids[1],
+								ids[2],
+								tbin,
+								SSEtriangle.textureId,
+								glm::ivec2(x, y),
+								CoverageMask(visible, 0),
+								tile.id,
+								tile.fragments.size());
 						}
 					}
 

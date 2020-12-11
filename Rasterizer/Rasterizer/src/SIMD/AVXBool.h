@@ -40,4 +40,7 @@ public:
 	__forceinline AVXBool operator &(const AVXBool& rhs) const { return _mm256_and_ps(*this, rhs); }
 	__forceinline AVXBool operator |(const AVXBool& rhs) const { return _mm256_or_ps(*this, rhs); }
 	__forceinline AVXBool operator ^(const AVXBool& rhs) const { return _mm256_xor_ps(*this, rhs); }
+
+	__forceinline bool operator [](const size_t i) const { return (_mm256_movemask_ps(m256) >> i) & 1; }
+	__forceinline int32_t& operator [](const size_t id) { return i[id]; }
 };

@@ -264,7 +264,8 @@ namespace Engine
 
 		[[nodiscard]] __forceinline SSEInt TopLeftEdge(const SSEVec2i& v1, const SSEVec2i& v2) const
 		{
-			return SSEInt(((v2.y > v1.y) | ((v1.y == v2.y) & (v1.x > v2.x))).m128);
+			SSEBool r = ((v2.y > v1.y) | ((v1.y == v2.y) & (v1.x > v2.x)));
+			return SSEInt(r);
 		}
 
 		[[nodiscard]] __forceinline SSEInt EdgeFunc0(const SSEVec2i& p) const
