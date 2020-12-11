@@ -49,8 +49,8 @@ namespace Engine
 		Buffer2D<LarrabeeTriangle> rasterTrianglesBuffer;
 
 		uint32_t numCores{};
-		std::deque<Pixel> pixels;
-		std::deque<std::deque<SSEInt>> tiledPixels;
+		std::vector<Pixel> pixels;
+		std::vector<std::deque<SSEInt>> tiledPixels;
 		std::vector<Tile> tiles;
 		std::vector<uint32_t> coreIds;
 		std::vector<Assets::Vertex> projectedVertexStorage;

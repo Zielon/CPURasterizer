@@ -17,8 +17,8 @@ namespace Engine
 {
 	Renderer::Renderer(const Scene& scene, const Camera& camera) : scene(scene), camera(camera)
 	{
-		CreateBuffers();
 		CreateTiles();
+		CreateBuffers();
 
 		colorBuffer.reset(new ColorBuffer());
 		depthBuffer.reset(new DepthBuffer(settings));
@@ -298,6 +298,8 @@ namespace Engine
 		projectedVertexStorage.resize(scene.GetVertexBuffer().size());
 		rasterTrianglesBuffer.resize(numCores);
 		clippedProjectedVertexBuffer.resize(numCores);
+
+		tiledPixels.reserve(tiles.size());
 
 		coreIds.resize(numCores);
 		std::iota(coreIds.begin(), coreIds.end(), 0);

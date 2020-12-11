@@ -21,6 +21,7 @@ namespace Engine
 		Tile(const glm::ivec2& min, const glm::ivec2 max, uint32_t id): maxRaster(max), minRaster(min), id(id)
 		{
 			trinagles.resize(16);
+			fragments.reserve(100);
 			color = { uint8_t(rand() & 0xff), uint8_t(rand() & 0xff), uint8_t(rand() & 0xff) };
 		}
 
@@ -48,6 +49,6 @@ namespace Engine
 
 		std::array<uint32_t, 16> binsIndex{};
 		std::vector<std::array<uint32_t, 4096>> trinagles;
-		std::deque<Pixel> fragments;
+		std::vector<Pixel> fragments;
 	};
 }
