@@ -111,16 +111,16 @@ namespace Engine
 		for (auto& T : rasterTrianglesBuffer[bin])
 		{
 			uint32_t minX = std::max(0, std::min(T.v0.x, std::min(T.v1.x, T.v2.x)) >> shift);
-			uint32_t maxX = std::min(TILE_DIM_X - 1, std::max(T.v0.x, std::max(T.v1.x, T.v2.x)) >> shift);
+			uint32_t maxX = std::min(tileDimX - 1, std::max(T.v0.x, std::max(T.v1.x, T.v2.x)) >> shift);
 			uint32_t minY = std::max(0, std::min(T.v0.y, std::min(T.v1.y, T.v2.y)) >> shift);
-			uint32_t maxY = std::min(TILE_DIM_Y - 1, std::max(T.v0.y, std::max(T.v1.y, T.v2.y)) >> shift);
+			uint32_t maxY = std::min(tileDimY - 1, std::max(T.v0.y, std::max(T.v1.y, T.v2.y)) >> shift);
 
 			// One pixel projected triangle
 			if (maxX - minX < 2 && maxY - minY < 2)
 			{
 				for (uint32_t y = minY; y <= maxY; y++)
 					for (uint32_t x = minX; x <= maxX; x++)
-						tiles[y * TILE_DIM_X + x].Add(bin, T.id);
+						tiles[y * tileDimX + x].Add(bin, T.id);
 
 				continue;
 			}
@@ -155,7 +155,7 @@ namespace Engine
 						T.EdgeFunc1(acptCorner1) >= 0 &&
 						T.EdgeFunc2(acptCorner2) >= 0;
 
-					tiles[y * TILE_DIM_X + x].Add(bin, T.id);
+					tiles[y * tileDimX + x].Add(bin, T.id);
 				}
 			}
 		}

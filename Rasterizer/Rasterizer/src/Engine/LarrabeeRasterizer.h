@@ -20,13 +20,16 @@ namespace Engine
 	{
 	public:
 		LarrabeeRasterizer(
+			int width,
+			int height,
 			Buffer2D<LarrabeeTriangle>& trianglesBuffer,
 			std::vector<Tile>& tiles,
 			Buffer2D<Assets::Vertex>& clippedProjectedVertexBuffer,
 			DepthBuffer& depthBuffer):
+			tileDimX((width + TILE_SIZE - 1) >> TILE),
+			tileDimY((height + TILE_SIZE - 1) >> TILE),
 			rasterTrianglesBuffer(trianglesBuffer),
-			clippedProjectedVertexBuffer(clippedProjectedVertexBuffer),
-			tiles(tiles),
+			clippedProjectedVertexBuffer(clippedProjectedVertexBuffer), tiles(tiles),
 			depthBuffer(depthBuffer) {}
 
 		~LarrabeeRasterizer();
@@ -36,6 +39,8 @@ namespace Engine
 		void AssignTriangles(uint32_t bin) const;
 
 	private:
+		int tileDimX;
+		int tileDimY;
 		Buffer2D<LarrabeeTriangle>& rasterTrianglesBuffer;
 		Buffer2D<Assets::Vertex>& clippedProjectedVertexBuffer;
 		std::vector<Tile>& tiles;

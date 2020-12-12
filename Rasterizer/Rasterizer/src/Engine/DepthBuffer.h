@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include <deque>
 #include <vector>
 
 #include "../SIMD/AVX.h"
@@ -16,12 +15,13 @@ namespace Engine
 	class DepthBuffer final
 	{
 	public:
-		DepthBuffer(const Settings& settings);
+		DepthBuffer(int width, int height);
 
 		void Clear();
 		[[nodiscard]] AVXBool ZTest(const AVXFloat& depth, int x, int y, uint32_t sampleId, const AVXBool& mask);
 	private:
-		const Settings& settings;
+		int tileDimX;
+		int tileDimY;
 		std::vector<TileDepth3D> buffer;
 	};
 }

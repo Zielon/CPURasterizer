@@ -2,6 +2,8 @@
 
 #include <memory>
 
+
+#include "../Assets/SceneConfigs.h"
 #include "../Engine/Settings.h"
 
 namespace Engine
@@ -24,13 +26,19 @@ namespace Viewer
 	private:
 		void DrawQuad() const;
 		void CreatePipeline();
+		void CreateRender();
+		void CreateWindow();
 		void RegisterCallbacks();
 		void MeasureTime();
+		void Resize() const;
+		void UpdateSettings();
+		void Recreate();
 
 		// OpenGL handlers
 		unsigned int VBO{}, VAO{}, EBO{}, texture{};
 
 		Engine::Settings settings{};
+		Assets::Scene::Configuration sceneConfig{};
 
 		// Viewer
 		std::unique_ptr<class Window> window;

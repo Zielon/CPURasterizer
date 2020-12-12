@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 
+#include "../Assets/SceneConfigs.h"
+
 namespace Assets
 {
 	class Mesh;
@@ -22,7 +24,7 @@ namespace Engine
 	class Scene final
 	{
 	public:
-		Scene(std::vector<Assets::Instance> instances);
+		Scene(std::vector<Assets::Scene::Instance> instances);
 		~Scene();
 
 		void AddMesh(const std::string& path);
@@ -35,7 +37,7 @@ namespace Engine
 		[[nodiscard]] const IndexBuffer& GetIndexBuffer() const { return indexBuffer; }
 
 	private:
-		std::vector<Assets::Instance> instances;
+		std::vector<Assets::Scene::Instance> instances;
 		MeshBuffer meshBuffer;
 		IndexBuffer indexBuffer;
 		VertexBuffer vertexBuffer;

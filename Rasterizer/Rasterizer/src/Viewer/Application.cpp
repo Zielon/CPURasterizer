@@ -1,7 +1,5 @@
 #include "Application.h"
 
-#include <glm/glm.hpp>
-
 #include "Window.h"
 #include "Menu.h"
 #include "Shader.h"
@@ -19,25 +17,34 @@ namespace Viewer
 {
 	Application::Application()
 	{
-		const auto& config = Assets::CONFIG[0];
+		sceneConfig = Assets::Scene::CONFIGS[settings.sceneId];
 
-		// Renderer composition
-		scene.reset(new Engine::Scene(config.instances));
-		camera.reset(new Engine::Camera(config.camera));
-		renderer.reset(new Engine::Renderer(*scene, *camera));
-
-		// Viewer composition
-		window.reset(new Window(WIDTH, HEIGHT));
-		menu.reset(new Menu(*window));
-		shader.reset(new Shader("Quad.vert", "Quad.frag"));
-
+		CreateRender();
+		CreateWindow();
 		CreatePipeline();
+
 		RegisterCallbacks();
 
-		settings.trianglesCount = scene->GetTriangleCount();
+		menu->GetSettings().trianglesCount = scene->GetTriangleCount();
 	}
 
 	Application::~Application() = default;
+
+	void Application::CreateWindow()
+	{
+		// Viewer composition
+		window.reset(new Window(sceneConfig.camera.width, sceneConfig.camera.height));
+		menu.reset(new Menu(*window));
+		shader.reset(new Shader("Quad.vert", "Quad.frag"));
+	}
+
+	void Application::CreateRender()
+	{
+		// Renderer composition
+		scene.reset(new Engine::Scene(sceneConfig.instances));
+		camera.reset(new Engine::Camera(sceneConfig.camera));
+		renderer.reset(new Engine::Renderer(*scene, *camera));
+	}
 
 	void Application::Run()
 	{
@@ -50,17 +57,15 @@ namespace Viewer
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			camera->OnBeforeRender();
-
 			renderer->Render(settings);
-
 			DrawQuad();
-
-			menu->Render(settings);
+			menu->Render();
 
 			glfwSwapBuffers(window->Get());
 			glfwPollEvents();
 
 			MeasureTime();
+			UpdateSettings();
 		}
 	}
 
@@ -68,7 +73,8 @@ namespace Viewer
 	{
 		// Copy frameBuffer to texture
 		glTexImage2D(
-			GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, renderer->GetColorBuffer());
+			GL_TEXTURE_2D, 0, GL_RGBA, camera->GetWidth(), camera->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+			renderer->GetColorBuffer());
 
 		glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -118,8 +124,32 @@ namespace Viewer
 			double fFPS = currentFrame / delta;
 			lastTime = currentTime;
 			currentFrame = 0L;
-			settings.fps = static_cast<float>(fFPS);
+			menu->GetSettings().fps = static_cast<float>(fFPS);
 		}
+	}
+
+	void Application::Resize() const
+	{
+		glfwSetWindowSize(window->Get(), sceneConfig.camera.width, sceneConfig.camera.height);
+		glViewport(0, 0, sceneConfig.camera.width, sceneConfig.camera.height);
+	}
+
+	void Application::UpdateSettings()
+	{
+		if (settings.sceneId != menu->GetSettings().sceneId)
+		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			settings = menu->GetSettings();
+			Recreate();
+			menu->GetSettings().trianglesCount = scene->GetTriangleCount();
+		}
+	}
+
+	void Application::Recreate()
+	{
+		sceneConfig = Assets::Scene::CONFIGS[settings.sceneId];
+		CreateRender();
+		Resize();
 	}
 
 	void Application::CreatePipeline()

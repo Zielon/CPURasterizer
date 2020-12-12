@@ -2,10 +2,7 @@
 
 #include <imgui.h>
 
-namespace Engine
-{
-	struct Settings;
-}
+#include "../Engine/Settings.h"
 
 namespace Viewer
 {
@@ -15,7 +12,9 @@ namespace Viewer
 		Menu(const class Window& window);
 		~Menu();
 
-		void Render(Engine::Settings& settings) const;
+		void Render();
+
+		[[nodiscard]] Engine::Settings& GetSettings() { return settings; }
 
 		static bool WantCaptureMouse()
 		{
@@ -26,5 +25,8 @@ namespace Viewer
 		{
 			return ImGui::GetIO().WantCaptureKeyboard;
 		}
+
+	private:
+		Engine::Settings settings{};
 	};
 }

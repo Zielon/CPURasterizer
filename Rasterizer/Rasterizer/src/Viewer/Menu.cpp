@@ -29,12 +29,12 @@ namespace Viewer
 		ImGui::DestroyContext();
 	}
 
-	void Menu::Render(Engine::Settings& settings) const
+	void Menu::Render()
 	{
 		const static uint32_t cores = std::thread::hardware_concurrency();
 		const static char* mssa[3] = { "off", "2x", "4x" };
 		const static char* lightModels[2] = { "Phong-Blinn", "Oren-Nayar" };
-		const static char* scenes[2] = { "Cornell Box", "Spheres" };
+		const static char* scenes[3] = { "Cornell Box", "Coffee cart", "Panther" };
 		const static char* filter[2] = { "Nearst", "Linear" };
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -73,7 +73,7 @@ namespace Viewer
 			ImGui::Text("Scenes");
 
 			ImGui::PushItemWidth(-1);
-			ImGui::Combo("", &settings.sceneId, scenes, 2);
+			ImGui::Combo("", &settings.sceneId, scenes, 3);
 			ImGui::PopItemWidth();
 
 			ImGui::Text("MSSA mode");

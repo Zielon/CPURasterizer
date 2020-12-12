@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-#include <iostream>
 #include <GLFW/glfw3.h>
 
 #include "../Assets/SceneConfigs.h"
@@ -14,7 +13,7 @@ float SENSITIVITY = 0.10f;
 
 namespace Engine
 {
-	Camera::Camera(const Assets::Camera& camera):
+	Camera::Camera(const Assets::Scene::Camera& camera):
 		Camera(camera.eye, camera.lookAt, camera.fov, camera.width, camera.height) {}
 
 	Camera::Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, uint32_t width, uint32_t height)

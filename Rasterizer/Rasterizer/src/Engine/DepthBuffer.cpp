@@ -6,9 +6,11 @@
 
 namespace Engine
 {
-	DepthBuffer::DepthBuffer(const Settings& settings): settings(settings)
+	DepthBuffer::DepthBuffer(int width, int height):
+		tileDimX((width + TILE_SIZE - 1) >> TILE),
+		tileDimY((height + TILE_SIZE - 1) >> TILE)
 	{
-		buffer.resize(TILE_DIM_X * TILE_DIM_Y);
+		buffer.resize(tileDimY * tileDimX);
 		Clear();
 	}
 
@@ -28,7 +30,7 @@ namespace Engine
 		const int tileX = x >> TILE;
 		const int tileY = y >> TILE;
 
-		TileDepth3D& tile3D = buffer[tileY * TILE_DIM_X + tileX];
+		TileDepth3D& tile3D = buffer[tileY * tileDimX + tileX];
 
 		const int intraTileX = x & (TILE_SIZE - 1);
 		const int intraTileY = y & (TILE_SIZE - 1);

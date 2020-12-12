@@ -2,9 +2,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Assets {
-	struct Camera;
-}
+#include "../Assets/SceneConfigs.h"
 
 namespace Engine
 {
@@ -19,7 +17,7 @@ namespace Engine
 	class Camera
 	{
 	public:
-		Camera(const Assets::Camera& camera);
+		Camera(const Assets::Scene::Camera& camera);
 		Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, uint32_t width, uint32_t height);
 		~Camera() = default;
 
@@ -34,6 +32,8 @@ namespace Engine
 		[[nodiscard]] glm::mat4 GetRasterMatrix() const;
 		[[nodiscard]] glm::vec3 GetDirection() const;
 		[[nodiscard]] glm::vec3 GetPosition() const;
+		[[nodiscard]] uint32_t GetHeight() const { return height; }
+		[[nodiscard]] uint32_t GetWidth() const { return width; }
 
 	private:
 		void Update();

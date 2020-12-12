@@ -71,6 +71,11 @@ namespace Engine
 		const Scene& scene;
 		const Camera& camera;
 
+		int width;
+		int height;
+		int tileDimX;
+		int tileDimY;
+
 		Settings settings{};
 
 		// Lock-free distributed structures. Each thread operates on its own bin.

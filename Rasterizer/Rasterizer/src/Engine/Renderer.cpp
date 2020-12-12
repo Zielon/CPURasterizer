@@ -11,18 +11,23 @@
 
 namespace Engine
 {
-	Renderer::Renderer(const Scene& scene, const Camera& camera) : scene(scene), camera(camera)
+	Renderer::Renderer(const Scene& scene, const Camera& camera) :
+		scene(scene), camera(camera),
+		width(camera.GetWidth()),
+		height(camera.GetHeight()),
+		tileDimX((width + TILE_SIZE - 1) >> TILE),
+		tileDimY((height + TILE_SIZE - 1) >> TILE)
 	{
 		CreateTiles();
 		CreateBuffers();
 
-		colorBuffer.reset(new ColorBuffer());
-		depthBuffer.reset(new DepthBuffer(settings));
+		colorBuffer.reset(new ColorBuffer(width, height));
+		depthBuffer.reset(new DepthBuffer(width, height));
 		fragmentShader.reset(new PhongBlinnShader());
 		vertexShader.reset(new DefaultVertexShader(camera));
 		clipper.reset(new Clipper(scene, camera, projectedVertexStorage));
 		rasterizer.reset(new LarrabeeRasterizer(
-			rasterTrianglesBuffer, tiles, clippedProjectedVertexBuffer, *depthBuffer));
+			width, height, rasterTrianglesBuffer, tiles, clippedProjectedVertexBuffer, *depthBuffer));
 	}
 
 	void Renderer::Render(const Settings& settings)
@@ -247,13 +252,13 @@ namespace Engine
 	{
 		int id = 0;
 
-		tiles.resize(TILE_DIM_X * TILE_DIM_Y);
+		tiles.resize(tileDimX * tileDimY);
 
-		for (int i = 0; i < HEIGHT; i += TILE_SIZE)
-			for (int j = 0; j < WIDTH; j += TILE_SIZE)
+		for (int i = 0; i < height; i += TILE_SIZE)
+			for (int j = 0; j < width; j += TILE_SIZE)
 			{
-				const auto maxX = std::min(j + TILE_SIZE, WIDTH);
-				const auto maxY = std::min(i + TILE_SIZE, HEIGHT);
+				const auto maxX = std::min(j + TILE_SIZE, width);
+				const auto maxY = std::min(i + TILE_SIZE, height);
 				tiles[id] = Tile(glm::ivec2(j, i), glm::ivec2(maxX, maxY), id);
 				++id;
 			}

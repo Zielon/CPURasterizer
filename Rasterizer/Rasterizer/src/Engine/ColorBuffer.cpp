@@ -11,7 +11,7 @@ namespace Engine
 
 	void ColorBuffer::SetColor(Assets::Color4b color, uint32_t x, uint32_t y)
 	{
-		frameBuffer[y * WIDTH + x] = color;
+		frameBuffer[y * width + x] = color;
 	}
 
 	const uint8_t* ColorBuffer::Get() const
