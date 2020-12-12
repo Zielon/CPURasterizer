@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "Triangle.h"
+#include "SutherlandHodgman.h"
 
 #include "../Assets/Vertex.h"
 
@@ -14,7 +15,7 @@ namespace Engine
 	{
 	public:
 		Clipper(const class Scene& scene, const class Camera& camera, const std::vector<Assets::Vertex>& vertices);
-		
+
 		void Clip(int bin, std::vector<Assets::Vertex>& clippedBuffer, std::vector<LarrabeeTriangle>& triangles) const;
 	private:
 		uint32_t trianglesCount;
@@ -22,7 +23,6 @@ namespace Engine
 		const Camera& camera;
 		const Scene& scene;
 		const std::vector<Assets::Vertex>& projectedVertexStorage;
-
-		static uint32_t GetClipCode(const glm::vec4& v);
+		std::unique_ptr<SutherlandHodgman> sutherlandHodgman;
 	};
 }

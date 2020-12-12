@@ -2,7 +2,7 @@
 
 #include <immintrin.h>
 
-#include "AVXComp.h"
+#include "AVXCmp.h"
 
 class AVXInt;
 class AVXBool;

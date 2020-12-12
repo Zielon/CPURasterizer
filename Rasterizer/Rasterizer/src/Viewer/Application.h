@@ -29,7 +29,7 @@ namespace Viewer
 		void CreateRender();
 		void CreateWindow();
 		void RegisterCallbacks();
-		void MeasureTime();
+		void MeasureTime() const;
 		void Resize() const;
 		void UpdateSettings();
 		void Recreate();

@@ -4,45 +4,16 @@
 #include "Scene.h"
 #include "Camera.h"
 
-namespace Plane
-{
-	uint32_t INSIDE_BIT = 0;
-	uint32_t LEFT_BIT = 1 << 0;
-	uint32_t RIGHT_BIT = 1 << 1;
-	uint32_t BOTTOM_BIT = 1 << 2;
-	uint32_t TOP_BIT = 1 << 3;
-	uint32_t FAR_BIT = 1 << 5;
-	uint32_t NEAR_BIT = 1 << 4;
-}
-
 namespace Engine
 {
 	Clipper::Clipper(const Scene& scene, const Camera& camera, const std::vector<Assets::Vertex>& vertices)
 		: camera(camera), scene(scene), projectedVertexStorage(vertices)
 	{
-		auto numCores = std::thread::hardware_concurrency();
+		const auto numCores = std::thread::hardware_concurrency();
 		trianglesCount = scene.GetTriangleCount();
 		coreInterval = (trianglesCount + numCores - 1) / numCores;
-	}
 
-	uint32_t Clipper::GetClipCode(const glm::vec4& v)
-	{
-		uint32_t code = Plane::INSIDE_BIT;
-
-		if (v.x < -v.w)
-			code |= Plane::LEFT_BIT;
-		if (v.x > v.w)
-			code |= Plane::RIGHT_BIT;
-		if (v.y < -v.w)
-			code |= Plane::BOTTOM_BIT;
-		if (v.y > v.w)
-			code |= Plane::TOP_BIT;
-		if (v.z > v.w)
-			code |= Plane::FAR_BIT;
-		if (v.z < 0.0f)
-			code |= Plane::NEAR_BIT;
-
-		return code;
+		sutherlandHodgman.reset(new SutherlandHodgman());
 	}
 
 	void Clipper::Clip(
@@ -61,11 +32,30 @@ namespace Engine
 			const auto& v1 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 2]];
 			const auto& v2 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 1]];
 
-			uint32_t clipCode0 = GetClipCode(v0.projectedPosition);
-			uint32_t clipCode1 = GetClipCode(v1.projectedPosition);
-			uint32_t clipCode2 = GetClipCode(v2.projectedPosition);
+			uint32_t clipCode0 = sutherlandHodgman->GetClipCode(v0.projectedPosition);
+			uint32_t clipCode1 = sutherlandHodgman->GetClipCode(v1.projectedPosition);
+			uint32_t clipCode2 = sutherlandHodgman->GetClipCode(v2.projectedPosition);
 
-			if (clipCode0 | clipCode1 | clipCode2) continue;
+			if (clipCode0 | clipCode1 | clipCode2)
+			{
+				if (!(clipCode0 & clipCode1 & clipCode2))
+				{
+					int clipVertIds[12];
+
+					auto polygon = sutherlandHodgman->ClipTriangle(
+						v0.projectedPosition,
+						v1.projectedPosition,
+						v2.projectedPosition,
+						(clipCode0 ^ clipCode1) | (clipCode1 ^ clipCode2) | (clipCode2 ^ clipCode0));
+
+					for (int j = 0; j < polygon.points.size(); j++)
+					{
+						auto weight = polygon.points[j].clipWeights;
+					}
+				}
+
+				continue;
+			}
 
 			uint32_t idx0 = clippedBuffer.size();
 			clippedBuffer.push_back(v0);

@@ -25,6 +25,12 @@
     <Filter Include="SIMD">
       <UniqueIdentifier>{eb4b3d14-c7f4-48c1-8e5d-487f5634a0bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SIMD\AVX">
+      <UniqueIdentifier>{4cce3c7a-0695-4397-a3fe-8f07287056b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SIMD\SSE">
+      <UniqueIdentifier>{dc24d464-2b0e-4525-ad37-83b5fcaa247b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Viewer\Application.h">
@@ -93,30 +99,6 @@
     <ClInclude Include="src\Engine\Concurrency.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\SIMD\AVX.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\AVXBool.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\AVXFloat.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\AVXInt.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\SSEBool.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\SSEFloat.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\SSEInt.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMD\SSE.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Shaders\VertexShader.h">
       <Filter>Engine\Shaders</Filter>
     </ClInclude>
@@ -135,11 +117,38 @@
     <ClInclude Include="src\Engine\LarrabeeRasterizer.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\SIMD\AVXComp.h">
-      <Filter>SIMD</Filter>
-    </ClInclude>
     <ClInclude Include="src\Assets\SceneConfigs.h">
       <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\SutherlandHodgman.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVXInt.h">
+      <Filter>SIMD\AVX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVX.h">
+      <Filter>SIMD\AVX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVXBool.h">
+      <Filter>SIMD\AVX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVXFloat.h">
+      <Filter>SIMD\AVX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\SSEInt.h">
+      <Filter>SIMD\SSE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\SSE.h">
+      <Filter>SIMD\SSE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\SSEBool.h">
+      <Filter>SIMD\SSE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\SSEFloat.h">
+      <Filter>SIMD\SSE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD\AVXCmp.h">
+      <Filter>SIMD\AVX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +193,9 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Clipper.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\SutherlandHodgman.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>

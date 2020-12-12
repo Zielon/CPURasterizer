@@ -112,7 +112,7 @@ namespace Viewer
 		window->AddOnScrollChanged([this](const double xoffset, const double yoffset)-> void { });
 	}
 
-	void Application::MeasureTime()
+	void Application::MeasureTime() const
 	{
 		currentFrame++;
 

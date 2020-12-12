@@ -36,6 +36,7 @@
     <ClInclude Include="src\Engine\Settings.h" />
     <ClInclude Include="src\Engine\Shaders\FragmentShader.h" />
     <ClInclude Include="src\Engine\Shaders\VertexShader.h" />
+    <ClInclude Include="src\Engine\SutherlandHodgman.h" />
     <ClInclude Include="src\Engine\Tile.h" />
     <ClInclude Include="src\Engine\Triangle.h" />
     <ClInclude Include="src\ImGui\imgui_impl_glfw.h" />
@@ -46,7 +47,7 @@
     <ClInclude Include="src\Math\Vec3.h" />
     <ClInclude Include="src\SIMD\AVX.h" />
     <ClInclude Include="src\SIMD\AVXBool.h" />
-    <ClInclude Include="src\SIMD\AVXComp.h" />
+    <ClInclude Include="src\SIMD\AVXCmp.h" />
     <ClInclude Include="src\SIMD\AVXFloat.h" />
     <ClInclude Include="src\SIMD\AVXInt.h" />
     <ClInclude Include="src\SIMD\SSE.h" />
@@ -68,6 +69,7 @@
     <ClCompile Include="src\Engine\LarrabeeRaasterizer.cpp" />
     <ClCompile Include="src\Engine\Renderer.cpp" />
     <ClCompile Include="src\Engine\Scene.cpp" />
+    <ClCompile Include="src\Engine\SutherlandHodgman.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Main.cpp" />
