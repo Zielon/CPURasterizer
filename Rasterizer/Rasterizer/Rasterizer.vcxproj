@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="src\Assets\Color4b.h" />
     <ClInclude Include="src\Assets\Mesh.h" />
+    <ClInclude Include="src\Assets\SceneConfigs.h" />
     <ClInclude Include="src\Assets\Texture.h" />
     <ClInclude Include="src\Assets\Vertex.h" />
     <ClInclude Include="src\Engine\Camera.h" />

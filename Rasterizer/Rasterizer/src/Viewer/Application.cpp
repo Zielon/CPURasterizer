@@ -6,6 +6,8 @@
 #include "Menu.h"
 #include "Shader.h"
 
+#include "../Assets/SceneConfigs.h"
+
 #include "../Engine/Renderer.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Scene.h"
@@ -17,10 +19,11 @@ namespace Viewer
 {
 	Application::Application()
 	{
+		const auto& config = Assets::CONFIG[0];
+
 		// Renderer composition
-		scene.reset(new Engine::Scene());
-		//camera.reset(new Engine::Camera({ .276f, .275f, -0.75f }, { .276f, .275f, .10 }, 40, 1.f, WIDTH, HEIGHT));
-		camera.reset(new Engine::Camera({ 0, 1.5, 2.5 }, { 0, 1, 0 }, 60, 1.f, WIDTH, HEIGHT));
+		scene.reset(new Engine::Scene(config.instances));
+		camera.reset(new Engine::Camera(config.camera));
 		renderer.reset(new Engine::Renderer(*scene, *camera));
 
 		// Viewer composition

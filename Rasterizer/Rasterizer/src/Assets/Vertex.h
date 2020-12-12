@@ -15,7 +15,6 @@ namespace Assets
 		// Index with relative position to all vertices buffer
 		uint32_t id;
 
-		float invW{};
 		glm::vec3 position{};
 		glm::vec3 normal{};
 		glm::vec2 texCoords{};

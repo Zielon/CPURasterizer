@@ -46,10 +46,10 @@ namespace Assets
 
 		__forceinline void FromFloats(float R, float G, float B, float A = 1.0f)
 		{
-			r = std::clamp(int(255.f * R), 0, 255);
-			g = std::clamp(int(255.f * G), 0, 255);
-			b = std::clamp(int(255.f * B), 0, 255);
-			a = std::clamp(int(255.f * A), 0, 255);
+			r = pow(std::clamp(255.f * R, 0.f, 255.f), 1.f);
+			g = pow(std::clamp(255.f * G, 0.f, 255.f), 1.f);
+			b = pow(std::clamp(255.f * B, 0.f, 255.f), 1.f);
+			a = pow(std::clamp(255.f * A, 0.f, 255.f), 1.f);
 		}
 	};
 }

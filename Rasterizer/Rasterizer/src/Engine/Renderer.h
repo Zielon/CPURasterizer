@@ -3,6 +3,7 @@
 #include <memory>
 #include <thread>
 
+#define PARALLEL
 
 #include "Clipper.h"
 #include "Settings.h"

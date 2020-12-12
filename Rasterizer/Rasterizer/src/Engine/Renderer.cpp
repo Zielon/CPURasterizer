@@ -75,16 +75,6 @@ namespace Engine
 		{
 			clipper->Clip(bin, clippedProjectedVertexBuffer[bin], rasterTrianglesBuffer[bin]);
 		});
-
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
-		{
-			// Perspective correct interpolation
-			for (auto& vertex : clippedProjectedVertexBuffer[bin])
-			{
-				vertex.invW = 1.0f / vertex.projectedPosition.w;
-				vertex.projectedPosition.z *= vertex.invW;
-			}
-		});
 	}
 
 	void Renderer::TiledRasterizationStage()
@@ -137,9 +127,9 @@ namespace Engine
 	{
 		Concurrency::ForEach(pixels.begin(), pixels.end(), [&](Pixel& frag)
 		{
-			const Assets::Vertex& v0 = clippedProjectedVertexBuffer[frag.coreId][frag.vId0];
-			const Assets::Vertex& v1 = clippedProjectedVertexBuffer[frag.coreId][frag.vId1];
-			const Assets::Vertex& v2 = clippedProjectedVertexBuffer[frag.coreId][frag.vId2];
+			Assets::Vertex& v0 = clippedProjectedVertexBuffer[frag.coreId][frag.vId0];
+			Assets::Vertex& v1 = clippedProjectedVertexBuffer[frag.coreId][frag.vId1];
+			Assets::Vertex& v2 = clippedProjectedVertexBuffer[frag.coreId][frag.vId2];
 
 			AVXVec3f position;
 			AVXVec3f normal;
@@ -158,7 +148,7 @@ namespace Engine
 			//diffuseAmount = AVX::Select(mask, AVXFloat(0), diffuseAmount);
 			//AVXFloat diffuse = (diffuseAmount + 0.2f) * 3 * M_PI;
 
-			AVXVec3f shadingResults = absVec(_normal);
+			AVXVec3f shadingResults = absVec(_normal) * std::pow(1, 2.2);
 
 			Assets::Color4b colorByte[8];
 			colorByte[0].FromFloats(shadingResults.x[0], shadingResults.y[0], shadingResults.z[0]);

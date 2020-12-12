@@ -34,7 +34,7 @@ namespace Viewer
 		const static uint32_t cores = std::thread::hardware_concurrency();
 		const static char* mssa[3] = { "off", "2x", "4x" };
 		const static char* lightModels[2] = { "Phong-Blinn", "Oren-Nayar" };
-		const static char* scenes[2] = { "Bunny", "Spheres" };
+		const static char* scenes[2] = { "Cornell Box", "Spheres" };
 		const static char* filter[2] = { "Nearst", "Linear" };
 
 		ImGui_ImplOpenGL3_NewFrame();

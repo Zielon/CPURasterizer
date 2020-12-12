@@ -138,6 +138,9 @@
     <ClInclude Include="src\SIMD\AVXComp.h">
       <Filter>SIMD</Filter>
     </ClInclude>
+    <ClInclude Include="src\Assets\SceneConfigs.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />

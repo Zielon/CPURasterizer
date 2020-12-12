@@ -1,5 +1,8 @@
 #include "Mesh.h"
 
+
+#include <filesystem>
+#include <iostream>
 #include <tiny_obj_loader.h>
 
 #include <unordered_map>
@@ -10,6 +13,11 @@ namespace Assets
 	{
 		loader = std::async(std::launch::async, [this, path]()
 		{
+			if (!exists(std::filesystem::path(path)))
+			{
+				std::cout << "[MESH] Mesh does not exist [ " << path << " ]" << std::endl;
+			}
+			
 			Load(path);
 		});
 	}

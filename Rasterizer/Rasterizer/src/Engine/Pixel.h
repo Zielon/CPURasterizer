@@ -113,9 +113,9 @@ namespace Engine
 			  , tileId(tId)
 			  , intraTileIdx(intraTId) { }
 
-		void Interpolate(const Assets::Vertex& v0,
-		                 const Assets::Vertex& v1,
-		                 const Assets::Vertex& v2,
+		void Interpolate(Assets::Vertex& v0,
+		                 Assets::Vertex& v1,
+		                 Assets::Vertex& v2,
 		                 AVXFloat& b0,
 		                 AVXFloat& b1,
 		                 AVXVec3f& position,
@@ -124,20 +124,15 @@ namespace Engine
 		{
 			const auto One = AVXFloat(1);
 			AVXFloat b2 = One - b0 - b1;
-			b0 = b0 * v0.invW;
-			b1 = b1 * v1.invW;
-			b2 = b2 * v2.invW;
-			AVXFloat invB = One / (b0 + b1 + b2);
-			b0 = b0 * invB;
-			b1 = b1 * invB;
-			b2 = One - b0 - b1;
 
 			position = b0 * AVXVec3f(v0.position.x, v0.position.y, v0.position.z) +
 				b1 * AVXVec3f(v1.position.x, v1.position.y, v1.position.z) +
 				b2 * AVXVec3f(v2.position.x, v2.position.y, v2.position.z);
+
 			normal = b0 * AVXVec3f(v0.normal.x, v0.normal.y, v0.normal.z) +
 				b1 * AVXVec3f(v1.normal.x, v1.normal.y, v1.normal.z) +
 				b2 * AVXVec3f(v2.normal.x, v2.normal.y, v2.normal.z);
+
 			texCoord = b0 * AVXVec2f(v0.texCoords.x, v0.texCoords.y) +
 				b1 * AVXVec2f(v1.texCoords.x, v1.texCoords.y) +
 				b2 * AVXVec2f(v2.texCoords.x, v2.texCoords.y);

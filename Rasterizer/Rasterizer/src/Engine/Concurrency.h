@@ -5,8 +5,6 @@
 #include <algorithm>
 #include <utility>
 
-#define PARALLEL
-
 #ifdef PARALLEL
 constexpr std::execution::parallel_policy policy = std::execution::par;
 #else

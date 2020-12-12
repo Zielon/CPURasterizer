@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 #include <vector>
 #include <memory>
 
@@ -9,6 +10,7 @@ namespace Assets
 	class Mesh;
 	class Texture;
 	struct Vertex;
+	struct Instance;
 }
 
 using MeshBuffer = std::vector<std::unique_ptr<Assets::Mesh>>;
@@ -20,7 +22,7 @@ namespace Engine
 	class Scene final
 	{
 	public:
-		Scene();
+		Scene(std::vector<Assets::Instance> instances);
 		~Scene();
 
 		void AddMesh(const std::string& path);
@@ -33,6 +35,7 @@ namespace Engine
 		[[nodiscard]] const IndexBuffer& GetIndexBuffer() const { return indexBuffer; }
 
 	private:
+		std::vector<Assets::Instance> instances;
 		MeshBuffer meshBuffer;
 		IndexBuffer indexBuffer;
 		VertexBuffer vertexBuffer;
