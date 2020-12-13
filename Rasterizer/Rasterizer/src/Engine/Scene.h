@@ -15,16 +15,19 @@ namespace Assets
 	struct Instance;
 }
 
-using MeshBuffer = std::vector<std::unique_ptr<Assets::Mesh>>;
-using IndexBuffer = std::vector<uint32_t>;
-using VertexBuffer = std::vector<Assets::Vertex>;
+template <class T>
+using Buffer = std::vector<T>;
+
+using MeshBuffer = Buffer<std::unique_ptr<Assets::Mesh>>;
+using IndexBuffer = Buffer<uint32_t>;
+using VertexBuffer = Buffer<Assets::Vertex>;
 
 namespace Engine
 {
 	class Scene final
 	{
 	public:
-		Scene(std::vector<Assets::Scene::Instance> instances);
+		Scene(Buffer<Assets::Scene::Instance> instances);
 		~Scene();
 
 		void AddMesh(const std::string& path);
@@ -37,7 +40,7 @@ namespace Engine
 		[[nodiscard]] const IndexBuffer& GetIndexBuffer() const { return indexBuffer; }
 
 	private:
-		std::vector<Assets::Scene::Instance> instances;
+		Buffer<Assets::Scene::Instance> instances;
 		MeshBuffer meshBuffer;
 		IndexBuffer indexBuffer;
 		VertexBuffer vertexBuffer;

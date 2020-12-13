@@ -21,7 +21,7 @@ namespace Engine
 		struct Point
 		{
 			glm::vec4 pos;
-			glm::vec3 clipWeights;
+			glm::vec3 distances;
 		};
 
 		std::vector<Point> points;
@@ -40,6 +40,7 @@ namespace Engine
 	 * \brief The Sutherland–Hodgman algorithm is an algorithm used for clipping polygons.
 	 * It works by extending each line of the convex clip polygon in turn and
 	 * selecting only vertices from the subject polygon that are on the visible side.
+	 * https://chaosinmotion.com/2016/05/22/3d-clipping-in-homogeneous-coordinates/
 	 */
 	class SutherlandHodgman
 	{
@@ -47,7 +48,19 @@ namespace Engine
 		Polygon ClipTriangle(const glm::vec4& v0, const glm::vec4& v1, const glm::vec4& v2, uint32_t code);
 		uint32_t GetClipCode(const glm::vec4& v);
 	private:
+		/**
+		 * \brief Computers code for all planes which a given point fails
+		 * \param v Current point for clipping (after vertex shader)
+		 * \return Code for planes to clip
+		 */
 		Polygon ClipPlane(const Polygon&, const Predicate&, const Intersection&, const Clip&);
+
+		/**
+		 * \brief Clipping dot products
+		 * \param planeCode Bit for the intersection plane
+		 * \param v Point for which we check intersection
+		 * \return Distance to the given plane
+		 */
 		float Dot(int clipPlane, const glm::vec4& v);
 	};
 }

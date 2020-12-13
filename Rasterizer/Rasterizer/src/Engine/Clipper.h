@@ -2,8 +2,6 @@
 
 #include <cstdint>
 
-#include <glm/glm.hpp>
-
 #include "Triangle.h"
 #include "SutherlandHodgman.h"
 
@@ -11,12 +9,23 @@
 
 namespace Engine
 {
+	/**
+	 * \brief Clips points the the viewing frustum planes.
+	 * Additionally performs perspective division and polygons clipping.
+	 */
 	class Clipper final
 	{
 	public:
 		Clipper(const class Scene& scene, const class Camera& camera, const std::vector<Assets::Vertex>& vertices);
 
-		void Clip(int bin, std::vector<Assets::Vertex>& clippedBuffer, std::vector<LarrabeeTriangle>& triangles) const;
+		/**
+		 * \brief Clip triangles and projects to NDC.
+		 * \param bin Current bin for lock-free multi-threading.
+		 * \param clippedBuffer Current buffer assigned for bin core id.
+		 * \param outTriangleBuffer Output buffer of triangles inside viewing frustum.
+		 */
+		void Clip(int bin, std::vector<Assets::Vertex>& clippedBuffer,
+		          std::vector<LarrabeeTriangle>& outTriangleBuffer) const;
 	private:
 		uint32_t trianglesCount;
 		uint32_t coreInterval;

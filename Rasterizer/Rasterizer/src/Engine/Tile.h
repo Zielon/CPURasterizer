@@ -11,6 +11,8 @@
 
 namespace Engine
 {
+	constexpr int BIN_SIZE = 4096;
+
 	/**
 	 * \brief Lock free Tile structure
 	 */
@@ -21,6 +23,7 @@ namespace Engine
 		Tile(const glm::ivec2& min, const glm::ivec2 max, uint32_t id): maxRaster(max), minRaster(min), id(id)
 		{
 			fragments.reserve(256);
+			triangles.resize(16);
 			color = { uint8_t(rand() & 0xff), uint8_t(rand() & 0xff), uint8_t(rand() & 0xff) };
 		}
 
@@ -36,6 +39,9 @@ namespace Engine
 		 */
 		void Add(uint32_t bin, uint32_t elem)
 		{
+			if (binsIndex[bin] > BIN_SIZE - 1)
+				return;
+			
 			triangles[bin][binsIndex[bin]] = elem;
 			++binsIndex[bin];
 		};
@@ -47,7 +53,7 @@ namespace Engine
 		}
 
 		std::array<uint32_t, 16> binsIndex{};
-		std::array<std::array<uint32_t, 4096>, 16> triangles;
+		std::vector<std::array<uint32_t, BIN_SIZE>> triangles;
 		std::vector<Pixel> fragments;
 	};
 }

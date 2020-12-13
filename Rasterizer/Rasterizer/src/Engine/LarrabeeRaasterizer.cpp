@@ -13,7 +13,7 @@
 
 namespace Engine
 {
-	LarrabeeRasterizer::~LarrabeeRasterizer() {};
+	LarrabeeRasterizer::~LarrabeeRasterizer() = default;;
 
 	void LarrabeeRasterizer::RasterizeTile(uint32_t bin, Tile& tile) const
 	{
@@ -25,28 +25,32 @@ namespace Engine
 
 			LarrabeeTriangle& triangle = rasterTrianglesBuffer[bin][id];
 
-			int minX = std::max(tile.minRaster.x, std::min(triangle.v0.x, std::min(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
-			int maxX = std::min(tile.maxRaster.x - 1, std::max(triangle.v0.x, std::max(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
-			int minY = std::max(tile.minRaster.y, std::min(triangle.v0.y, std::min(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
-			int maxY = std::min(tile.maxRaster.y - 1, std::max(triangle.v0.y, std::max(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
+			int minX = std::max(tile.minRaster.x,
+			                    std::min(triangle.v0.x, std::min(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
+			int maxX = std::min(tile.maxRaster.x - 1,
+			                    std::max(triangle.v0.x, std::max(triangle.v1.x, triangle.v2.x)) >> FIXED_POINT);
+			int minY = std::max(tile.minRaster.y,
+			                    std::min(triangle.v0.y, std::min(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
+			int maxY = std::min(tile.maxRaster.y - 1,
+			                    std::max(triangle.v0.y, std::max(triangle.v1.y, triangle.v2.y)) >> FIXED_POINT);
 			minX -= minX % 4;
 			minY -= minY % 2;
 
 			if (maxX < minX || maxY < minY)
 				return;
 
-			SSELarrabeeTriangle SSEtriangle(triangle);
+			AVXLarrabeeTriangle AVXtriangle(triangle);
 
 			AVXVec2i pixelBase(minX << FIXED_POINT, minY << FIXED_POINT);
 			AVXVec2i pixelCenter = pixelBase + centerOffset;
-			AVXInt edgeVal0 = SSEtriangle.EdgeFunc0(pixelCenter);
-			AVXInt edgeVal1 = SSEtriangle.EdgeFunc1(pixelCenter);
-			AVXInt edgeVal2 = SSEtriangle.EdgeFunc2(pixelCenter);
+			AVXInt edgeVal0 = AVXtriangle.EdgeFunc0(pixelCenter);
+			AVXInt edgeVal1 = AVXtriangle.EdgeFunc1(pixelCenter);
+			AVXInt edgeVal2 = AVXtriangle.EdgeFunc2(pixelCenter);
 
 			AVXInt pixelBaseStepY = AVXInt(32);
 			AVXInt pixelBaseStepX = AVXInt(64);
 			AVXInt zero = AVXInt(0);
-			
+
 			for (int y = minY; y <= maxY; y += 2, pixelBase.y += pixelBaseStepY)
 			{
 				AVXInt edgeYBase0 = edgeVal0;
@@ -62,29 +66,27 @@ namespace Engine
 
 					if (AVX::Any(covered))
 					{
-						SSEtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
+						AVXtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
 
-						auto tbin = SSEtriangle.binId;
-						auto& ids = SSEtriangle.vertexIds;
+						auto tbin = AVXtriangle.binId;
+						auto& ids = AVXtriangle.vertexIds;
 
 						float v0 = clippedProjectedVertexBuffer[tbin][ids[0]].projectedPosition.z;
 						float v1 = clippedProjectedVertexBuffer[tbin][ids[1]].projectedPosition.z;
 						float v2 = clippedProjectedVertexBuffer[tbin][ids[2]].projectedPosition.z;
 
-						AVXBool ztest = depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
+						AVXBool ztest = depthBuffer.ZTest(AVXtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
 
 						AVXBool visible = ztest & covered;
-						
+
 						if (AVX::Any(visible))
 						{
 							tile.fragments.emplace_back(
-								SSEtriangle.lambda0,
-								SSEtriangle.lambda1,
-								ids[0],
-								ids[1],
-								ids[2],
+								AVXtriangle.lambda0,
+								AVXtriangle.lambda1,
+								ids[0], ids[1], ids[2],
 								tbin,
-								SSEtriangle.textureId,
+								AVXtriangle.textureId,
 								glm::ivec2(x, y),
 								CoverageMask(visible, 0),
 								tile.id,
@@ -92,14 +94,14 @@ namespace Engine
 						}
 					}
 
-					edgeVal0 += SSEtriangle.deltaY0 * 2;
-					edgeVal1 += SSEtriangle.deltaY1 * 2;
-					edgeVal2 += SSEtriangle.deltaY2 * 2;
+					edgeVal0 += AVXtriangle.deltaY0;
+					edgeVal1 += AVXtriangle.deltaY1;
+					edgeVal2 += AVXtriangle.deltaY2;
 				}
 
-				edgeVal0 = edgeYBase0 + SSEtriangle.deltaX0;
-				edgeVal1 = edgeYBase1 + SSEtriangle.deltaX1;
-				edgeVal2 = edgeYBase2 + SSEtriangle.deltaX2;
+				edgeVal0 = edgeYBase0 + AVXtriangle.deltaX0;
+				edgeVal1 = edgeYBase1 + AVXtriangle.deltaX1;
+				edgeVal2 = edgeYBase2 + AVXtriangle.deltaX2;
 			}
 		}
 	}

@@ -17,7 +17,7 @@ namespace Engine
 	}
 
 	void Clipper::Clip(
-		int bin, std::vector<Assets::Vertex>& clippedBuffer, std::vector<LarrabeeTriangle>& triangles) const
+		int bin, std::vector<Assets::Vertex>& clippedBuffer, std::vector<LarrabeeTriangle>& outTriangleBuffer) const
 	{
 		// Assign each thread to separate chunk of buffer
 		const auto startIdx = bin * coreInterval;
@@ -40,8 +40,6 @@ namespace Engine
 			{
 				if (!(clipCode0 & clipCode1 & clipCode2))
 				{
-					int clipVertIds[12];
-
 					auto polygon = sutherlandHodgman->ClipTriangle(
 						v0.projectedPosition,
 						v1.projectedPosition,
@@ -50,7 +48,7 @@ namespace Engine
 
 					for (int j = 0; j < polygon.points.size(); j++)
 					{
-						auto weight = polygon.points[j].clipWeights;
+						auto weight = polygon.points[j].distances;
 					}
 				}
 
@@ -80,13 +78,13 @@ namespace Engine
 			glm::vec4 r1 = raster * hv1;
 			glm::vec4 r2 = raster * hv2;
 
-			auto triId = triangles.size();
+			auto triId = outTriangleBuffer.size();
 
 			LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { idx0, idx1, idx2 });
 
 			if (triangle.Setup())
 			{
-				triangles.push_back(triangle);
+				outTriangleBuffer.push_back(triangle);
 			}
 		}
 	}

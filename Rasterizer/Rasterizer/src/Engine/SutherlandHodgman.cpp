@@ -81,35 +81,28 @@ namespace Engine
 		{
 			if (j == inPolygon.Size()) j = 0;
 
-			const auto& current = inPolygon.points[i].pos;
-			const auto& currentWeights = inPolygon.points[i].clipWeights;
+			const auto& currentPos = inPolygon.points[i].pos;
+			const auto& currentDistance = inPolygon.points[i].distances;
 
-			const auto& previous = inPolygon.points[j].pos;
-			const auto& previousWeights = inPolygon.points[j].clipWeights;
+			const auto& previousPos = inPolygon.points[j].pos;
+			const auto& previousDistance = inPolygon.points[j].distances;
 
-			if (isInside(current))
+			float t = T(currentPos, previousPos);
+			glm::vec4 newPosition = currentPos * (1 - t) + previousPos * t; // Lerp
+			clip(newPosition);
+			glm::vec3 newWeight = currentDistance * (1 - t) + previousDistance * t;
+
+			if (isInside(currentPos))
 			{
-				if (isInside(previous))
-				{
-					outPolygon.points.push_back(Polygon::Point{ previous, inPolygon.points[j].clipWeights });
-				}
+				if (isInside(previousPos))
+					outPolygon.points.push_back(Polygon::Point{ previousPos, inPolygon.points[j].distances });
 				else
-				{
-					float t = T(current, previous);
-					glm::vec4 newPosition = current * (1 - t) + previous * t; // Lerp
-					clip(newPosition);
-					glm::vec3 newWeight = currentWeights * (1 - t) + previousWeights * t;
 					outPolygon.points.push_back(Polygon::Point{ newPosition, newWeight });
-				}
 			}
-			else if (isInside(previous))
+			else if (isInside(previousPos))
 			{
-				float t = T(current, previous);
-				glm::vec4 newPosition = current * (1 - t) + previous * t; // Lerp
-				clip(newPosition);
-				glm::vec3 newWeight = currentWeights * (1 - t) + previousWeights * t;
 				outPolygon.points.push_back(Polygon::Point{ newPosition, newWeight });
-				outPolygon.points.push_back(Polygon::Point{ previous, inPolygon.points[j].clipWeights });
+				outPolygon.points.push_back(Polygon::Point{ previousPos, inPolygon.points[j].distances });
 			}
 		}
 
@@ -127,7 +120,7 @@ namespace Engine
 
 		return INFINITY;
 	}
-
+	
 	uint32_t SutherlandHodgman::GetClipCode(const glm::vec4& v)
 	{
 		uint32_t code = INSIDE_BIT;

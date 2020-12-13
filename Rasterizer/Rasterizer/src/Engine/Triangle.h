@@ -227,7 +227,7 @@ namespace Engine
 		};
 	};
 
-	struct SSELarrabeeTriangle
+	struct AVXLarrabeeTriangle
 	{
 		AVXVec2i v0, v1, v2;
 		AVXInt B0, C0, B1, C1, B2, C2;
@@ -239,7 +239,7 @@ namespace Engine
 		uint32_t textureId{};
 		std::array<uint32_t, 3> vertexIds;
 
-		SSELarrabeeTriangle(const LarrabeeTriangle& triangle) :
+		AVXLarrabeeTriangle(const LarrabeeTriangle& triangle) :
 			v0(triangle.v0)
 			, v1(triangle.v1)
 			, v2(triangle.v2)
@@ -249,11 +249,11 @@ namespace Engine
 			, C1(triangle.C1)
 			, B2(triangle.B2)
 			, C2(triangle.C2)
-			, deltaY0(2 * triangle.deltaY0)
+			, deltaY0(4 * triangle.deltaY0)
 			, deltaX0(2 * triangle.deltaX0)
-			, deltaY1(2 * triangle.deltaY1)
+			, deltaY1(4 * triangle.deltaY1)
 			, deltaX1(2 * triangle.deltaX1)
-			, deltaY2(2 * triangle.detalY2)
+			, deltaY2(4 * triangle.detalY2)
 			, deltaX2(2 * triangle.deltaX2)
 			, invDet(triangle.invDet)
 			, binId(triangle.binId)

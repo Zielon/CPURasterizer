@@ -9,7 +9,7 @@
 
 namespace Engine
 {
-	Scene::Scene(std::vector<Assets::Scene::Instance> instances) : instances(instances)
+	Scene::Scene(Buffer<Assets::Scene::Instance> instances) : instances(instances)
 	{
 		std::cout << "[SCENE] Scene loading has begun" << std::endl;
 
