@@ -57,7 +57,7 @@ namespace Viewer
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			camera->OnBeforeRender();
-			renderer->Render(settings);
+			renderer->Render(menu->GetSettings());
 			DrawQuad();
 			menu->Render();
 
@@ -85,24 +85,21 @@ namespace Viewer
 
 	void Application::RegisterCallbacks()
 	{
-		window->AddOnCursorPositionChanged([this](const double xpos, const double ypos)-> void
-		{
+		window->AddOnCursorPositionChanged([this](const double xpos, const double ypos)-> void {
 			if (menu->WantCaptureKeyboard() || menu->WantCaptureMouse())
 				return;
 
 			if (camera->OnCursorPositionChanged(xpos, ypos)) {}
 		});
 
-		window->AddOnKeyChanged([this](const int key, const int scancode, const int action, const int mods)-> void
-		{
+		window->AddOnKeyChanged([this](const int key, const int scancode, const int action, const int mods)-> void {
 			if (menu->WantCaptureKeyboard())
 				return;
 
 			camera->OnKeyChanged(key, scancode, action, mods);
 		});
 
-		window->AddOnMouseButtonChanged([this](const int button, const int action, const int mods)-> void
-		{
+		window->AddOnMouseButtonChanged([this](const int button, const int action, const int mods)-> void {
 			if (menu->WantCaptureMouse())
 				return;
 

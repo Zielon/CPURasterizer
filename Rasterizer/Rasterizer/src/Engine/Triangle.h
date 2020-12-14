@@ -112,9 +112,10 @@ namespace Engine
 		 * This methods sets values for accepted and rejected tiles.
 		 * \return True is setup went correctly
 		 */
-		bool Setup()
+		bool Setup(bool cullBackFaces)
 		{
 			// Calculate edges
+			// Edge winding is important
 			B0 = v0.y - v1.y;
 			C0 = v1.x - v0.x;
 			B1 = v1.y - v2.y;
@@ -124,8 +125,27 @@ namespace Engine
 
 			const int det = C2 * B1 - C1 * B2;
 
-			if (det <= 0)
-				return false;
+			if (cullBackFaces)
+			{
+				if (det <= 0)
+					return false;
+			}
+			else
+			{
+				if (det == 0)
+					return false;
+				
+				// Allow back-faces
+				if (det < 0)
+				{
+					B0 *= -1;
+					B1 *= -1;
+					B2 *= -1;
+					C0 *= -1;
+					C1 *= -1;
+					C2 *= -1;
+				}
+			}
 
 			deltaY0 = 16 * B0;
 			deltaX0 = 16 * C0;
@@ -134,7 +154,7 @@ namespace Engine
 			detalY2 = 16 * B2;
 			deltaX2 = 16 * C2;
 
-			invDet = 1.0f / static_cast<float>(det);
+			invDet = 1.0f / static_cast<float>(std::abs(det));
 
 			// Determining which corner is the trivial reject corner will vary from edge to edge depending on slope
 			const float edge0Slope = B0 / static_cast<float>(C0);

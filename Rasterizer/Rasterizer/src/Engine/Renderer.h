@@ -27,7 +27,6 @@ namespace Engine
 		void Render(const Settings& settings);
 
 		[[nodiscard]] const uint8_t* GetColorBuffer() const;
-
 	private:
 		/**
 		 * \brief Clear all buffer before rendering a next frame.

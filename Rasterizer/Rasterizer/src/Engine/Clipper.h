@@ -24,7 +24,7 @@ namespace Engine
 		 * \param clippedBuffer Current buffer assigned for bin core id.
 		 * \param outTriangleBuffer Output buffer of triangles inside viewing frustum.
 		 */
-		void Clip(int bin, std::vector<Assets::Vertex>& clippedBuffer,
+		void Clip(int bin, const Settings& settings, std::vector<Assets::Vertex>& clippedBuffer,
 		          std::vector<LarrabeeTriangle>& outTriangleBuffer) const;
 	private:
 		uint32_t trianglesCount;

@@ -94,6 +94,7 @@ namespace Viewer
 			ImGui::Combo("   ", &settings.textureFilterId, filter, 2);
 			ImGui::PopItemWidth();
 
+			ImGui::Checkbox("Cull back-faces", &settings.cullBackFaces);
 			ImGui::Checkbox("Use shadows", &settings.useShadows);
 
 			// ==================================

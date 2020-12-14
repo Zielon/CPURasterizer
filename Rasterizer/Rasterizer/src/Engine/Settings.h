@@ -18,5 +18,6 @@ namespace Engine
 		uint32_t spheresCount{};
 		float fps{};
 		bool useShadows;
+		bool cullBackFaces = true;
 	};
 }

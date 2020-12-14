@@ -24,7 +24,7 @@ namespace Engine
 		std::cout << "[SCENE] Scene has been loaded" << std::endl;
 	}
 
-	Scene::~Scene() {}
+	Scene::~Scene() = default;
 
 	void Scene::AddMesh(const std::string& path)
 	{

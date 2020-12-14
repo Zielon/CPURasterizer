@@ -6,7 +6,9 @@
 
 namespace Engine
 {
-	Clipper::Clipper(const Scene& scene, const Camera& camera, const std::vector<Assets::Vertex>& vertices)
+	Clipper::Clipper(const Scene& scene,
+	                 const Camera& camera,
+	                 const std::vector<Assets::Vertex>& vertices)
 		: camera(camera), scene(scene), projectedVertexStorage(vertices)
 	{
 		const auto numCores = std::thread::hardware_concurrency();
@@ -17,7 +19,8 @@ namespace Engine
 	}
 
 	void Clipper::Clip(
-		int bin, std::vector<Assets::Vertex>& clippedBuffer, std::vector<LarrabeeTriangle>& outTriangleBuffer) const
+		int bin, const Settings& settings, std::vector<Assets::Vertex>& clippedBuffer,
+		std::vector<LarrabeeTriangle>& outTriangleBuffer) const
 	{
 		// Assign each thread to separate chunk of buffer
 		const auto startIdx = bin * coreInterval;
@@ -107,7 +110,7 @@ namespace Engine
 
 						LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { v0c, v1c, v2c });
 
-						if (triangle.Setup())
+						if (triangle.Setup(settings.cullBackFaces))
 						{
 							outTriangleBuffer.push_back(triangle);
 						}
@@ -137,7 +140,7 @@ namespace Engine
 
 			LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { idx0, idx1, idx2 });
 
-			if (triangle.Setup())
+			if (triangle.Setup(settings.cullBackFaces))
 			{
 				outTriangleBuffer.push_back(triangle);
 			}

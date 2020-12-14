@@ -54,8 +54,7 @@ namespace Engine
 	void Renderer::Clear()
 	{
 		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile) { tile.Clear(); });
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
-		{
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
 			clippedProjectedVertexBuffer[bin].clear();
 			rasterTrianglesBuffer[bin].clear();
 		});
@@ -68,32 +67,28 @@ namespace Engine
 	{
 		const auto& buffer = scene.GetVertexBuffer();
 
-		Concurrency::ForEach(buffer.begin(), buffer.end(), [this](const Assets::Vertex& inVertex)
-		{
+		Concurrency::ForEach(buffer.begin(), buffer.end(), [this](const Assets::Vertex& inVertex) {
 			vertexShader->Process(inVertex, projectedVertexStorage[inVertex.id]);
 		});
 	}
 
 	void Renderer::ClippingStage()
 	{
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
-		{
-			clipper->Clip(bin, clippedProjectedVertexBuffer[bin], rasterTrianglesBuffer[bin]);
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
+			clipper->Clip(bin, settings, clippedProjectedVertexBuffer[bin], rasterTrianglesBuffer[bin]);
 		});
 	}
 
 	void Renderer::TiledRasterizationStage()
 	{
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
-		{
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
 			rasterizer->AssignTriangles(bin);
 		});
 	}
 
 	void Renderer::RasterizationStage()
 	{
-		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile)
-		{
+		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile) {
 			for (auto bin : coreIds)
 				rasterizer->RasterizeTile(bin, tile);
 		});
@@ -130,8 +125,7 @@ namespace Engine
 
 	void Renderer::FragmentShaderStage()
 	{
-		Concurrency::ForEach(pixels.begin(), pixels.end(), [&](Pixel& frag)
-		{
+		Concurrency::ForEach(pixels.begin(), pixels.end(), [&](Pixel& frag) {
 			Assets::Vertex& v0 = clippedProjectedVertexBuffer[frag.coreId][frag.vId0];
 			Assets::Vertex& v1 = clippedProjectedVertexBuffer[frag.coreId][frag.vId1];
 			Assets::Vertex& v2 = clippedProjectedVertexBuffer[frag.coreId][frag.vId2];
@@ -153,7 +147,7 @@ namespace Engine
 			//diffuseAmount = AVX::Select(mask, AVXFloat(0), diffuseAmount);
 			//AVXFloat diffuse = (diffuseAmount + 0.2f) * 3 * M_PI;
 
-			AVXVec3f shadingResults = absVec(_normal) * std::pow(1, 2.2);
+			AVXVec3f shadingResults = absVec(_normal);
 
 			Assets::Color4b colorByte[8];
 			colorByte[0].FromFloats(shadingResults.x[0], shadingResults.y[0], shadingResults.z[0]);
@@ -171,8 +165,7 @@ namespace Engine
 
 	void Renderer::UpdateFrameBuffer()
 	{
-		Concurrency::ForEach(0, tiledPixels.size(), [&](int i)
-		{
+		Concurrency::ForEach(0, tiledPixels.size(), [&](int i) {
 			for (auto j = 0; j < tiles[i].fragments.size(); j++)
 			{
 				const Pixel& frag = tiles[i].fragments[j];
