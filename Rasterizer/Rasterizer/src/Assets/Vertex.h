@@ -19,11 +19,31 @@ namespace Assets
 		glm::vec3 normal{};
 		glm::vec2 texCoords{};
 
-		bool operator==(const Vertex& other) const
+		__forceinline Vertex operator*(float t) const
 		{
-			return position == other.position &&
-				normal == other.normal &&
-				texCoords == other.texCoords;
+			auto copy = *this;
+
+			copy.position *= t;
+			copy.normal *= t;
+			copy.texCoords *= t;
+
+			return copy;
+		}
+
+		__forceinline Vertex operator+(const Vertex& v) const
+		{
+			auto copy = *this;
+
+			copy.position += v.position;
+			copy.normal += v.normal;
+			copy.texCoords += v.texCoords;
+
+			return copy;
+		}
+
+		__forceinline bool operator==(const Vertex& v) const
+		{
+			return position == v.position && normal == v.normal && texCoords == v.texCoords;
 		}
 	};
 }

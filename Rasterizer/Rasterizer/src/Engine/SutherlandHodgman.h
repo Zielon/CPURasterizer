@@ -7,7 +7,6 @@
 namespace Engine
 {
 	using Predicate = std::function<bool(const glm::vec4&)>;
-	using Intersection = std::function<float(const glm::vec4&, const glm::vec4&)>;
 	using Clip = std::function<void(glm::vec4&)>;
 
 	struct Polygon
@@ -21,12 +20,15 @@ namespace Engine
 		struct Point
 		{
 			glm::vec4 pos;
+			// Distances used for linear interpolation between segment and frustum plane
 			glm::vec3 distances;
 		};
 
-		std::vector<Point> points;
-
 		[[nodiscard]] uint32_t Size() const { return points.size(); }
+		__forceinline void Clear() { points.clear(); }
+		__forceinline void Add(const Point& point) { points.push_back(point); }
+		__forceinline Point& operator [](const size_t i) { return points[i]; }
+		__forceinline const Point& operator [](const size_t i) const { return points[i]; }
 
 		void SetFromTriangle(const glm::vec4& v0, const glm::vec4& v1, const glm::vec4& v2)
 		{
@@ -34,6 +36,9 @@ namespace Engine
 			points.emplace_back(Point{ v1, { 0, 1, 0 } });
 			points.emplace_back(Point{ v2, { 0, 0, 1 } });
 		}
+
+	private:
+		std::vector<Point> points;
 	};
 
 	/**
@@ -53,14 +58,16 @@ namespace Engine
 		 * \param v Current point for clipping (after vertex shader)
 		 * \return Code for planes to clip
 		 */
-		Polygon ClipPlane(const Polygon&, const Predicate&, const Intersection&, const Clip&);
+		Polygon ClipPlane(uint32_t plane, const Polygon&, const Predicate&, const Clip&);
 
 		/**
 		 * \brief Clipping dot products
-		 * \param planeCode Bit for the intersection plane
+		 * \param clipPlane Bit for the intersection plane
 		 * \param v Point for which we check intersection
 		 * \return Distance to the given plane
 		 */
-		float Dot(int clipPlane, const glm::vec4& v);
+		float Dot(uint32_t clipPlane, const glm::vec4& v);
+
+		float Point2PlaneDistance(uint32_t clipPlane, const glm::vec4& a, const glm::vec4& b);
 	};
 }

@@ -39,13 +39,13 @@ namespace Engine
 			if (maxX < minX || maxY < minY)
 				return;
 
-			AVXLarrabeeTriangle AVXtriangle(triangle);
+			AVXLarrabeeTriangle SSEtriangle(triangle);
 
 			AVXVec2i pixelBase(minX << FIXED_POINT, minY << FIXED_POINT);
 			AVXVec2i pixelCenter = pixelBase + centerOffset;
-			AVXInt edgeVal0 = AVXtriangle.EdgeFunc0(pixelCenter);
-			AVXInt edgeVal1 = AVXtriangle.EdgeFunc1(pixelCenter);
-			AVXInt edgeVal2 = AVXtriangle.EdgeFunc2(pixelCenter);
+			AVXInt edgeVal0 = SSEtriangle.EdgeFunc0(pixelCenter);
+			AVXInt edgeVal1 = SSEtriangle.EdgeFunc1(pixelCenter);
+			AVXInt edgeVal2 = SSEtriangle.EdgeFunc2(pixelCenter);
 
 			AVXInt pixelBaseStepY = AVXInt(32);
 			AVXInt pixelBaseStepX = AVXInt(64);
@@ -66,27 +66,27 @@ namespace Engine
 
 					if (AVX::Any(covered))
 					{
-						AVXtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
+						SSEtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
 
-						auto tbin = AVXtriangle.binId;
-						auto& ids = AVXtriangle.vertexIds;
+						auto tbin = SSEtriangle.binId;
+						auto& ids = SSEtriangle.vertexIds;
 
 						float v0 = clippedProjectedVertexBuffer[tbin][ids[0]].projectedPosition.z;
 						float v1 = clippedProjectedVertexBuffer[tbin][ids[1]].projectedPosition.z;
 						float v2 = clippedProjectedVertexBuffer[tbin][ids[2]].projectedPosition.z;
 
-						AVXBool ztest = depthBuffer.ZTest(AVXtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
+						AVXBool ztest = depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
 
 						AVXBool visible = ztest & covered;
 
 						if (AVX::Any(visible))
 						{
 							tile.fragments.emplace_back(
-								AVXtriangle.lambda0,
-								AVXtriangle.lambda1,
+								SSEtriangle.lambda0,
+								SSEtriangle.lambda1,
 								ids[0], ids[1], ids[2],
 								tbin,
-								AVXtriangle.textureId,
+								SSEtriangle.textureId,
 								glm::ivec2(x, y),
 								CoverageMask(visible, 0),
 								tile.id,
@@ -94,14 +94,14 @@ namespace Engine
 						}
 					}
 
-					edgeVal0 += AVXtriangle.deltaY0;
-					edgeVal1 += AVXtriangle.deltaY1;
-					edgeVal2 += AVXtriangle.deltaY2;
+					edgeVal0 += SSEtriangle.deltaY0;
+					edgeVal1 += SSEtriangle.deltaY1;
+					edgeVal2 += SSEtriangle.deltaY2;
 				}
 
-				edgeVal0 = edgeYBase0 + AVXtriangle.deltaX0;
-				edgeVal1 = edgeYBase1 + AVXtriangle.deltaX1;
-				edgeVal2 = edgeYBase2 + AVXtriangle.deltaX2;
+				edgeVal0 = edgeYBase0 + SSEtriangle.deltaX0;
+				edgeVal1 = edgeYBase1 + SSEtriangle.deltaX1;
+				edgeVal2 = edgeYBase2 + SSEtriangle.deltaX2;
 			}
 		}
 	}

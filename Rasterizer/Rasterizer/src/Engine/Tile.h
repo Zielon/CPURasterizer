@@ -2,12 +2,10 @@
 
 #include <glm/glm.hpp>
 
-#include <deque>
 #include <vector>
-#include <array>
 
+#include "Concurrency.h"
 #include "Pixel.h"
-#include "../Assets/Color4b.h"
 
 namespace Engine
 {
@@ -22,15 +20,21 @@ namespace Engine
 
 		Tile(const glm::ivec2& min, const glm::ivec2 max, uint32_t id): maxRaster(max), minRaster(min), id(id)
 		{
+			bins = std::thread::hardware_concurrency();
 			fragments.reserve(256);
-			triangles.resize(16);
-			color = { uint8_t(rand() & 0xff), uint8_t(rand() & 0xff), uint8_t(rand() & 0xff) };
+			triangles.resize(bins);
+			binsIndex.resize(bins);
+			for (auto& triangle : triangles)
+				triangle.resize(BIN_SIZE);
 		}
 
 		glm::ivec2 maxRaster{}; // Bottom right tile's corner
 		glm::ivec2 minRaster{}; // Upper left tile's corner
 		uint32_t id{};
-		Assets::Color4b color;
+		uint32_t bins{};
+		std::vector<uint32_t> binsIndex{};
+		std::vector<std::vector<uint32_t>> triangles;
+		std::vector<Pixel> fragments;
 
 		/**
 		 * \brief Lock free primitive addition method
@@ -40,20 +44,19 @@ namespace Engine
 		void Add(uint32_t bin, uint32_t elem)
 		{
 			if (binsIndex[bin] > BIN_SIZE - 1)
-				return;
-			
-			triangles[bin][binsIndex[bin]] = elem;
+				triangles[bin].push_back(elem);
+			else
+				triangles[bin][binsIndex[bin]] = elem;
+
 			++binsIndex[bin];
 		};
 
 		void Clear()
 		{
-			std::fill(binsIndex.begin(), binsIndex.end(), 0);
 			fragments.clear();
+			std::fill(binsIndex.begin(), binsIndex.end(), 0);
+			Concurrency::ForEach(triangles.begin(), triangles.end(),
+			                     [&](auto& triangle) { triangle.resize(BIN_SIZE); });
 		}
-
-		std::array<uint32_t, 16> binsIndex{};
-		std::vector<std::array<uint32_t, BIN_SIZE>> triangles;
-		std::vector<Pixel> fragments;
 	};
 }

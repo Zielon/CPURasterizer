@@ -11,7 +11,7 @@ namespace Engine
 {
 	/**
 	 * \brief Clips points the the viewing frustum planes.
-	 * Additionally performs perspective division and polygons clipping.
+	 * Additionally performs perspective division.
 	 */
 	class Clipper final
 	{
@@ -29,9 +29,11 @@ namespace Engine
 	private:
 		uint32_t trianglesCount;
 		uint32_t coreInterval;
+
 		const Camera& camera;
 		const Scene& scene;
 		const std::vector<Assets::Vertex>& projectedVertexStorage;
+
 		std::unique_ptr<SutherlandHodgman> sutherlandHodgman;
 	};
 }

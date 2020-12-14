@@ -19,108 +19,114 @@ namespace Engine
 		Polygon polygon{};
 		polygon.SetFromTriangle(v0, v1, v2);
 
-		auto intersection = [&](const glm::vec4& v0, const glm::vec4& v1) {
-			return Dot(code, v0) / (Dot(code, v0) - Dot(code, v1));
-		};
+		// ===================================================================== //
 
 		if (code & LEFT_BIT)
 			polygon = ClipPlane(
-				polygon,
+				LEFT_BIT, polygon,
 				[](const glm::vec4& v) { return v.x >= -v.w; },
-				intersection,
 				[](glm::vec4& v) { v.x = -v.w; });
 
 		if (code & RIGHT_BIT)
 			polygon = ClipPlane(
-				polygon,
+				RIGHT_BIT, polygon,
 				[](const glm::vec4& v) { return v.x <= v.w; },
-				intersection,
 				[](glm::vec4& v) { v.x = v.w; });
 
 		// ===================================================================== //
 
 		if (code & BOTTOM_BIT)
 			polygon = ClipPlane(
-				polygon,
+				BOTTOM_BIT, polygon,
 				[](const glm::vec4& v) { return v.y >= -v.w; },
-				intersection,
 				[](glm::vec4& v) { v.y = -v.w; });
 
 		if (code & TOP_BIT)
 			polygon = ClipPlane(
-				polygon,
+				TOP_BIT, polygon,
 				[](const glm::vec4& v) { return v.y <= v.w; },
-				intersection,
 				[](glm::vec4& v) { v.y = v.w; });
 
 		// ===================================================================== //
 
 		if (code & FAR_BIT)
 			polygon = ClipPlane(
-				polygon,
+				FAR_BIT, polygon,
 				[](const glm::vec4& v) { return v.z <= v.w; },
-				intersection,
 				[](glm::vec4& v) { v.z = v.w; });
 
 		if (code & NEAR_BIT)
 			polygon = ClipPlane(
-				polygon,
+				NEAR_BIT, polygon,
 				[](const glm::vec4& v) { return v.z >= 0.f; },
-				intersection,
 				[](glm::vec4& v) { v.z = 0.f; });
+
+		// ===================================================================== //
+
+		for (int i = 0; i < polygon.Size(); i++)
+		{
+			if (polygon[i].pos.w <= 0.0f)
+			{
+				polygon.Clear();
+				break;
+			}
+		}
 
 		return polygon;
 	}
 
-	Polygon SutherlandHodgman::ClipPlane(
-		const Polygon& inPolygon, const Predicate& isInside, const Intersection& T, const Clip& clip)
+	__forceinline Polygon SutherlandHodgman::ClipPlane(
+		uint32_t plane, const Polygon& inPolygon, const Predicate& isInside, const Clip& clip)
 	{
 		Polygon outPolygon;
 
+		// For each edge/segment
 		for (uint32_t i = 0, j = 1; i < inPolygon.Size(); ++i, ++j)
 		{
 			if (j == inPolygon.Size()) j = 0;
 
-			const auto& currentPos = inPolygon.points[i].pos;
-			const auto& currentDistance = inPolygon.points[i].distances;
+			// Point A on the segment
+			const auto& aPos = inPolygon[i].pos;
+			const auto& aDist = inPolygon[i].distances;
 
-			const auto& previousPos = inPolygon.points[j].pos;
-			const auto& previousDistance = inPolygon.points[j].distances;
+			// Point B on the segment
+			const auto& bPos = inPolygon[j].pos;
+			const auto& bDist = inPolygon[j].distances;
 
-			float t = T(currentPos, previousPos);
-			glm::vec4 newPosition = currentPos * (1 - t) + previousPos * t; // Lerp
-			clip(newPosition);
-			glm::vec3 newWeight = currentDistance * (1 - t) + previousDistance * t;
+			float t = Point2PlaneDistance(plane, aPos, bPos);
+			glm::vec4 newPos = aPos * (1 - t) + bPos * t; // Lerp
+			const glm::vec3 newDist = aDist * (1 - t) + bDist * t; // Lerp
+			clip(newPos);
 
-			if (isInside(currentPos))
+			if (isInside(aPos))
 			{
-				if (isInside(previousPos))
-					outPolygon.points.push_back(Polygon::Point{ previousPos, inPolygon.points[j].distances });
+				if (isInside(bPos))
+					outPolygon.Add(Polygon::Point{ bPos, bDist });
 				else
-					outPolygon.points.push_back(Polygon::Point{ newPosition, newWeight });
+					outPolygon.Add(Polygon::Point{ newPos, newDist });
 			}
-			else if (isInside(previousPos))
+			else if (isInside(bPos))
 			{
-				outPolygon.points.push_back(Polygon::Point{ newPosition, newWeight });
-				outPolygon.points.push_back(Polygon::Point{ previousPos, inPolygon.points[j].distances });
+				outPolygon.Add(Polygon::Point{ newPos, newDist });
+				outPolygon.Add(Polygon::Point{ bPos, bDist });
 			}
 		}
 
 		return outPolygon;
 	}
 
-	float SutherlandHodgman::Dot(int planeCode, const glm::vec4& v)
+	__forceinline float SutherlandHodgman::Dot(uint32_t planeCode, const glm::vec4& v)
 	{
 		if (planeCode & LEFT_BIT) return v.x + v.w; /* v * (1 0 0 1)  */
-		if (planeCode & RIGHT_BIT) return -v.x + v.w; /* v * (-1 0 0 1) */
-		if (planeCode & BOTTOM_BIT) return -v.y + v.w; /* v * (0 -1 0 1) */
-		if (planeCode & TOP_BIT) return v.y + v.w; /* v * (0 1 0 1)  */
-		if (planeCode & FAR_BIT) return -v.z; /* v * (0 0 -1 0) */
-		if (planeCode & NEAR_BIT) return v.z + v.w; /* v * (0 0 1 1)  */
+		if (planeCode & RIGHT_BIT) return v.x - v.w; /* v * (-1 0 0 1) */
+		if (planeCode & BOTTOM_BIT) return v.y + v.w; /* v * (0 -1 0 1) */
+		if (planeCode & TOP_BIT) return v.y - v.w; /* v * (0 1 0 1)  */
+		if (planeCode & FAR_BIT) return v.z - v.w; /* v * (0 0 -1 0) */
+		if (planeCode & NEAR_BIT) return v.z; /* v * (0 0 1 1)  */
 
 		return INFINITY;
 	}
-	
+
 	uint32_t SutherlandHodgman::GetClipCode(const glm::vec4& v)
 	{
 		uint32_t code = INSIDE_BIT;
@@ -133,5 +139,11 @@ namespace Engine
 		if (v.z < 0.0f)code |= NEAR_BIT;
 
 		return code;
+	}
+
+	__forceinline float SutherlandHodgman::Point2PlaneDistance(
+		uint32_t clipPlane, const glm::vec4& a, const glm::vec4& b)
+	{
+		return Dot(clipPlane, a) / (Dot(clipPlane, a) - Dot(clipPlane, b));
 	}
 }
