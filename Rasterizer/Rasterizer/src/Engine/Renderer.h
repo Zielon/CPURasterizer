@@ -62,7 +62,7 @@ namespace Engine
 
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);
-
+		void CopyPixels();
 		void CreateTiles();
 		void CreateBuffers();
 

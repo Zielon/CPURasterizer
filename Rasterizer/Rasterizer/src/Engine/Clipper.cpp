@@ -26,27 +26,21 @@ namespace Engine
 		const auto startIdx = bin * coreInterval;
 		const auto endIdx = (bin + 1) * coreInterval;
 
-		std::array<uint32_t, 12> clipped;
+		std::array<uint32_t, 12> clipped{};
+		auto viewportMatrix = camera.GetRasterMatrix();
 
 		for (uint32_t i = startIdx; i < endIdx; ++i)
 		{
 			if (3 * i + 2 > scene.GetIndexBuffer().size())
 				break;
 
-			auto& v0 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 0]];
-			auto& v1 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 2]];
-			auto& v2 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 1]];
+			const auto& v0 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 0]];
+			const auto& v1 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 2]];
+			const auto& v2 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 1]];
 
 			uint32_t clipCode0 = sutherlandHodgman->GetClipCode(v0.projectedPosition);
 			uint32_t clipCode1 = sutherlandHodgman->GetClipCode(v1.projectedPosition);
 			uint32_t clipCode2 = sutherlandHodgman->GetClipCode(v2.projectedPosition);
-
-			uint32_t idx0 = clippedBuffer.size();
-			clippedBuffer.push_back(v0);
-			uint32_t idx1 = clippedBuffer.size();
-			clippedBuffer.push_back(v1);
-			uint32_t idx2 = clippedBuffer.size();
-			clippedBuffer.push_back(v2);
 
 			if (clipCode0 | clipCode1 | clipCode2)
 			{
@@ -64,15 +58,18 @@ namespace Engine
 
 						if (weight.x == 1.0f)
 						{
-							clipped[j] = idx0;
+							clipped[j] = clippedBuffer.size();
+							clippedBuffer.push_back(v0);
 						}
 						else if (weight.y == 1.0f)
 						{
-							clipped[j] = idx1;
+							clipped[j] = clippedBuffer.size();
+							clippedBuffer.push_back(v1);
 						}
 						else if (weight.z == 1.0f)
 						{
-							clipped[j] = idx2;
+							clipped[j] = clippedBuffer.size();
+							clippedBuffer.push_back(v2);
 						}
 						else
 						{
@@ -86,29 +83,19 @@ namespace Engine
 
 					for (int j = 2; j < polygon.Size(); j++)
 					{
-						auto& v0c = clipped[0];
-						auto& v1c = clipped[j - 1];
-						auto& v2c = clipped[j];
+						// Preserve winding
+						auto& id0 = clipped[0];
+						auto& id1 = clipped[j - 1];
+						auto& id2 = clipped[j];
 
-						// Perspective division
-						float inv = 1.f / clippedBuffer[v0c].projectedPosition.w;
-						glm::vec4 hv0 = clippedBuffer[v0c].projectedPosition * inv;
-
-						inv = 1.f / clippedBuffer[v1c].projectedPosition.w;
-						glm::vec4 hv1 = clippedBuffer[v1c].projectedPosition * inv;
-
-						inv = 1.f / clippedBuffer[v2c].projectedPosition.w;
-						glm::vec4 hv2 = clippedBuffer[v2c].projectedPosition * inv;
-
-						auto raster = camera.GetRasterMatrix();
-
-						glm::vec4 r0 = raster * hv0;
-						glm::vec4 r1 = raster * hv1;
-						glm::vec4 r2 = raster * hv2;
+						// Perspective division and viewport transformation
+						glm::vec4 r0 = viewportMatrix * clippedBuffer[id0].PerspectiveDivision();
+						glm::vec4 r1 = viewportMatrix * clippedBuffer[id1].PerspectiveDivision();
+						glm::vec4 r2 = viewportMatrix * clippedBuffer[id2].PerspectiveDivision();
 
 						auto triId = outTriangleBuffer.size();
 
-						LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { v0c, v1c, v2c });
+						LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { id0, id1, id2 });
 
 						if (triangle.Setup(settings.cullBackFaces))
 						{
@@ -120,25 +107,22 @@ namespace Engine
 				continue;
 			}
 
-			// Perspective division
-			float inv = 1.f / v0.projectedPosition.w;
-			glm::vec4 hv0 = v0.projectedPosition * inv;
+			// Triangle is entirely inside viewing frustum 
+			uint32_t id0 = clippedBuffer.size();
+			clippedBuffer.push_back(v0);
+			uint32_t id1 = clippedBuffer.size();
+			clippedBuffer.push_back(v1);
+			uint32_t id2 = clippedBuffer.size();
+			clippedBuffer.push_back(v2);
 
-			inv = 1.f / v1.projectedPosition.w;
-			glm::vec4 hv1 = v1.projectedPosition * inv;
-
-			inv = 1.f / v2.projectedPosition.w;
-			glm::vec4 hv2 = v2.projectedPosition * inv;
-
-			auto raster = camera.GetRasterMatrix();
-
-			glm::vec4 r0 = raster * hv0;
-			glm::vec4 r1 = raster * hv1;
-			glm::vec4 r2 = raster * hv2;
+			// Perspective division and viewport transformation
+			glm::vec4 r0 = viewportMatrix * clippedBuffer[id0].PerspectiveDivision();
+			glm::vec4 r1 = viewportMatrix * clippedBuffer[id1].PerspectiveDivision();
+			glm::vec4 r2 = viewportMatrix * clippedBuffer[id2].PerspectiveDivision();
 
 			auto triId = outTriangleBuffer.size();
 
-			LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { idx0, idx1, idx2 });
+			LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { id0, id1, id2 });
 
 			if (triangle.Setup(settings.cullBackFaces))
 			{
