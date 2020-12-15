@@ -81,7 +81,7 @@ namespace Engine
 
 						if (AVX::Any(visible))
 						{
-							tile.fragments.emplace_back(
+							tile.pixels.emplace_back(
 								SSEtriangle.lambda0,
 								SSEtriangle.lambda1,
 								ids[0], ids[1], ids[2],
@@ -90,7 +90,7 @@ namespace Engine
 								glm::ivec2(x, y),
 								CoverageMask(visible, 0),
 								tile.id,
-								tile.fragments.size());
+								tile.pixels.size());
 						}
 					}
 

@@ -19,7 +19,7 @@ namespace Engine
 		Clipper(const class Scene& scene, const class Camera& camera, const std::vector<Assets::Vertex>& vertices);
 
 		/**
-		 * \brief Clip triangles and projects to NDC.
+		 * \brief Clip triangles and projects to NDC using perspective division.
 		 * \param bin Current bin for lock-free multi-threading.
 		 * \param clippedBuffer Current buffer assigned for bin core id.
 		 * \param outTriangleBuffer Output buffer of triangles inside viewing frustum.

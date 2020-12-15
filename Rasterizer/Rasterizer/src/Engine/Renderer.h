@@ -56,13 +56,13 @@ namespace Engine
 		void RasterizationStage();
 
 		/**
-		 * \brief Run fragments shader on every generate fragment/pixel.
+		 * \brief Run pixels shader on every generate fragment/pixel.
 		 */
 		void FragmentShaderStage();
 
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);
-		void CopyPixels();
+		void CopyPixelsToBuffer();
 		void CreateTiles();
 		void CreateBuffers();
 

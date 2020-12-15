@@ -18,23 +18,23 @@ namespace Engine
 	{
 		Tile() = default;
 
-		Tile(const glm::ivec2& min, const glm::ivec2 max, uint32_t id): maxRaster(max), minRaster(min), id(id)
+		Tile(const glm::ivec2& min, const glm::ivec2 max, uint32_t id): id(id), maxRaster(max), minRaster(min)
 		{
 			bins = std::thread::hardware_concurrency();
-			fragments.reserve(256);
+			pixels.reserve(256);
 			triangles.resize(bins);
 			binsIndex.resize(bins);
 			for (auto& triangle : triangles)
 				triangle.resize(BIN_SIZE);
 		}
 
-		glm::ivec2 maxRaster{}; // Bottom right tile's corner
-		glm::ivec2 minRaster{}; // Upper left tile's corner
 		uint32_t id{};
 		uint32_t bins{};
+		glm::ivec2 maxRaster{}; // Bottom right tile's corner
+		glm::ivec2 minRaster{}; // Upper left tile's corner
 		std::vector<uint32_t> binsIndex{};
 		std::vector<std::vector<uint32_t>> triangles;
-		std::vector<Pixel> fragments;
+		std::vector<Pixel> pixels;
 
 		/**
 		 * \brief Lock free primitive addition method
@@ -53,7 +53,7 @@ namespace Engine
 
 		void Clear()
 		{
-			fragments.clear();
+			pixels.clear();
 			std::fill(binsIndex.begin(), binsIndex.end(), 0);
 			Concurrency::ForEach(triangles.begin(), triangles.end(),
 			                     [&](auto& triangle) { triangle.resize(BIN_SIZE); });

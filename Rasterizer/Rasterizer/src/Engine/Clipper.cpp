@@ -34,9 +34,9 @@ namespace Engine
 			if (3 * i + 2 > scene.GetIndexBuffer().size())
 				break;
 
-			const auto& v0 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 0]];
-			const auto& v1 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 2]];
-			const auto& v2 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 1]];
+			auto v0 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 0]];
+			auto v1 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 2]];
+			auto v2 = projectedVertexStorage[scene.GetIndexBuffer()[3 * i + 1]];
 
 			uint32_t clipCode0 = sutherlandHodgman->GetClipCode(v0.projectedPosition);
 			uint32_t clipCode1 = sutherlandHodgman->GetClipCode(v1.projectedPosition);
@@ -44,6 +44,7 @@ namespace Engine
 
 			if (clipCode0 | clipCode1 | clipCode2)
 			{
+				// Check the clipping codes correctness
 				if (!(clipCode0 & clipCode1 & clipCode2))
 				{
 					auto polygon = sutherlandHodgman->ClipTriangle(
@@ -58,16 +59,19 @@ namespace Engine
 
 						if (weight.x == 1.0f)
 						{
+							v0.PerspectiveDivision();
 							clipped[j] = clippedBuffer.size();
 							clippedBuffer.push_back(v0);
 						}
 						else if (weight.y == 1.0f)
 						{
+							v1.PerspectiveDivision();
 							clipped[j] = clippedBuffer.size();
 							clippedBuffer.push_back(v1);
 						}
 						else if (weight.z == 1.0f)
 						{
+							v2.PerspectiveDivision();
 							clipped[j] = clippedBuffer.size();
 							clippedBuffer.push_back(v2);
 						}
@@ -76,6 +80,7 @@ namespace Engine
 							auto vertex = v0 * weight.x + v1 * weight.y + v2 * weight.z;
 							vertex.projectedPosition = polygon[j].pos;
 
+							vertex.PerspectiveDivision();
 							clipped[j] = clippedBuffer.size();
 							clippedBuffer.push_back(vertex);
 						}
@@ -89,9 +94,9 @@ namespace Engine
 						auto& id2 = clipped[j];
 
 						// Perspective division and viewport transformation
-						glm::vec4 r0 = viewportMatrix * clippedBuffer[id0].PerspectiveDivision();
-						glm::vec4 r1 = viewportMatrix * clippedBuffer[id1].PerspectiveDivision();
-						glm::vec4 r2 = viewportMatrix * clippedBuffer[id2].PerspectiveDivision();
+						glm::vec4 r0 = viewportMatrix * clippedBuffer[id0].projectedPosition;
+						glm::vec4 r1 = viewportMatrix * clippedBuffer[id1].projectedPosition;
+						glm::vec4 r2 = viewportMatrix * clippedBuffer[id2].projectedPosition;
 
 						auto triId = outTriangleBuffer.size();
 
@@ -107,6 +112,10 @@ namespace Engine
 				continue;
 			}
 
+			v0.PerspectiveDivision();
+			v1.PerspectiveDivision();
+			v2.PerspectiveDivision();
+
 			// Triangle is entirely inside viewing frustum 
 			uint32_t id0 = clippedBuffer.size();
 			clippedBuffer.push_back(v0);
@@ -116,9 +125,9 @@ namespace Engine
 			clippedBuffer.push_back(v2);
 
 			// Perspective division and viewport transformation
-			glm::vec4 r0 = viewportMatrix * clippedBuffer[id0].PerspectiveDivision();
-			glm::vec4 r1 = viewportMatrix * clippedBuffer[id1].PerspectiveDivision();
-			glm::vec4 r2 = viewportMatrix * clippedBuffer[id2].PerspectiveDivision();
+			glm::vec4 r0 = viewportMatrix * clippedBuffer[id0].projectedPosition;
+			glm::vec4 r1 = viewportMatrix * clippedBuffer[id1].projectedPosition;
+			glm::vec4 r2 = viewportMatrix * clippedBuffer[id2].projectedPosition;
 
 			auto triId = outTriangleBuffer.size();
 

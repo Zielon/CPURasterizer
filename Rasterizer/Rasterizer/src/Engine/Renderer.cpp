@@ -77,6 +77,14 @@ namespace Engine
 		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
 			clipper->Clip(bin, settings, clippedProjectedVertexBuffer[bin], rasterTrianglesBuffer[bin]);
 		});
+
+		//Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
+		//	for (auto& vertex : clippedProjectedVertexBuffer[bin])
+		//	{
+		//		vertex.invW = 1.f / vertex.projectedPosition.w;
+		//		vertex.projectedPosition *= vertex.invW;
+		//	}
+		//});
 	}
 
 	void Renderer::TiledRasterizationStage()
@@ -93,7 +101,7 @@ namespace Engine
 				rasterizer->RasterizeTile(bin, tile);
 		});
 
-		CopyPixels();
+		CopyPixelsToBuffer();
 	}
 
 	void Renderer::FragmentShaderStage()
@@ -118,53 +126,37 @@ namespace Engine
 	void Renderer::UpdateFrameBuffer()
 	{
 		Concurrency::ForEach(0, tiledPixels.size(), [&](int i) {
-			for (auto j = 0; j < tiles[i].fragments.size(); j++)
+			for (auto j = 0; j < tiles[i].pixels.size(); j++)
 			{
-				const Pixel& frag = tiles[i].fragments[j];
+				const Pixel& pixel = tiles[i].pixels[j];
 
 				const int maskShift = 0;
 
 				auto& color = tiledPixels[i][j].m256.m256i_u8;
 
-				if (frag.coverageMask.GetBit(maskShift) != 0)
-				{
-					colorBuffer->SetColor(Assets::Color4b(color[0], color[1], color[2]), frag.x, frag.y);
-				}
+				if (pixel.coverageMask.GetBit(maskShift + 0) != 0)
+					colorBuffer->SetColor(Assets::Color4b(color[0], color[1], color[2]), pixel.x, pixel.y);
 
-				if (frag.coverageMask.GetBit(maskShift + 1) != 0)
-				{
-					colorBuffer->SetColor(Assets::Color4b(color[4], color[5], color[6]), frag.x + 1, frag.y);
-				}
+				if (pixel.coverageMask.GetBit(maskShift + 1) != 0)
+					colorBuffer->SetColor(Assets::Color4b(color[4], color[5], color[6]), pixel.x + 1, pixel.y);
 
-				if (frag.coverageMask.GetBit(maskShift + 2) != 0)
-				{
-					colorBuffer->SetColor(Assets::Color4b(color[8], color[9], color[10]), frag.x, frag.y + 1);
-				}
+				if (pixel.coverageMask.GetBit(maskShift + 2) != 0)
+					colorBuffer->SetColor(Assets::Color4b(color[8], color[9], color[10]), pixel.x, pixel.y + 1);
 
-				if (frag.coverageMask.GetBit(maskShift + 3) != 0)
-				{
-					colorBuffer->SetColor(Assets::Color4b(color[12], color[13], color[14]), frag.x + 1, frag.y + 1);
-				}
+				if (pixel.coverageMask.GetBit(maskShift + 3) != 0)
+					colorBuffer->SetColor(Assets::Color4b(color[12], color[13], color[14]), pixel.x + 1, pixel.y + 1);
 
-				if (frag.coverageMask.GetBit(maskShift + 4) != 0)
-				{
-					colorBuffer->SetColor(Assets::Color4b(color[16], color[17], color[18]), frag.x + 2, frag.y);
-				}
+				if (pixel.coverageMask.GetBit(maskShift + 4) != 0)
+					colorBuffer->SetColor(Assets::Color4b(color[16], color[17], color[18]), pixel.x + 2, pixel.y);
 
-				if (frag.coverageMask.GetBit(maskShift + 5) != 0)
-				{
-					colorBuffer->SetColor(Assets::Color4b(color[20], color[21], color[22]), frag.x + 3, frag.y);
-				}
+				if (pixel.coverageMask.GetBit(maskShift + 5) != 0)
+					colorBuffer->SetColor(Assets::Color4b(color[20], color[21], color[22]), pixel.x + 3, pixel.y);
 
-				if (frag.coverageMask.GetBit(maskShift + 6) != 0)
-				{
-					colorBuffer->SetColor(Assets::Color4b(color[24], color[25], color[26]), frag.x + 2, frag.y + 1);
-				}
+				if (pixel.coverageMask.GetBit(maskShift + 6) != 0)
+					colorBuffer->SetColor(Assets::Color4b(color[24], color[25], color[26]), pixel.x + 2, pixel.y + 1);
 
-				if (frag.coverageMask.GetBit(maskShift + 7) != 0)
-				{
-					colorBuffer->SetColor(Assets::Color4b(color[28], color[29], color[30]), frag.x + 3, frag.y + 1);
-				}
+				if (pixel.coverageMask.GetBit(maskShift + 7) != 0)
+					colorBuffer->SetColor(Assets::Color4b(color[28], color[29], color[30]), pixel.x + 3, pixel.y + 1);
 			}
 		});
 	}
@@ -174,18 +166,18 @@ namespace Engine
 		this->settings = settings;
 	}
 
-	void Renderer::CopyPixels()
+	void Renderer::CopyPixelsToBuffer()
 	{
 		pixels.clear();
 		tiledPixels.clear();
-
 		tiledPixels.resize(tiles.size());
+
 		for (auto i = 0; i < tiles.size(); i++)
 		{
-			tiledPixels[i].resize(tiles[i].fragments.size());
+			tiledPixels[i].resize(tiles[i].pixels.size());
 			const auto it = pixels.end();
-			if (!tiles[i].fragments.empty())
-				pixels.insert(it, tiles[i].fragments.begin(), tiles[i].fragments.end());
+			if (!tiles[i].pixels.empty())
+				pixels.insert(it, tiles[i].pixels.begin(), tiles[i].pixels.end());
 		}
 	}
 

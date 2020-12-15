@@ -19,10 +19,12 @@ namespace Assets
 		glm::vec3 normal{};
 		glm::vec2 texCoords{};
 
-		__forceinline glm::vec4 PerspectiveDivision() const
+		float invW{};
+
+		void PerspectiveDivision()
 		{
-			const float inv = 1.f / projectedPosition.w;
-			return projectedPosition * inv;
+			invW = 1.f / projectedPosition.w;
+			projectedPosition *= invW;
 		}
 
 		__forceinline Vertex operator*(float t) const
