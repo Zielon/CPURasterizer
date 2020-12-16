@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../../Math/Math.h"
 
 namespace Engine
@@ -19,7 +20,7 @@ namespace Engine
 		}
 	};
 
-	class NormalsShader : public FragmentShader
+	class NormalShader : public FragmentShader
 	{
 	public:
 		AVXVec3f Shade(Assets::Vertex& v0, Assets::Vertex& v1, Assets::Vertex& v2, Pixel& pixel) override
@@ -29,9 +30,10 @@ namespace Engine
 			AVXVec2f texCoord;
 
 			pixel.Interpolate(v0, v1, v2, pixel.lambda0, pixel.lambda1, position, normal, texCoord);
-			AVXFloat w = Math::Rsqrt(Dot(normal, normal));
-			AVXVec3f _normal = normal * w;
-			return absVec(_normal);
+
+			normal = Normalize(normal);
+
+			return Abs(normal);
 		}
 	};
 }

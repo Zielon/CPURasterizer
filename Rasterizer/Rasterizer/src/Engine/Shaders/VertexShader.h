@@ -21,10 +21,8 @@ namespace Engine
 
 		void Process(const Assets::Vertex& inVertex, Assets::Vertex& outVertex) override
 		{
-			glm::mat4 model(1);
-			
 			outVertex.projectedPosition =
-				camera.GetProjectionMatrix() * camera.GetViewMatrix() * model * glm::vec4(inVertex.position, 1.f);
+				camera.GetProjectionMatrix() * camera.GetViewMatrix() * glm::vec4(inVertex.position, 1.f);
 			outVertex.position = inVertex.position;
 			outVertex.normal = inVertex.normal;
 			outVertex.texCoords = inVertex.texCoords;

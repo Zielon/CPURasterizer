@@ -23,7 +23,7 @@ namespace Engine
 
 		colorBuffer.reset(new ColorBuffer(width, height));
 		depthBuffer.reset(new DepthBuffer(width, height));
-		fragmentShader.reset(new NormalsShader());
+		fragmentShader.reset(new NormalShader());
 		vertexShader.reset(new DefaultVertexShader(camera));
 		clipper.reset(new Clipper(scene, camera, projectedVertexStorage));
 		rasterizer.reset(new LarrabeeRasterizer(
@@ -77,14 +77,6 @@ namespace Engine
 		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
 			clipper->Clip(bin, settings, clippedProjectedVertexBuffer[bin], rasterTrianglesBuffer[bin]);
 		});
-
-		//Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
-		//	for (auto& vertex : clippedProjectedVertexBuffer[bin])
-		//	{
-		//		vertex.invW = 1.f / vertex.projectedPosition.w;
-		//		vertex.projectedPosition *= vertex.invW;
-		//	}
-		//});
 	}
 
 	void Renderer::TiledRasterizationStage()

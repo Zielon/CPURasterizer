@@ -42,4 +42,31 @@ namespace Math
 
 	template <class T>
 	__forceinline Vec<3, T> operator *(const T& lhs, const Vec<3, T>& rhs) { return rhs * lhs; }
+
+	template <class T>
+	__forceinline T Dot(const Vec<3, T>& vec1, const Vec<3, T>& vec2)
+	{
+		return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+	}
+
+	template <class T>
+	__forceinline T AbsDot(const Vec<3, T>& vec1, const Vec<3, T>& vec2)
+	{
+		T ret = Dot(vec1, vec2);
+		return ret >= 0 ? ret : -ret;
+	}
+
+	template <class T>
+	__forceinline Vec<3, T> Cross(const Vec<3, T>& vec1, const Vec<3, T>& vec2)
+	{
+		return Vec<3, T>(vec1.y * vec2.z - vec1.z * vec2.y,
+		                 vec1.z * vec2.x - vec1.x * vec2.z,
+		                 vec1.x * vec2.y - vec1.y * vec2.x);
+	}
+
+	template <class T>
+	__forceinline T LengthSquared(const Vec<3, T>& vec)
+	{
+		return Dot(vec, vec);
+	}
 }

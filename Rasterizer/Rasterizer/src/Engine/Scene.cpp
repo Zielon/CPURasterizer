@@ -66,7 +66,7 @@ namespace Engine
 			for (auto& vertex : mesh->GetVertices())
 			{
 				vertex.position = model * glm::vec4(vertex.position, 1.f);
-				vertex.normal = modelInv * glm::vec4(vertex.normal, 1.f);
+				vertex.normal = normalize(modelInv * glm::vec4(vertex.normal, 1.f));
 				vertex.id = id++;
 				vertexBuffer.push_back(vertex);
 			}
