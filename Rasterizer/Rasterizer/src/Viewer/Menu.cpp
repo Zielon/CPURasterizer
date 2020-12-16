@@ -33,7 +33,7 @@ namespace Viewer
 	{
 		const static uint32_t cores = std::thread::hardware_concurrency();
 		const static char* mssa[3] = { "off", "2x", "4x" };
-		const static char* lightModels[2] = { "Phong-Blinn", "Oren-Nayar" };
+		const static char* lightModels[3] = { "Normals", "Phong-Blinn", "Oren-Nayar" };
 		const static char* scenes[3] = { "Cornell Box", "Coffee cart", "Panther" };
 		const static char* filter[2] = { "Nearst", "Linear" };
 
@@ -82,10 +82,10 @@ namespace Viewer
 			ImGui::Combo(" ", &settings.MSSA, mssa, 3);
 			ImGui::PopItemWidth();
 
-			ImGui::Text("Light model");
+			ImGui::Text("Fragment shader");
 
 			ImGui::PushItemWidth(-1);
-			ImGui::Combo("  ", &settings.lightModelId, lightModels, 2);
+			ImGui::Combo("  ", &settings.lightModelId, lightModels, 3);
 			ImGui::PopItemWidth();
 
 			ImGui::Text("Texture filter");

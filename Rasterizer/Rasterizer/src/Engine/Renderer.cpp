@@ -155,6 +155,8 @@ namespace Engine
 
 	void Renderer::UpdateState(const Settings& settings)
 	{
+		UpdatePixelShader(settings.lightModelId);
+
 		this->settings = settings;
 	}
 
@@ -202,5 +204,23 @@ namespace Engine
 
 		coreIds.resize(numCores);
 		std::iota(coreIds.begin(), coreIds.end(), 0);
+	}
+
+	void Renderer::UpdatePixelShader(int lightModelId)
+	{
+		if (this->settings.lightModelId != lightModelId)
+		{
+			switch (lightModelId)
+			{
+			case 0:
+				fragmentShader.reset(new NormalShader());
+				break;
+			case 1:
+				fragmentShader.reset(new PhongBlinnShader());
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }

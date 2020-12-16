@@ -65,6 +65,7 @@ namespace Engine
 		void CopyPixelsToBuffer();
 		void CreateTiles();
 		void CreateBuffers();
+		void UpdatePixelShader(int lightModelId);
 
 		const Scene& scene;
 		const Camera& camera;
