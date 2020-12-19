@@ -7,8 +7,6 @@
 
 #include "../SIMD/AVX.h"
 
-#include "../Math/Math.h"
-
 namespace Engine
 {
 	Renderer::Renderer(const Scene& scene, const Camera& camera) :
@@ -26,7 +24,7 @@ namespace Engine
 		fragmentShader.reset(new NormalShader());
 		vertexShader.reset(new DefaultVertexShader(camera));
 		clipper.reset(new Clipper(scene, camera, projectedVertexStorage));
-		rasterizer.reset(new LarrabeeRasterizer(
+		rasterizer.reset(new Rasterizer(
 			width, height, rasterTrianglesBuffer, tiles, clippedProjectedVertexBuffer, *depthBuffer));
 	}
 
@@ -54,7 +52,8 @@ namespace Engine
 	void Renderer::Clear()
 	{
 		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile) { tile.Clear(); });
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
+		{
 			clippedProjectedVertexBuffer[bin].clear();
 			rasterTrianglesBuffer[bin].clear();
 		});
@@ -67,28 +66,32 @@ namespace Engine
 	{
 		const auto& buffer = scene.GetVertexBuffer();
 
-		Concurrency::ForEach(buffer.begin(), buffer.end(), [this](const Assets::Vertex& inVertex) {
+		Concurrency::ForEach(buffer.begin(), buffer.end(), [this](const Assets::Vertex& inVertex)
+		{
 			vertexShader->Process(inVertex, projectedVertexStorage[inVertex.id]);
 		});
 	}
 
 	void Renderer::ClippingStage()
 	{
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
+		{
 			clipper->Clip(bin, settings, clippedProjectedVertexBuffer[bin], rasterTrianglesBuffer[bin]);
 		});
 	}
 
 	void Renderer::TiledRasterizationStage()
 	{
-		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin) {
+		Concurrency::ForEach(coreIds.begin(), coreIds.end(), [this](int bin)
+		{
 			rasterizer->AssignTriangles(bin);
 		});
 	}
 
 	void Renderer::RasterizationStage()
 	{
-		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile) {
+		Concurrency::ForEach(tiles.begin(), tiles.end(), [this](Tile& tile)
+		{
 			for (auto bin : coreIds)
 				rasterizer->RasterizeTile(bin, tile);
 		});
@@ -98,8 +101,8 @@ namespace Engine
 
 	void Renderer::FragmentShaderStage()
 	{
-		Concurrency::ForEach(pixels.begin(), pixels.end(), [&](Pixel& pixel) {
-
+		Concurrency::ForEach(pixels.begin(), pixels.end(), [&](Pixel& pixel)
+		{
 			// Triangle
 			Assets::Vertex& v0 = clippedProjectedVertexBuffer[pixel.coreId][pixel.vId0];
 			Assets::Vertex& v1 = clippedProjectedVertexBuffer[pixel.coreId][pixel.vId1];
@@ -117,37 +120,35 @@ namespace Engine
 
 	void Renderer::UpdateFrameBuffer()
 	{
-		Concurrency::ForEach(0, tiledPixels.size(), [&](int i) {
+		Concurrency::ForEach(0, tiledPixels.size(), [&](int i)
+		{
 			for (auto j = 0; j < tiles[i].pixels.size(); j++)
 			{
 				const Pixel& pixel = tiles[i].pixels[j];
-
-				const int maskShift = 0;
-
 				auto& color = tiledPixels[i][j].m256.m256i_u8;
 
-				if (pixel.coverageMask.GetBit(maskShift + 0) != 0)
+				if (pixel.coverageMask.GetBit(0) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[0], color[1], color[2]), pixel.x, pixel.y);
 
-				if (pixel.coverageMask.GetBit(maskShift + 1) != 0)
+				if (pixel.coverageMask.GetBit(1) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[4], color[5], color[6]), pixel.x + 1, pixel.y);
 
-				if (pixel.coverageMask.GetBit(maskShift + 2) != 0)
+				if (pixel.coverageMask.GetBit(2) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[8], color[9], color[10]), pixel.x, pixel.y + 1);
 
-				if (pixel.coverageMask.GetBit(maskShift + 3) != 0)
+				if (pixel.coverageMask.GetBit(3) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[12], color[13], color[14]), pixel.x + 1, pixel.y + 1);
 
-				if (pixel.coverageMask.GetBit(maskShift + 4) != 0)
+				if (pixel.coverageMask.GetBit(4) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[16], color[17], color[18]), pixel.x + 2, pixel.y);
 
-				if (pixel.coverageMask.GetBit(maskShift + 5) != 0)
+				if (pixel.coverageMask.GetBit(5) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[20], color[21], color[22]), pixel.x + 3, pixel.y);
 
-				if (pixel.coverageMask.GetBit(maskShift + 6) != 0)
+				if (pixel.coverageMask.GetBit(6) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[24], color[25], color[26]), pixel.x + 2, pixel.y + 1);
 
-				if (pixel.coverageMask.GetBit(maskShift + 7) != 0)
+				if (pixel.coverageMask.GetBit(7) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[28], color[29], color[30]), pixel.x + 3, pixel.y + 1);
 			}
 		});

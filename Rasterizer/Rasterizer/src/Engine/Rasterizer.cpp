@@ -1,4 +1,4 @@
-#include "LarrabeeRasterizer.h"
+#include "Rasterizer.h"
 
 #include <array>
 #include <glm/glm.hpp>
@@ -13,12 +13,10 @@
 
 namespace Engine
 {
-	LarrabeeRasterizer::~LarrabeeRasterizer() = default;;
+	Rasterizer::~Rasterizer() = default;;
 
-	void LarrabeeRasterizer::RasterizeTile(uint32_t bin, Tile& tile) const
+	void Rasterizer::RasterizeTile(uint32_t bin, Tile& tile) const
 	{
-		AVXVec2i centerOffset(AVXInt(8, 24, 8, 24, 40, 56, 40, 56), AVXInt(8, 8, 24, 24, 8, 8, 24, 24));
-
 		for (int i = 0; i < tile.binsIndex[bin]; ++i)
 		{
 			const uint32_t id = tile.triangles[bin][i];
@@ -39,13 +37,13 @@ namespace Engine
 			if (maxX < minX || maxY < minY)
 				return;
 
-			AVXLarrabeeTriangle SSEtriangle(triangle);
+			AVXLarrabeeTriangle AVXtriangle(triangle);
 
 			AVXVec2i pixelBase(minX << FIXED_POINT, minY << FIXED_POINT);
 			AVXVec2i pixelCenter = pixelBase + centerOffset;
-			AVXInt edgeVal0 = SSEtriangle.EdgeFunc0(pixelCenter);
-			AVXInt edgeVal1 = SSEtriangle.EdgeFunc1(pixelCenter);
-			AVXInt edgeVal2 = SSEtriangle.EdgeFunc2(pixelCenter);
+			AVXInt edgeVal0 = AVXtriangle.EdgeFunc0(pixelCenter);
+			AVXInt edgeVal1 = AVXtriangle.EdgeFunc1(pixelCenter);
+			AVXInt edgeVal2 = AVXtriangle.EdgeFunc2(pixelCenter);
 
 			AVXInt pixelBaseStepY = AVXInt(32);
 			AVXInt pixelBaseStepX = AVXInt(64);
@@ -66,47 +64,47 @@ namespace Engine
 
 					if (AVX::Any(covered))
 					{
-						SSEtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
+						AVXtriangle.CalcBarycentricCoord(pixelCenter.x, pixelCenter.y);
 
-						auto tbin = SSEtriangle.binId;
-						auto& ids = SSEtriangle.vertexIds;
+						auto tbin = AVXtriangle.binId;
+						auto& ids = AVXtriangle.vertexIds;
 
 						float v0 = clippedProjectedVertexBuffer[tbin][ids[0]].projectedPosition.z;
 						float v1 = clippedProjectedVertexBuffer[tbin][ids[1]].projectedPosition.z;
 						float v2 = clippedProjectedVertexBuffer[tbin][ids[2]].projectedPosition.z;
 
-						AVXBool ztest = depthBuffer.ZTest(SSEtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
+						AVXBool ztest = depthBuffer.ZTest(AVXtriangle.GetDepth(v0, v1, v2), x, y, 0, covered);
 
 						AVXBool visible = ztest & covered;
 
 						if (AVX::Any(visible))
 						{
 							tile.pixels.emplace_back(
-								SSEtriangle.lambda0,
-								SSEtriangle.lambda1,
+								AVXtriangle.lambda0,
+								AVXtriangle.lambda1,
 								ids[0], ids[1], ids[2],
 								tbin,
-								SSEtriangle.textureId,
+								AVXtriangle.textureId,
 								glm::ivec2(x, y),
-								CoverageMask(visible, 0),
+								CoverageMask(visible),
 								tile.id,
 								tile.pixels.size());
 						}
 					}
 
-					edgeVal0 += SSEtriangle.deltaY0;
-					edgeVal1 += SSEtriangle.deltaY1;
-					edgeVal2 += SSEtriangle.deltaY2;
+					edgeVal0 += AVXtriangle.deltaY0;
+					edgeVal1 += AVXtriangle.deltaY1;
+					edgeVal2 += AVXtriangle.deltaY2;
 				}
 
-				edgeVal0 = edgeYBase0 + SSEtriangle.deltaX0;
-				edgeVal1 = edgeYBase1 + SSEtriangle.deltaX1;
-				edgeVal2 = edgeYBase2 + SSEtriangle.deltaX2;
+				edgeVal0 = edgeYBase0 + AVXtriangle.deltaX0;
+				edgeVal1 = edgeYBase1 + AVXtriangle.deltaX1;
+				edgeVal2 = edgeYBase2 + AVXtriangle.deltaX2;
 			}
 		}
 	}
 
-	void LarrabeeRasterizer::AssignTriangles(uint32_t bin) const
+	void Rasterizer::AssignTriangles(uint32_t bin) const
 	{
 		const int shift = TILE + FIXED_POINT;
 

@@ -7,7 +7,7 @@
 #include "Clipper.h"
 #include "Settings.h"
 #include "Tile.h"
-#include "LarrabeeRasterizer.h"
+#include "Rasterizer.h"
 #include "Triangle.h"
 #include "ColorBuffer.h"
 #include "DepthBuffer.h"
@@ -90,7 +90,7 @@ namespace Engine
 
 		std::unique_ptr<FragmentShader> fragmentShader;
 		std::unique_ptr<VertexShader> vertexShader;
-		std::unique_ptr<LarrabeeRasterizer> rasterizer;
+		std::unique_ptr<Rasterizer> rasterizer;
 		std::unique_ptr<Clipper> clipper;
 		std::unique_ptr<ColorBuffer> colorBuffer;
 		std::unique_ptr<DepthBuffer> depthBuffer;

@@ -11,8 +11,7 @@ namespace Engine
 	class ColorBuffer final
 	{
 	public:
-		ColorBuffer(int width, int height):
-			height(height), width(width)
+		ColorBuffer(int width, int height): height(height), width(width)
 		{
 			frameBuffer.resize(width * height);
 		}

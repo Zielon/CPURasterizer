@@ -8,66 +8,25 @@ namespace Engine
 {
 	struct CoverageMask
 	{
+	private:
 		int bits[8]{}; // For up to 32x MSAA coverage mask
 
-		CoverageMask()
+	public:
+		CoverageMask(const AVXBool& mask)
 		{
-			for (int& bit : bits)
-				bit = 0;
+			SetBit(mask);
 		}
 
-		CoverageMask(const AVXBool& mask, uint32_t sampleId)
-			: CoverageMask()
+		void SetBit(const AVXBool& mask)
 		{
-			SetBit(mask, sampleId);
+			#pragma unroll
+			for (int i = 0; i < 8; ++i)
+				if (mask[i] != 0)
+					bits[i] = 1;
 		}
 
-		void SetBit(int i)
+		[[nodiscard]] int GetBit(int i) const
 		{
-			int shift = i & 31;
-			bits[i] = 1;
-		}
-
-		void SetBit(const AVXBool& mask, uint32_t sampleId)
-		{
-			uint32_t sampleOffset = sampleId << 2;
-			if (mask[0] != 0)
-			{
-				SetBit(sampleOffset + 0);
-			}
-			if (mask[1] != 0)
-			{
-				SetBit(sampleOffset + 1);
-			}
-			if (mask[2] != 0)
-			{
-				SetBit(sampleOffset + 2);
-			}
-			if (mask[3] != 0)
-			{
-				SetBit(sampleOffset + 3);
-			}
-			if (mask[4] != 0)
-			{
-				SetBit(sampleOffset + 4);
-			}
-			if (mask[5] != 0)
-			{
-				SetBit(sampleOffset + 5);
-			}
-			if (mask[6] != 0)
-			{
-				SetBit(sampleOffset + 6);
-			}
-			if (mask[7] != 0)
-			{
-				SetBit(sampleOffset + 7);
-			}
-		}
-
-		int GetBit(int i) const
-		{
-			int shift = i & 31;
 			return bits[i];
 		}
 	};

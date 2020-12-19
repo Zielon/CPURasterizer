@@ -29,7 +29,7 @@
     <ClInclude Include="src\Engine\ColorBuffer.h" />
     <ClInclude Include="src\Engine\Concurrency.h" />
     <ClInclude Include="src\Engine\DepthBuffer.h" />
-    <ClInclude Include="src\Engine\LarrabeeRasterizer.h" />
+    <ClInclude Include="src\Engine\Rasterizer.h" />
     <ClInclude Include="src\Engine\Pixel.h" />
     <ClInclude Include="src\Engine\Renderer.h" />
     <ClInclude Include="src\Engine\Scene.h" />
@@ -66,7 +66,7 @@
     <ClCompile Include="src\Engine\Clipper.cpp" />
     <ClCompile Include="src\Engine\ColorBuffer.cpp" />
     <ClCompile Include="src\Engine\DepthBuffer.cpp" />
-    <ClCompile Include="src\Engine\LarrabeeRaasterizer.cpp" />
+    <ClCompile Include="src\Engine\Rasterizer.cpp" />
     <ClCompile Include="src\Engine\Renderer.cpp" />
     <ClCompile Include="src\Engine\Scene.cpp" />
     <ClCompile Include="src\Engine\SutherlandHodgman.cpp" />

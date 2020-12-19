@@ -10,7 +10,7 @@ namespace Engine
 {
 	struct Settings final
 	{
-		int MSSA{};
+		bool FXAA{};
 		int lightModelId{};
 		int textureFilterId{};
 		int sceneId{};

@@ -32,7 +32,6 @@ namespace Viewer
 	void Menu::Render()
 	{
 		const static uint32_t cores = std::thread::hardware_concurrency();
-		const static char* mssa[3] = { "off", "2x", "4x" };
 		const static char* lightModels[3] = { "Normals", "Phong-Blinn", "Oren-Nayar" };
 		const static char* scenes[3] = { "Cornell Box", "Coffee cart", "Panther" };
 		const static char* filter[2] = { "Nearst", "Linear" };
@@ -76,12 +75,6 @@ namespace Viewer
 			ImGui::Combo("", &settings.sceneId, scenes, 3);
 			ImGui::PopItemWidth();
 
-			ImGui::Text("MSSA mode");
-
-			ImGui::PushItemWidth(-1);
-			ImGui::Combo(" ", &settings.MSSA, mssa, 3);
-			ImGui::PopItemWidth();
-
 			ImGui::Text("Fragment shader");
 
 			ImGui::PushItemWidth(-1);
@@ -94,6 +87,7 @@ namespace Viewer
 			ImGui::Combo("   ", &settings.textureFilterId, filter, 2);
 			ImGui::PopItemWidth();
 
+			ImGui::Checkbox("FXAA", &settings.FXAA);
 			ImGui::Checkbox("Cull back-faces", &settings.cullBackFaces);
 			ImGui::Checkbox("Use shadows", &settings.useShadows);
 

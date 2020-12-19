@@ -16,10 +16,10 @@ namespace Engine
 	/**
 	 * \brief Larrabee rasterizer
 	 */
-	class LarrabeeRasterizer final
+	class Rasterizer final
 	{
 	public:
-		LarrabeeRasterizer(
+		Rasterizer(
 			int width,
 			int height,
 			Buffer2D<LarrabeeTriangle>& trianglesBuffer,
@@ -30,9 +30,12 @@ namespace Engine
 			tileDimY((height + TILE_SIZE - 1) >> TILE),
 			rasterTrianglesBuffer(trianglesBuffer),
 			clippedProjectedVertexBuffer(clippedProjectedVertexBuffer), tiles(tiles),
-			depthBuffer(depthBuffer) {}
+			depthBuffer(depthBuffer)
+		{
+			centerOffset = AVXVec2i(AVXInt(8, 24, 8, 24, 40, 56, 40, 56), AVXInt(8, 8, 24, 24, 8, 8, 24, 24));
+		}
 
-		~LarrabeeRasterizer();
+		~Rasterizer();
 
 		void RasterizeTile(uint32_t bin, Tile& tile) const;
 
@@ -45,5 +48,6 @@ namespace Engine
 		Buffer2D<Assets::Vertex>& clippedProjectedVertexBuffer;
 		std::vector<Tile>& tiles;
 		class DepthBuffer& depthBuffer;
+		AVXVec2i centerOffset;;
 	};
 }
