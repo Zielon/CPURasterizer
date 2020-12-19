@@ -27,6 +27,7 @@ namespace Engine
 			outVertex.normal = inVertex.normal;
 			outVertex.texCoords = inVertex.texCoords;
 			outVertex.id = inVertex.id;
+			outVertex.materialId = inVertex.materialId;
 		}
 	};
 }

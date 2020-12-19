@@ -19,7 +19,6 @@ namespace Engine
 
 		void SetBit(const AVXBool& mask)
 		{
-			#pragma unroll
 			for (int i = 0; i < 8; ++i)
 				if (mask[i] != 0)
 					bits[i] = 1;
@@ -39,7 +38,7 @@ namespace Engine
 
 		unsigned short x, y;
 		uint32_t vId0, vId1, vId2, coreId;
-		uint32_t textureId;
+		uint32_t materialId;
 		uint32_t tileId;
 		uint32_t intraTileIdx;
 
@@ -49,7 +48,7 @@ namespace Engine
 		      const int id1,
 		      const int id2,
 		      const int cId,
-		      const int texId,
+		      const int materialId,
 		      const glm::ivec2& pixelCoord,
 		      const CoverageMask& mask,
 		      const int tId,
@@ -63,7 +62,7 @@ namespace Engine
 			  , vId1(id1)
 			  , vId2(id2)
 			  , coreId(cId)
-			  , textureId(texId)
+			  , materialId(materialId)
 			  , tileId(tId)
 			  , intraTileIdx(intraTId) { }
 

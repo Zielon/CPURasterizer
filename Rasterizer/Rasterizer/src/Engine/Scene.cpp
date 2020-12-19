@@ -5,6 +5,7 @@
 
 #include "../Assets/Mesh.h"
 #include "../Assets/Texture.h"
+#include "../Assets/Material.h"
 #include "../Assets/SceneConfigs.h"
 
 namespace Engine
@@ -15,7 +16,10 @@ namespace Engine
 
 		for (const auto& entry : instances)
 		{
-			AddMesh("../Assets/Scenes/" + entry.meshPath);
+			Assets::Material material = Assets::Scene::MATERIALS.at(entry.material);
+			material.textureId = AddTexture(material.texturePath);
+			AddMesh(entry.meshPath, materials.size());
+			materials.push_back(material);
 		}
 
 		Complete();
@@ -26,18 +30,30 @@ namespace Engine
 
 	Scene::~Scene() = default;
 
-	void Scene::AddMesh(const std::string& path)
+	void Scene::AddMesh(const std::string& path, uint32_t materialId)
 	{
 		std::cout << "[SCENE] Mesh: " << path << " has been requested" << std::endl;
-		meshBuffer.emplace_back(new Assets::Mesh(path));
+		meshBuffer.emplace_back(new Assets::Mesh("../Assets/Scenes/" + path));
+		meshBuffer[meshBuffer.size() - 1]->SetMaterial(materialId);
 	}
 
-	void Scene::AddTexture(const std::string& path) {}
+	int Scene::AddTexture(const std::string& path)
+	{
+		if (path.empty())
+			return -1;
+
+		int id = textureBuffer.size();
+		textureBuffer.emplace_back(new Assets::Texture("../Assets/Textures/" + path));
+		return id;
+	}
 
 	void Scene::Complete()
 	{
 		for (auto& mesh : meshBuffer)
 			mesh->Wait();
+
+		for (auto& texture : textureBuffer)
+			texture->Wait();
 	}
 
 	void Scene::CreateBuffers()
@@ -68,6 +84,7 @@ namespace Engine
 				vertex.position = model * glm::vec4(vertex.position, 1.f);
 				vertex.normal = normalize(modelInv * glm::vec4(vertex.normal, 1.f));
 				vertex.id = id++;
+				vertex.materialId = mesh->GetMaterial();
 				vertexBuffer.push_back(vertex);
 			}
 

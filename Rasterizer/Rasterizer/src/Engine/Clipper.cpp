@@ -100,7 +100,7 @@ namespace Engine
 
 						auto triId = outTriangleBuffer.size();
 
-						LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { id0, id1, id2 });
+						LarrabeeTriangle triangle(r0, r1, r2, triId, bin, v0.materialId, { id0, id1, id2 });
 
 						if (triangle.Setup(settings.cullBackFaces))
 						{
@@ -131,7 +131,7 @@ namespace Engine
 
 			auto triId = outTriangleBuffer.size();
 
-			LarrabeeTriangle triangle(r0, r1, r2, triId, bin, 0, { id0, id1, id2 });
+			LarrabeeTriangle triangle(r0, r1, r2, triId, bin, v0.materialId, { id0, id1, id2 });
 
 			if (triangle.Setup(settings.cullBackFaces))
 			{

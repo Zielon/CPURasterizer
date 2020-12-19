@@ -36,6 +36,7 @@ namespace Math
 		__forceinline Vec operator -(const Vec& rhs) const { return Vec(x - rhs.x, y - rhs.y, z - rhs.z); }
 		__forceinline Vec operator *(const Vec& rhs) const { return Vec(x * rhs.x, y * rhs.y, z * rhs.z); }
 		__forceinline Vec operator *(const T& rhs) const { return Vec(x * rhs, y * rhs, z * rhs); }
+		__forceinline Vec operator *(const glm::vec<3, float>& rhs) const { return Vec(x * rhs.x, y * rhs.y, z * rhs.z); }
 		__forceinline Vec operator /(const Vec& rhs) const { return Vec(x / rhs.x, y / rhs.y, z / rhs.z); }
 		__forceinline Vec operator /(const T& rhs) const { return Vec(x / rhs, y / rhs, z / rhs); }
 	};

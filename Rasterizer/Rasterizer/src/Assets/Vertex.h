@@ -14,6 +14,7 @@ namespace Assets
 
 		// Index with relative position to all vertices buffer
 		uint32_t id;
+		int materialId = -1;
 
 		glm::vec3 position{};
 		glm::vec3 normal{};

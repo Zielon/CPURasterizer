@@ -9,7 +9,7 @@ namespace Math
 {
 	const __m256 absmask = _mm256_castsi256_ps(_mm256_set1_epi32(~(1 << 31)));
 
-	__forceinline __m256 vecabs_and(__m256 v)
+	__forceinline __m256 Abs(__m256 v)
 	{
 		return _mm256_and_ps(absmask, v);
 	}
@@ -18,11 +18,26 @@ namespace Math
 	{
 		AVXVec3f out;
 
-		out.x = vecabs_and(vec.x);
-		out.y = vecabs_and(vec.y);
-		out.z = vecabs_and(vec.z);
+		out.x = Abs(vec.x);
+		out.y = Abs(vec.y);
+		out.z = Abs(vec.z);
 
 		return out;
+	}
+
+	__forceinline AVXFloat Max(const AVXFloat& lhs, const AVXFloat& rhs)
+	{
+		return _mm256_max_ps(lhs.m256, rhs.m256);
+	}
+
+	__forceinline AVXFloat Max(const AVXFloat& lhs, const float& rhs)
+	{
+		return _mm256_max_ps(lhs.m256, AVXFloat(rhs));
+	}
+
+	__forceinline AVXFloat Max(const float& lhs, const AVXFloat& rhs)
+	{
+		return _mm256_max_ps(AVXFloat(lhs), rhs.m256);
 	}
 
 	__forceinline const AVXFloat Rsqrt(const AVXFloat& rhs)

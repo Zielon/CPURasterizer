@@ -20,10 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Assets\Color4b.h" />
+    <ClInclude Include="src\Assets\Material.h" />
     <ClInclude Include="src\Assets\Mesh.h" />
     <ClInclude Include="src\Assets\SceneConfigs.h" />
     <ClInclude Include="src\Assets\Texture.h" />
     <ClInclude Include="src\Assets\Vertex.h" />
+    <ClInclude Include="src\Engine\Antialising\Antialising.h" />
+    <ClInclude Include="src\Engine\Antialising\FXAA.h" />
     <ClInclude Include="src\Engine\Camera.h" />
     <ClInclude Include="src\Engine\Clipper.h" />
     <ClInclude Include="src\Engine\ColorBuffer.h" />
@@ -62,6 +65,7 @@
   <ItemGroup>
     <ClCompile Include="src\Assets\Mesh.cpp" />
     <ClCompile Include="src\Assets\Texture.cpp" />
+    <ClCompile Include="src\Engine\Antialising\FXAA.cpp" />
     <ClCompile Include="src\Engine\Camera.cpp" />
     <ClCompile Include="src\Engine\Clipper.cpp" />
     <ClCompile Include="src\Engine\ColorBuffer.cpp" />

@@ -20,16 +20,16 @@ namespace Engine
 			const glm::vec2& v2,
 			uint32_t id,
 			uint32_t binId,
-			uint32_t textureId,
+			uint32_t materialId,
 			std::array<uint32_t, 3> ids):
-			v0(v0), v1(v1), v2(v2), id(id), binId(binId), textureId(textureId), vertexIds(ids) { }
+			v0(v0), v1(v1), v2(v2), id(id), binId(binId), materialId(materialId), vertexIds(ids) { }
 
 		glm::ivec2 v0{};
 		glm::ivec2 v1{};
 		glm::ivec2 v2{};
 		uint32_t id{};
 		uint32_t binId{};
-		uint32_t textureId{};
+		uint32_t materialId{};
 		std::array<uint32_t, 3> vertexIds;
 	};
 
@@ -60,8 +60,8 @@ namespace Engine
 			const glm::vec2& v2,
 			uint32_t id,
 			uint32_t binId,
-			uint32_t textureId,
-			std::array<uint32_t, 3> ids): Triangle(v0, v1, v2, id, binId, textureId, ids)
+			uint32_t materialId,
+			std::array<uint32_t, 3> ids): Triangle(v0, v1, v2, id, binId, materialId, ids)
 		{
 			fixed = 16.f;
 
@@ -134,7 +134,7 @@ namespace Engine
 			{
 				if (det == 0)
 					return false;
-				
+
 				// Allow back-faces
 				if (det < 0)
 				{
@@ -256,7 +256,7 @@ namespace Engine
 		AVXFloat invDet;
 		uint32_t id{};
 		uint32_t binId{};
-		uint32_t textureId{};
+		uint32_t materialId{};
 		std::array<uint32_t, 3> vertexIds;
 
 		AVXLarrabeeTriangle(const LarrabeeTriangle& triangle) :
@@ -277,7 +277,7 @@ namespace Engine
 			, deltaX2(2 * triangle.deltaX2)
 			, invDet(triangle.invDet)
 			, binId(triangle.binId)
-			, textureId(triangle.textureId)
+			, materialId(triangle.materialId)
 			, vertexIds(triangle.vertexIds) { }
 
 		[[nodiscard]] __forceinline AVXInt TopLeftEdge(const AVXVec2i& v1, const AVXVec2i& v2) const

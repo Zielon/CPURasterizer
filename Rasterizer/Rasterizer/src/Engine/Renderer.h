@@ -13,6 +13,7 @@
 #include "DepthBuffer.h"
 
 #include "../Assets/Vertex.h"
+#include "Antialising/Antialising.h"
 
 #include "Shaders/FragmentShader.h"
 #include "Shaders/VertexShader.h"
@@ -60,6 +61,8 @@ namespace Engine
 		 */
 		void FragmentShaderStage();
 
+		void AntialisingStage() const;
+		
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);
 		void CopyPixelsToBuffer();
@@ -88,6 +91,7 @@ namespace Engine
 		std::vector<uint32_t> coreIds;
 		std::vector<Assets::Vertex> projectedVertexStorage;
 
+		std::unique_ptr<Antialising> antialising;
 		std::unique_ptr<FragmentShader> fragmentShader;
 		std::unique_ptr<VertexShader> vertexShader;
 		std::unique_ptr<Rasterizer> rasterizer;

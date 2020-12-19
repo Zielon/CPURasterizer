@@ -31,6 +31,9 @@
     <Filter Include="SIMD\SSE">
       <UniqueIdentifier>{dc24d464-2b0e-4525-ad37-83b5fcaa247b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Antialising">
+      <UniqueIdentifier>{38dd4e4e-48b2-4e36-86ca-9350b0915506}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Viewer\Application.h">
@@ -150,6 +153,15 @@
     <ClInclude Include="src\Engine\Rasterizer.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Antialising\Antialising.h">
+      <Filter>Engine\Antialising</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Antialising\FXAA.h">
+      <Filter>Engine\Antialising</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\Material.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -197,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="src\Engine\Rasterizer.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Antialising\FXAA.cpp">
+      <Filter>Engine\Antialising</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,8 @@ namespace Assets
 
 		void Wait();
 
+		void SetMaterial(const uint32_t& material) { materialId = material; }
+		[[nodiscard]] uint32_t GetMaterial() const { return materialId; }
 		[[nodiscard]] std::vector<Vertex>& GetVertices() { return vertices; }
 		[[nodiscard]] uint32_t GetVerticesSize() const { return vertices.size(); }
 		[[nodiscard]] const std::vector<uint32_t>& GetIndecies() const { return indices; }
@@ -23,6 +25,7 @@ namespace Assets
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
 		std::future<void> loader{};
+		uint32_t materialId;
 
 		void Load(const std::string& path);
 	};

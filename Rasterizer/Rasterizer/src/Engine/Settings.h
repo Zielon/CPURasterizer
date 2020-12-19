@@ -11,7 +11,7 @@ namespace Engine
 	struct Settings final
 	{
 		bool FXAA{};
-		int lightModelId{};
+		int lightModelId = 1;
 		int textureFilterId{};
 		int sceneId{};
 		uint32_t trianglesCount{};

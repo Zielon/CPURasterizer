@@ -1,8 +1,11 @@
 #pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+
+#include "Material.h"
 
 namespace Assets
 {
@@ -11,7 +14,7 @@ namespace Assets
 		struct Instance
 		{
 			std::string meshPath{};
-			std::string texturePath{};
+			std::string material;
 			glm::vec3 translation{};
 			glm::vec3 scale{};
 		};
@@ -31,27 +34,36 @@ namespace Assets
 			std::vector<Instance> instances;
 		};
 
+		const static std::map<std::string, Material> MATERIALS =
+		{
+			{ "WHITE", { { 0.725, 0.71, 0.68 } } },
+			{ "GREEN", { { 0.14, 0.45, 0.091 } } },
+			{ "RED", { { 0.63, 0.065, 0.05 } } },
+			{ "BLUE", { { 0.1, 0.1, 0.8 } } },
+			{ "GREY", { { 0.5, 0.5, 0.5 } } }
+		};
+
 		const static std::vector<Instance> CORNELL_BOX_MESHES =
 		{
-			{ "cornell_box/cbox_ceiling.obj", "", { .278, .5488, .27955 }, { 0.01, 0.01, 0.01 } },
-			{ "cornell_box/cbox_floor.obj", "", { .2756, 0, .2796 }, { 0.01, 0.01, 0.01 } },
-			{ "cornell_box/cbox_back.obj", "", { .2764, .2744, .5592 }, { 0.01, 0.01, 0.01 } },
-			{ "cornell_box/cbox_smallbox.obj", "", { .1855, .0825, .169 }, { 0.01, 0.01, 0.01 } },
-			{ "cornell_box/cbox_largebox.obj", "", { .3685, .165, .35125 }, { 0.01, 0.01, 0.01 } },
-			{ "cornell_box/cbox_greenwall.obj", "", { 0, .2744, .2796 }, { 0.01, 0.01, 0.01 } },
-			{ "cornell_box/cbox_redwall.obj", "", { .5536, .2744, .2796 }, { 0.01, 0.01, 0.01 } }
+			{ "cornell_box/cbox_ceiling.obj", "WHITE", { .278, .5488, .27955 }, { 0.01, 0.01, 0.01 } },
+			{ "cornell_box/cbox_floor.obj", "WHITE", { .2756, 0, .2796 }, { 0.01, 0.01, 0.01 } },
+			{ "cornell_box/cbox_back.obj", "GREY", { .2764, .2744, .5592 }, { 0.01, 0.01, 0.01 } },
+			{ "cornell_box/cbox_smallbox.obj", "BLUE", { .1855, .0825, .169 }, { 0.01, 0.01, 0.01 } },
+			{ "cornell_box/cbox_largebox.obj", "WHITE", { .3685, .165, .35125 }, { 0.01, 0.01, 0.01 } },
+			{ "cornell_box/cbox_greenwall.obj", "GREEN", { 0, .2744, .2796 }, { 0.01, 0.01, 0.01 } },
+			{ "cornell_box/cbox_redwall.obj", "RED", { .5536, .2744, .2796 }, { 0.01, 0.01, 0.01 } }
 		};
 
 		const static std::vector<Instance> PANTHER_MESHES =
 		{
-			{ "panther/panther.obj", "", { 0, 0, 0 }, { 1, 1, 1 } },
-			{ "panther/background.obj", "", { 0, 0, 0 }, { 1, 1, 1 } },
+			{ "panther/panther.obj", "GREY", { 0, 0, 0 }, { 1, 1, 1 } },
+			{ "panther/background.obj", "GREY", { 0, 0, 0 }, { 1, 1, 1 } },
 		};
 
 		const static std::vector<Instance> COFFEE_CART_MESHES =
 		{
-			{ "coffee/CoffeeCart_01.obj", "", { 0, 0, 0 }, { 1, 1, 1 } },
-			{ "coffee/CoffeeCart_02.obj", "", { 0, 0, 0 }, { 1, 1, 1 } },
+			{ "coffee/CoffeeCart_01.obj", "GREY", { 0, 0, 0 }, { 1, 1, 1 } },
+			{ "coffee/CoffeeCart_02.obj", "GREY", { 0, 0, 0 }, { 1, 1, 1 } },
 		};
 
 		const static std::vector<Configuration> CONFIGS =

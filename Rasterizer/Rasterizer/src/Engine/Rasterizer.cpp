@@ -84,7 +84,7 @@ namespace Engine
 								AVXtriangle.lambda1,
 								ids[0], ids[1], ids[2],
 								tbin,
-								AVXtriangle.textureId,
+								AVXtriangle.materialId,
 								glm::ivec2(x, y),
 								CoverageMask(visible),
 								tile.id,

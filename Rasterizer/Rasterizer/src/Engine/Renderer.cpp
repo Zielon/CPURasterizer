@@ -5,6 +5,8 @@
 #include "Concurrency.h"
 #include "Clipper.h"
 
+#include "Antialising/FXAA.h"
+
 #include "../SIMD/AVX.h"
 
 namespace Engine
@@ -19,9 +21,10 @@ namespace Engine
 		CreateTiles();
 		CreateBuffers();
 
+		antialising.reset(new FXAA());
 		colorBuffer.reset(new ColorBuffer(width, height));
 		depthBuffer.reset(new DepthBuffer(width, height));
-		fragmentShader.reset(new NormalShader());
+		fragmentShader.reset(new PhongBlinnShader(scene));
 		vertexShader.reset(new DefaultVertexShader(camera));
 		clipper.reset(new Clipper(scene, camera, projectedVertexStorage));
 		rasterizer.reset(new Rasterizer(
@@ -40,6 +43,7 @@ namespace Engine
 		TiledRasterizationStage();
 		RasterizationStage();
 		FragmentShaderStage();
+		AntialisingStage();
 
 		UpdateFrameBuffer();
 	}
@@ -108,7 +112,10 @@ namespace Engine
 			Assets::Vertex& v1 = clippedProjectedVertexBuffer[pixel.coreId][pixel.vId1];
 			Assets::Vertex& v2 = clippedProjectedVertexBuffer[pixel.coreId][pixel.vId2];
 
-			auto shaded = fragmentShader->Shade(v0, v1, v2, pixel);
+			glm::vec3 light = inverse(camera.GetViewMatrix()) * glm::vec4(0, 0, 0, 1);
+			glm::vec3 eye = glm::vec3(0, 0, 0);
+
+			auto shaded = fragmentShader->Shade(v0, v1, v2, eye, light, pixel);
 
 			Assets::Color4b colorByte[8];
 			for (int i = 0; i < 8; i ++)
@@ -116,6 +123,12 @@ namespace Engine
 
 			tiledPixels[pixel.tileId][pixel.intraTileIdx] = _mm256_loadu_si256(reinterpret_cast<__m256i*>(&colorByte));
 		});
+	}
+
+	void Renderer::AntialisingStage() const
+	{
+		if (settings.FXAA)
+			antialising->Filter();
 	}
 
 	void Renderer::UpdateFrameBuffer()
@@ -214,10 +227,10 @@ namespace Engine
 			switch (lightModelId)
 			{
 			case 0:
-				fragmentShader.reset(new NormalShader());
+				fragmentShader.reset(new NormalShader(scene));
 				break;
 			case 1:
-				fragmentShader.reset(new PhongBlinnShader());
+				fragmentShader.reset(new PhongBlinnShader(scene));
 				break;
 			default:
 				break;
