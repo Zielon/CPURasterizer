@@ -56,8 +56,8 @@ namespace Assets
 
 		const static std::vector<Instance> PANTHER_MESHES =
 		{
-			{ "panther/panther.obj", "GREY", { 0, 0, 0 }, { 1, 1, 1 } },
-			{ "panther/background.obj", "GREY", { 0, 0, 0 }, { 1, 1, 1 } },
+			{ "panther/panther.obj", "RED", { 0, 0, 0 }, { 1, 1, 1 } },
+			{ "panther/background.obj", "WHITE", { 0, 0, 0 }, { 1, 1, 1 } },
 		};
 
 		const static std::vector<Instance> COFFEE_CART_MESHES =

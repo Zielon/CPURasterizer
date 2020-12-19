@@ -1,7 +1,7 @@
 #pragma once
 
-#define _USE_MATH_DEFINES
-#include <math.h>
+constexpr float PI = 3.14159265358979323846f;
+constexpr float INVPI = 0.31830988618379069122f;
 
 #include "../SIMD/AVX.h"
 

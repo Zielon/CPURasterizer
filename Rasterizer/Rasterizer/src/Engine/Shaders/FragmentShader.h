@@ -40,19 +40,17 @@ namespace Engine
 
 			pixel.Interpolate(v0, v1, v2, pixel.lambda0, pixel.lambda1, position, normal, texCoord);
 
+			// TODO Front facing normals
 			normal = Normalize(normal);
+			float lightIntensity = 3.f;
 
 			AVXVec3f lightDir = AVXVec3f(normalize(light));
+			AVXFloat diffuse = Dot(lightDir, normal);
+			AVXBool mask = diffuse < AVXFloat(0);
+			diffuse = AVX::Select(mask, AVXFloat(0), diffuse);
+			AVXVec3f color = AVXVec3f((diffuse + 0.2f) * lightIntensity) * material.albedo * INVPI;
 
-			AVXFloat a = Dot(lightDir, normal);
-			AVXBool mask = a < AVXFloat(0);
-			a = AVX::Select(mask, AVXFloat(0), a);
-
-			AVXFloat b = Dot(lightDir, normal * -1.f);
-			mask = b < AVXFloat(0);
-			b = AVX::Select(mask, AVXFloat(0), b);
-
-			return a + b;
+			return color;
 		}
 	};
 
