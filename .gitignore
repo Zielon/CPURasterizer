@@ -397,5 +397,4 @@ FodyWeavers.xsd
 *.compiled.*
 
 Shadrec/
-PBRVulkan/Assets/
-PBRVulkan/Shaders/
+Rasterizer/Assets/*
