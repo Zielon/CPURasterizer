@@ -5,7 +5,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+# *.obj
 
 # Precompiled Headers
 *.gch
@@ -397,4 +397,4 @@ FodyWeavers.xsd
 *.compiled.*
 
 Shadrec/
-Rasterizer/Assets/*
+# Rasterizer/Assets/*
