@@ -4,8 +4,6 @@
 #include "Menu.h"
 #include "Shader.h"
 
-#include "../Assets/SceneConfigs.h"
-
 #include "../Engine/Renderer.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Scene.h"
@@ -15,17 +13,33 @@ long int currentFrame = 0;
 
 namespace Viewer
 {
+	const std::vector<std::string> CONFIGS =
+	{
+		"../Assets/Scenes/ajax.scene",
+		"../Assets/Scenes/bedroom.scene",
+		"../Assets/Scenes/boy.scene",
+		"../Assets/Scenes/coffee_cart.scene",
+		"../Assets/Scenes/coffee_maker.scene",
+		"../Assets/Scenes/cornell_box.scene",
+		"../Assets/Scenes/diningroom.scene",
+		"../Assets/Scenes/dragon.scene",
+		"../Assets/Scenes/hyperion.scene",
+		"../Assets/Scenes/panther.scene",
+		"../Assets/Scenes/spaceship.scene",
+		"../Assets/Scenes/staircase.scene",
+		"../Assets/Scenes/stormtrooper.scene",
+		"../Assets/Scenes/teapot.scene"
+	};
+
 	Application::Application()
 	{
-		sceneConfig = Assets::Scene::CONFIGS[settings.sceneId];
-
 		CreateRender();
 		CreateWindow();
 		CreatePipeline();
 
 		RegisterCallbacks();
 
-		menu->GetSettings().trianglesCount = scene->GetTriangleCount();
+		menu->GetSettings().trianglesCount = scene->GetIndexSize() / 3;
 	}
 
 	Application::~Application() = default;
@@ -33,7 +47,7 @@ namespace Viewer
 	void Application::CreateWindow()
 	{
 		// Viewer composition
-		window.reset(new Window(sceneConfig.camera.width, sceneConfig.camera.height));
+		window.reset(new Window(scene->GetCamera().GetWidth(), scene->GetCamera().GetHeight()));
 		menu.reset(new Menu(*window));
 		shader.reset(new Shader("Quad.vert", "Quad.frag"));
 	}
@@ -41,9 +55,8 @@ namespace Viewer
 	void Application::CreateRender()
 	{
 		// Renderer composition
-		scene.reset(new Engine::Scene(sceneConfig.instances));
-		camera.reset(new Engine::Camera(sceneConfig.camera));
-		renderer.reset(new Engine::Renderer(*scene, *camera));
+		scene.reset(new Engine::Scene(CONFIGS[settings.sceneId]));
+		renderer.reset(new Engine::Renderer(*scene, scene->GetCamera()));
 	}
 
 	void Application::Run()
@@ -56,7 +69,7 @@ namespace Viewer
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			camera->OnBeforeRender();
+			scene->GetCamera().OnBeforeRender();
 			renderer->Render(menu->GetSettings());
 			DrawQuad();
 			menu->Render();
@@ -73,7 +86,7 @@ namespace Viewer
 	{
 		// Copy frameBuffer to texture
 		glTexImage2D(
-			GL_TEXTURE_2D, 0, GL_RGBA, camera->GetWidth(), camera->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+			GL_TEXTURE_2D, 0, GL_RGBA, scene->GetCamera().GetWidth(), scene->GetCamera().GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
 			renderer->GetColorBuffer());
 
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -90,7 +103,7 @@ namespace Viewer
 			if (menu->WantCaptureKeyboard() || menu->WantCaptureMouse())
 				return;
 
-			if (camera->OnCursorPositionChanged(xpos, ypos)) {}
+			if (scene->GetCamera().OnCursorPositionChanged(xpos, ypos)) {}
 		});
 
 		window->AddOnKeyChanged([this](const int key, const int scancode, const int action, const int mods)-> void
@@ -98,7 +111,7 @@ namespace Viewer
 			if (menu->WantCaptureKeyboard())
 				return;
 
-			camera->OnKeyChanged(key, scancode, action, mods);
+			scene->GetCamera().OnKeyChanged(key, scancode, action, mods);
 		});
 
 		window->AddOnMouseButtonChanged([this](const int button, const int action, const int mods)-> void
@@ -106,7 +119,7 @@ namespace Viewer
 			if (menu->WantCaptureMouse())
 				return;
 
-			camera->OnMouseButtonChanged(button, action, mods);
+			scene->GetCamera().OnMouseButtonChanged(button, action, mods);
 		});
 
 		window->AddOnScrollChanged([this](const double xoffset, const double yoffset)-> void { });
@@ -121,7 +134,7 @@ namespace Viewer
 
 		if (delta > 1.0)
 		{
-			double fFPS = currentFrame / delta;
+			const double fFPS = currentFrame / delta;
 			lastTime = currentTime;
 			currentFrame = 0L;
 			menu->GetSettings().fps = static_cast<float>(fFPS);
@@ -130,8 +143,10 @@ namespace Viewer
 
 	void Application::Resize() const
 	{
-		glfwSetWindowSize(window->Get(), sceneConfig.camera.width, sceneConfig.camera.height);
-		glViewport(0, 0, sceneConfig.camera.width, sceneConfig.camera.height);
+		const auto width = scene->GetCamera().GetWidth();
+		const auto height = scene->GetCamera().GetHeight();
+		glfwSetWindowSize(window->Get(), width, height);
+		glViewport(0, 0, width, height);
 	}
 
 	void Application::UpdateSettings()
@@ -141,13 +156,12 @@ namespace Viewer
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			settings = menu->GetSettings();
 			Recreate();
-			menu->GetSettings().trianglesCount = scene->GetTriangleCount();
+			menu->GetSettings().trianglesCount = scene->GetIndexSize() / 3;
 		}
 	}
 
 	void Application::Recreate()
 	{
-		sceneConfig = Assets::Scene::CONFIGS[settings.sceneId];
 		CreateRender();
 		Resize();
 	}

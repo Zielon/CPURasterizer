@@ -2,8 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#include "../Assets/SceneConfigs.h"
-
 namespace Engine
 {
 	enum class Action
@@ -17,8 +15,7 @@ namespace Engine
 	class Camera
 	{
 	public:
-		Camera(const Assets::Scene::Camera& camera);
-		Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, uint32_t width, uint32_t height);
+		Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect, uint32_t width, uint32_t height);
 		~Camera() = default;
 
 		void OnKeyChanged(int key, int scanCode, int action, int mod);

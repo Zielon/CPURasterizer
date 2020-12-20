@@ -2,8 +2,6 @@
 
 #include <memory>
 
-
-#include "../Assets/SceneConfigs.h"
 #include "../Engine/Settings.h"
 
 namespace Engine
@@ -38,7 +36,6 @@ namespace Viewer
 		unsigned int VBO{}, VAO{}, EBO{}, texture{};
 
 		Engine::Settings settings{};
-		Assets::Scene::Configuration sceneConfig{};
 
 		// Viewer
 		std::unique_ptr<class Window> window;
@@ -46,7 +43,6 @@ namespace Viewer
 		std::unique_ptr<class Shader> shader;
 
 		// Engine
-		std::unique_ptr<Engine::Camera> camera;
 		std::unique_ptr<Engine::Renderer> renderer;
 		std::unique_ptr<Engine::Scene> scene;
 	};

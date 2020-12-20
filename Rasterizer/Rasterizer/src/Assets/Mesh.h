@@ -29,4 +29,17 @@ namespace Assets
 
 		void Load(const std::string& path);
 	};
+
+	class MeshInstance
+	{
+	public:
+		MeshInstance(int meshId, glm::mat4 transformation, int matId)
+			: modelTransform(transformation), materialId(matId), meshId(meshId) { }
+
+		~MeshInstance() = default;
+
+		glm::mat4 modelTransform = glm::mat4(1.f);
+		int materialId;
+		int meshId;
+	};
 }

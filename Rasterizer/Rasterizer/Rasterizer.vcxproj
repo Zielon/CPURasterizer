@@ -20,9 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Assets\Color4b.h" />
+    <ClInclude Include="src\Assets\Light.h" />
     <ClInclude Include="src\Assets\Material.h" />
     <ClInclude Include="src\Assets\Mesh.h" />
-    <ClInclude Include="src\Assets\SceneConfigs.h" />
     <ClInclude Include="src\Assets\Texture.h" />
     <ClInclude Include="src\Assets\Vertex.h" />
     <ClInclude Include="src\Engine\Antialising\Antialising.h" />
@@ -42,8 +42,11 @@
     <ClInclude Include="src\Engine\SutherlandHodgman.h" />
     <ClInclude Include="src\Engine\Tile.h" />
     <ClInclude Include="src\Engine\Triangle.h" />
+    <ClInclude Include="src\HDR\HDRLoader.h" />
     <ClInclude Include="src\ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="src\ImGui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Loader\Loader.h" />
+    <ClInclude Include="src\Loader\RenderOptions.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Math\Vec.h" />
     <ClInclude Include="src\Math\Vec2.h" />
@@ -74,8 +77,10 @@
     <ClCompile Include="src\Engine\Renderer.cpp" />
     <ClCompile Include="src\Engine\Scene.cpp" />
     <ClCompile Include="src\Engine\SutherlandHodgman.cpp" />
+    <ClCompile Include="src\HDR\HDRLoader.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Loader\Loader.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Viewer\Application.cpp" />
     <ClCompile Include="src\Viewer\Menu.cpp" />
@@ -179,9 +184,9 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level2</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -194,11 +199,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level2</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

@@ -14,7 +14,6 @@ namespace Engine
 		virtual AVXVec3f Shade(Assets::Vertex& v0,
 		                       Assets::Vertex& v1,
 		                       Assets::Vertex& v2,
-		                       glm::vec3 eye, glm::vec3 light,
 		                       Pixel& pixel) = 0;
 	protected:
 		const Scene& scene;
@@ -28,11 +27,10 @@ namespace Engine
 		AVXVec3f Shade(Assets::Vertex& v0,
 		               Assets::Vertex& v1,
 		               Assets::Vertex& v2,
-		               glm::vec3 eye,
-		               glm::vec3 light,
 		               Pixel& pixel) override
 		{
-			const Assets::Material& material = scene.GetMaterials()[pixel.materialId];
+			const auto& material = scene.GetMaterials()[pixel.materialId];
+			const auto& lights = scene.GetLights();
 
 			AVXVec3f position;
 			AVXVec3f normal;
@@ -44,7 +42,7 @@ namespace Engine
 			normal = Normalize(normal);
 			float lightIntensity = 3.f;
 
-			AVXVec3f lightDir = AVXVec3f(normalize(light));
+			AVXVec3f lightDir = AVXVec3f(normalize(lights[0].position));
 			AVXFloat diffuse = Dot(lightDir, normal);
 			AVXBool mask = diffuse < AVXFloat(0);
 			diffuse = AVX::Select(mask, AVXFloat(0), diffuse);
@@ -62,8 +60,6 @@ namespace Engine
 		AVXVec3f Shade(Assets::Vertex& v0,
 		               Assets::Vertex& v1,
 		               Assets::Vertex& v2,
-		               glm::vec3 eye,
-		               glm::vec3 light,
 		               Pixel& pixel) override
 		{
 			AVXVec3f position;

@@ -112,10 +112,7 @@ namespace Engine
 			Assets::Vertex& v1 = clippedProjectedVertexBuffer[pixel.coreId][pixel.vId1];
 			Assets::Vertex& v2 = clippedProjectedVertexBuffer[pixel.coreId][pixel.vId2];
 
-			glm::vec3 light = inverse(camera.GetViewMatrix()) * glm::vec4(0, 0, 0, 1);
-			glm::vec3 eye = glm::vec3(0, 0, 0);
-
-			auto shaded = fragmentShader->Shade(v0, v1, v2, eye, light, pixel);
+			auto shaded = fragmentShader->Shade(v0, v1, v2, pixel);
 
 			Assets::Color4b colorByte[8];
 			for (int i = 0; i < 8; i ++)

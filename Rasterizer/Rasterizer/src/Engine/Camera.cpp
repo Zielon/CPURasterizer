@@ -2,8 +2,6 @@
 
 #include <GLFW/glfw3.h>
 
-#include "../Assets/SceneConfigs.h"
-
 #include <glm/gtc/matrix_transform.hpp>
 
 float Engine::Camera::DELTA_TIME = 0;
@@ -13,11 +11,8 @@ float SENSITIVITY = 0.10f;
 
 namespace Engine
 {
-	Camera::Camera(const Assets::Scene::Camera& camera):
-		Camera(camera.eye, camera.lookAt, camera.fov, camera.width, camera.height) {}
-
-	Camera::Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, uint32_t width, uint32_t height)
-		: position(eye), width(width), height(height), fov(fov), aspect(static_cast<float>(width) / height)
+	Camera::Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect, uint32_t width, uint32_t height)
+		: position(eye), width(width), height(height), fov(fov), aspect(aspect)
 	{
 		position = eye;
 		pivot = lookAt;

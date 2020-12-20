@@ -34,6 +34,12 @@
     <Filter Include="Engine\Antialising">
       <UniqueIdentifier>{38dd4e4e-48b2-4e36-86ca-9350b0915506}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Loader">
+      <UniqueIdentifier>{233d6e0f-a68d-415f-9bfc-e51c368762ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HDR">
+      <UniqueIdentifier>{1e846118-7e77-471e-a448-018c37c5f2af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Viewer\Application.h">
@@ -117,9 +123,6 @@
     <ClInclude Include="src\Engine\DepthBuffer.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Assets\SceneConfigs.h">
-      <Filter>Assets</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\SutherlandHodgman.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -161,6 +164,18 @@
     </ClInclude>
     <ClInclude Include="src\Assets\Material.h">
       <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader\Loader.h">
+      <Filter>Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader\RenderOptions.h">
+      <Filter>Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\Light.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HDR\HDRLoader.h">
+      <Filter>HDR</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="src\Engine\Antialising\FXAA.cpp">
       <Filter>Engine\Antialising</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\Loader.cpp">
+      <Filter>Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HDR\HDRLoader.cpp">
+      <Filter>HDR</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

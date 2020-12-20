@@ -32,9 +32,24 @@ namespace Viewer
 	void Menu::Render()
 	{
 		const static uint32_t cores = std::thread::hardware_concurrency();
-		const static char* lightModels[3] = { "Normals", "Phong-Blinn", "Oren-Nayar" };
-		const static char* scenes[3] = { "Cornell Box", "Coffee cart", "Panther" };
 		const static char* filter[2] = { "Nearst", "Linear" };
+		const static char* lightModels[3] = { "Normals", "Phong-Blinn", "Oren-Nayar" };
+		const static char* scenes[14] = {
+			"Ajax",
+			"Bedroom",
+			"Boy",
+			"Coffee cart",
+			"Coffee maker",
+			"Cornell box",
+			"Dining room",
+			"Dragon",
+			"Hyperion",
+			"Panther",
+			"Spaceship",
+			"Staircase",
+			"Stormtroopers",
+			"Teapot"
+		};
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -72,7 +87,7 @@ namespace Viewer
 			ImGui::Text("Scenes");
 
 			ImGui::PushItemWidth(-1);
-			ImGui::Combo("", &settings.sceneId, scenes, 3);
+			ImGui::Combo("", &settings.sceneId, scenes, 14);
 			ImGui::PopItemWidth();
 
 			ImGui::Text("Fragment shader");
