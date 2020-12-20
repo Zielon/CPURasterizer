@@ -94,7 +94,7 @@ namespace Engine
 
 	void Scene::AddCamera(glm::vec3 pos, glm::vec3 lookAt, float fov, float aspect)
 	{
-		camera.reset(new Camera(pos, lookAt, fov, aspect, options.resolution.x, options.resolution.y));
+		camera.reset(new Camera(pos, lookAt, fov, aspect, options.resolution));
 	}
 
 	void Scene::AddHDR(const std::string& path)

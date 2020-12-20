@@ -11,8 +11,8 @@ float SENSITIVITY = 0.10f;
 
 namespace Engine
 {
-	Camera::Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect, uint32_t width, uint32_t height)
-		: position(eye), width(width), height(height), fov(fov), aspect(aspect)
+	Camera::Camera(glm::vec3 eye, glm::vec3 lookAt, float fov, float aspect, glm::ivec2 resolution)
+		: position(eye), width(resolution.x), height(resolution.y), fov(fov), aspect(aspect)
 	{
 		position = eye;
 		pivot = lookAt;

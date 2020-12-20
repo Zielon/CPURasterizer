@@ -83,7 +83,7 @@ namespace Engine
 		Loader::RenderOptions options;
 
 		void Wait();
-		void Print() const;
 		void Load();
+		void Print() const;
 	};
 }

@@ -33,7 +33,7 @@ namespace Viewer
 	{
 		const static uint32_t cores = std::thread::hardware_concurrency();
 		const static char* filter[2] = { "Nearst", "Linear" };
-		const static char* lightModels[3] = { "Normals", "Phong-Blinn", "Oren-Nayar" };
+		const static char* lightModels[2] = { "Normals", "Phong-Blinn" };
 		const static char* scenes[14] = {
 			"Ajax",
 			"Bedroom",
@@ -93,7 +93,7 @@ namespace Viewer
 			ImGui::Text("Fragment shader");
 
 			ImGui::PushItemWidth(-1);
-			ImGui::Combo("  ", &settings.lightModelId, lightModels, 3);
+			ImGui::Combo("  ", &settings.lightModelId, lightModels, 2);
 			ImGui::PopItemWidth();
 
 			ImGui::Text("Texture filter");
