@@ -116,7 +116,7 @@ namespace Engine
 
 			Assets::Color4b colorByte[8];
 			for (int i = 0; i < 8; i ++)
-				colorByte[i].FromFloats(shaded.x[i], shaded.y[i], shaded.z[i]);
+				colorByte[i].LDR(shaded.x[i], shaded.y[i], shaded.z[i]);
 
 			tiledPixels[pixel.tileId][pixel.intraTileIdx] = _mm256_loadu_si256(reinterpret_cast<__m256i*>(&colorByte));
 		});

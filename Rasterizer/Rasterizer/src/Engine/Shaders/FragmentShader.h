@@ -38,15 +38,29 @@ namespace Engine
 
 			pixel.Interpolate(v0, v1, v2, pixel.lambda0, pixel.lambda1, position, normal, texCoord);
 
-			// TODO Front facing normals
 			normal = Normalize(normal);
-			float lightIntensity = 3.f;
+			AVXVec3f color;
 
-			AVXVec3f lightDir = AVXVec3f(normalize(lights[0].position));
-			AVXFloat diffuse = Dot(lightDir, normal);
-			AVXBool mask = diffuse < AVXFloat(0);
-			diffuse = AVX::Select(mask, AVXFloat(0), diffuse);
-			AVXVec3f color = AVXVec3f((diffuse + 0.2f) * lightIntensity) * material.albedo * INVPI;
+			for (const auto& light : lights)
+			{
+				glm::vec3 lightPos;
+				if (light.type == 0) // Area light
+					lightPos = light.position + 0.5f * light.v + 0.5f * light.u;
+				else
+					lightPos = light.position;
+
+				AVXVec3f lightDir = Normalize(AVXVec3f(lightPos) - position);
+
+				// cosTheta
+				AVXFloat cos = Dot(lightDir, normal);
+				AVXBool mask = cos < AVXFloat(0);
+				AVXFloat cosTheta = AVX::Select(mask, AVXFloat(0), cos);
+
+				auto ambient = AVXVec3f(material.albedo * 0.1f);
+				auto diffuse = AVXVec3f(cosTheta) * material.albedo * 0.8f;
+
+				color = color + ambient + diffuse;
+			}
 
 			return color;
 		}
