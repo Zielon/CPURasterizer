@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#define PARALLEL
+//#define PARALLEL
 
 #include "Clipper.h"
 #include "Settings.h"

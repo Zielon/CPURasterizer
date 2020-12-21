@@ -35,6 +35,7 @@
     <ClInclude Include="src\Engine\Rasterizer.h" />
     <ClInclude Include="src\Engine\Pixel.h" />
     <ClInclude Include="src\Engine\Renderer.h" />
+    <ClInclude Include="src\Engine\Samplers\Sampler.h" />
     <ClInclude Include="src\Engine\Scene.h" />
     <ClInclude Include="src\Engine\Settings.h" />
     <ClInclude Include="src\Engine\Shaders\FragmentShader.h" />
@@ -75,6 +76,7 @@
     <ClCompile Include="src\Engine\DepthBuffer.cpp" />
     <ClCompile Include="src\Engine\Rasterizer.cpp" />
     <ClCompile Include="src\Engine\Renderer.cpp" />
+    <ClCompile Include="src\Engine\Samplers\Sampler.cpp" />
     <ClCompile Include="src\Engine\Scene.cpp" />
     <ClCompile Include="src\Engine\SutherlandHodgman.cpp" />
     <ClCompile Include="src\HDR\HDRLoader.cpp" />

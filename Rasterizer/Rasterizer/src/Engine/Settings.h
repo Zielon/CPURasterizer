@@ -13,7 +13,7 @@ namespace Engine
 		bool FXAA{};
 		int lightModelId = 1;
 		int textureFilterId{};
-		int sceneId = 5;
+		int sceneId = 11;
 		uint32_t trianglesCount{};
 		uint32_t spheresCount{};
 		float fps{};

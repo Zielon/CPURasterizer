@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdint>
 
+#define GLM_FORCE_INLINE 
 #include <glm/glm.hpp>
 
 namespace Assets

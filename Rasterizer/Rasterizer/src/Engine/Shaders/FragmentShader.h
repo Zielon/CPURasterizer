@@ -4,13 +4,18 @@
 #include "../../Math/Math.h"
 #include "../Scene.h"
 #include "../Camera.h"
+#include "../Samplers/Sampler.h"
 
 namespace Engine
 {
 	class FragmentShader
 	{
 	public:
-		FragmentShader(const Scene& scene): scene(scene) {}
+		FragmentShader(const Scene& scene): scene(scene)
+		{
+			sampler.reset(new Sampler(scene));
+		}
+
 		virtual ~FragmentShader() = default;;
 
 		/**
@@ -27,6 +32,7 @@ namespace Engine
 		                       Pixel& pixel) = 0;
 	protected:
 		const Scene& scene;
+		std::unique_ptr<Sampler> sampler;
 	};
 
 	class PhongBlinnShader : public FragmentShader
@@ -53,6 +59,19 @@ namespace Engine
 			AVXVec3f color;
 			AVXVec3f eye = AVXVec3f(scene.GetCamera().GetPosition());
 			AVXVec3f viewDir = Normalize(eye - position);
+
+			AVXVec3f albedo;
+
+			if (material.albedoTexID != -1)
+				for (auto i = 0; i < 8; i++)
+				{
+					glm::vec3 rgb = sampler->Sample({ texCoord.x[i], texCoord.y[i] }, material, Assets::Albedo);
+					albedo.x[i] = rgb.r;
+					albedo.y[i] = rgb.g;
+					albedo.z[i] = rgb.b;
+				}
+			else
+				albedo = AVXVec3f(material.albedo);
 
 			for (const auto& light : lights)
 			{
@@ -85,9 +104,9 @@ namespace Engine
 					pow(cosBeta[6], shininess),
 					pow(cosBeta[7], shininess));
 
-				auto ambient = AVXVec3f(material.albedo) * 0.1f;
-				auto diffuse = AVXVec3f(cosTheta) * material.albedo * 0.8f;
-				auto specular = AVXVec3f(spec) * material.albedo * 0.9f;
+				auto ambient = albedo * 0.1f;
+				auto diffuse = AVXVec3f(cosTheta) * albedo * 0.8f;
+				auto specular = AVXVec3f(spec) * albedo * 0.9f;
 
 				color = color + ambient + diffuse + specular;
 			}

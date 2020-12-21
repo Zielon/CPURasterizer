@@ -21,6 +21,7 @@ public:
 	__forceinline SSEFloat(const SSEFloat& copyFrom): m128(copyFrom.m128) {}
 	__forceinline SSEFloat(const __m128& val) : m128(val) {}
 	__forceinline SSEFloat(const __m128i rhs): m128(_mm_cvtepi32_ps(rhs)) {}
+	__forceinline SSEFloat(float a, float b, float c, float d): m128(_mm_set_ps(d, c, b, a)) {}
 
 	__forceinline SSEFloat(const float& fVal) : m128(
 		_mm_castsi128_ps(_mm_shuffle_epi32(_mm_castps_si128(_mm_load_ss(&fVal)), _MM_SHUFFLE(0, 0, 0, 0)))) {}

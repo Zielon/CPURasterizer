@@ -55,6 +55,7 @@ namespace Engine
 		[[nodiscard]] const std::vector<Assets::Vertex>& GetVertexBuffer() const { return vertices; }
 		[[nodiscard]] const std::vector<Assets::Material>& GetMaterials() const { return materials; }
 		[[nodiscard]] const std::vector<Assets::Light>& GetLights() const { return lights; }
+		[[nodiscard]] const std::vector<std::unique_ptr<Assets::Texture>>& GetTextures() const { return textures; }
 
 	private:
 		std::string config;

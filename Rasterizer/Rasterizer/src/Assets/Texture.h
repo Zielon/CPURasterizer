@@ -4,6 +4,8 @@
 
 namespace Assets
 {
+	enum TextureType { Metallic, Albedo, Normal, Height };
+
 	class Texture
 	{
 	public:
@@ -23,12 +25,12 @@ namespace Assets
 		[[nodiscard]] int GetHeight() const { return texHeight; };
 		[[nodiscard]] int GetImageSize() const { return imageSize; };
 		[[nodiscard]] int GetChannels() const { return texChannels; };
-		[[nodiscard]] const void* GetPixels() const { return pixels; };
+		[[nodiscard]] const std::vector<float>& GetPixels() const { return pixels; };
 
 	private:
 		std::future<void> loader{};
 		std::string path;
-		void* pixels;
+		std::vector<float> pixels;
 		int texWidth{};
 		int texHeight{};
 		int texChannels{};

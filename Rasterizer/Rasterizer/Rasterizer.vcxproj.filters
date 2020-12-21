@@ -40,6 +40,9 @@
     <Filter Include="HDR">
       <UniqueIdentifier>{1e846118-7e77-471e-a448-018c37c5f2af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Samplers">
+      <UniqueIdentifier>{eff18502-b8f3-487c-ac6a-b2f5c98416f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Viewer\Application.h">
@@ -177,6 +180,9 @@
     <ClInclude Include="src\HDR\HDRLoader.h">
       <Filter>HDR</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Samplers\Sampler.h">
+      <Filter>Engine\Samplers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -233,6 +239,9 @@
     </ClCompile>
     <ClCompile Include="src\HDR\HDRLoader.cpp">
       <Filter>HDR</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Samplers\Sampler.cpp">
+      <Filter>Engine\Samplers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
