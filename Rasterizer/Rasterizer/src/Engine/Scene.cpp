@@ -59,7 +59,7 @@ namespace Engine
 	void Scene::Load()
 	{
 		if (!LoadSceneFromFile(config, *this, options))
-			throw std::runtime_error("[ERROR] File does not exist!");
+			throw std::runtime_error("[ERROR] File does not exist. See README for more details!");
 	}
 
 	void Scene::CreateBuffers()

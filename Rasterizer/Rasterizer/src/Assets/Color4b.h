@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cstdint>
 
+#include <glm/glm.hpp>
+
 namespace Assets
 {
 	class Color4b
@@ -44,12 +46,27 @@ namespace Assets
 			return Color4b(r >> shift, g >> shift, b >> shift, a);
 		}
 
+		[[nodiscard]] __forceinline glm::vec3 ToneMap(const glm::vec3& rgb, float limit) const
+		{
+			const float luminance = 0.299f * rgb.x + 0.587f * rgb.y + 0.114f * rgb.z;
+			return rgb / (1.0f + luminance / limit);
+		}
+
+		[[nodiscard]] __forceinline glm::vec3 GammaCorrection(const glm::vec3& ldr) const
+		{
+			constexpr auto exponent = glm::vec3(1.0f / 2.2f);
+			return pow(ldr, exponent);
+		}
+
 		__forceinline void LDR(float R, float G, float B, float A = 1.0f)
 		{
-			r = uint8_t(pow(std::clamp(255.f * R, 0.f, 255.f), 1.f / 1.f));
-			g = uint8_t(pow(std::clamp(255.f * G, 0.f, 255.f), 1.f / 1.f));
-			b = uint8_t(pow(std::clamp(255.f * B, 0.f, 255.f), 1.f / 1.f));
-			a = uint8_t(pow(std::clamp(255.f * A, 0.f, 255.f), 1.f / 1.f));
+			const auto ldr = GammaCorrection(ToneMap({ R, G, B }, 1.5f)) * 255.f;
+			const auto rgb = clamp(ldr, 0.f, 255.f);
+
+			r = uint8_t(rgb.x);
+			g = uint8_t(rgb.y);
+			b = uint8_t(rgb.z);
+			a = 1;
 		}
 	};
 }

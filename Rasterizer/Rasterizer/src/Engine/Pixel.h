@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Assets/Vertex.h"
+#include "../Math/Math.h"
 #include "../SIMD/AVX.h"
 #include "../SIMD/SSE.h"
 
@@ -100,7 +101,7 @@ namespace Engine
 			b2 = One - b0 - b1;
 
 			position = b0 * AVXVec3f(v0.position) + b1 * AVXVec3f(v1.position) + b2 * AVXVec3f(v2.position);
-			normal = b0 * AVXVec3f(v0.normal) + b1 * AVXVec3f(v1.normal) + b2 * AVXVec3f(v2.normal);
+			normal = Normalize(b0 * AVXVec3f(v0.normal) + b1 * AVXVec3f(v1.normal) + b2 * AVXVec3f(v2.normal));
 			texCoord = b0 * AVXVec2f(v0.texCoords) + b1 * AVXVec2f(v1.texCoords) + b2 * AVXVec2f(v2.texCoords);
 		}
 	};

@@ -4,6 +4,7 @@ constexpr float PI = 3.14159265358979323846f;
 constexpr float INVPI = 0.31830988618379069122f;
 
 #include "../SIMD/AVX.h"
+#include "../SIMD/SSE.h"
 
 namespace Math
 {

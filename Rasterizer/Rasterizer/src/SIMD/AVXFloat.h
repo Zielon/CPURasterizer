@@ -25,6 +25,16 @@ public:
 	__forceinline AVXFloat(const __m256i rhs): m256(_mm256_cvtepi32_ps(rhs)) {}
 	__forceinline AVXFloat(const float& fVal) : m256(_mm256_broadcast_ss(&fVal)) {}
 
+	__forceinline AVXFloat(
+		const float& a,
+		const float& b,
+		const float& c,
+		const float& d,
+		const float& e,
+		const float& f,
+		const float& g,
+		const float& h) : m256(_mm256_set_ps(h, g, f, e, d, c, b, a)) {}
+
 	__forceinline AVXFloat& operator =(const AVXFloat& copyFrom)
 	{
 		m256 = copyFrom.m256;

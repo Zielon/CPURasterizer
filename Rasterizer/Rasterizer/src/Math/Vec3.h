@@ -36,7 +36,12 @@ namespace Math
 		__forceinline Vec operator -(const Vec& rhs) const { return Vec(x - rhs.x, y - rhs.y, z - rhs.z); }
 		__forceinline Vec operator *(const Vec& rhs) const { return Vec(x * rhs.x, y * rhs.y, z * rhs.z); }
 		__forceinline Vec operator *(const T& rhs) const { return Vec(x * rhs, y * rhs, z * rhs); }
-		__forceinline Vec operator *(const glm::vec<3, float>& rhs) const { return Vec(x * rhs.x, y * rhs.y, z * rhs.z); }
+
+		__forceinline Vec operator *(const glm::vec<3, float>& rhs) const
+		{
+			return Vec(x * rhs.x, y * rhs.y, z * rhs.z);
+		}
+
 		__forceinline Vec operator /(const Vec& rhs) const { return Vec(x / rhs.x, y / rhs.y, z / rhs.z); }
 		__forceinline Vec operator /(const T& rhs) const { return Vec(x / rhs, y / rhs, z / rhs); }
 	};
@@ -69,5 +74,11 @@ namespace Math
 	__forceinline T LengthSquared(const Vec<3, T>& vec)
 	{
 		return Dot(vec, vec);
+	}
+
+	template <class T>
+	__forceinline Vec<3, T> Reflect(const Vec<3, T>& v, const Vec<3, T>& n)
+	{
+		return v + Vec<3, T>(Dot(v * -1.f, n) * n * 2);
 	}
 }
