@@ -12,7 +12,7 @@ Current development is available under [project](https://github.com/Zielon/CPURa
   <img src="https://github.com/Zielon/CPURasterizer/blob/resources/Resources/cpu.gif?raw=true" width=auto height=auto>
 </p>
 
-Implemented stages including:
+Implemented stages include:
 
 ```
 - Vertex Shader
