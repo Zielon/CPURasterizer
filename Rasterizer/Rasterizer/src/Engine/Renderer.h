@@ -31,7 +31,8 @@ namespace Engine
 
 		[[nodiscard]] const Settings& GetSettings() const { return settings; }
 
-		static const Renderer* Instance() { return instance; };
+		// It is assumed that calling classes lives inside Renderer instance
+		static const Renderer* Instance() { return instance; }
 
 	private:
 		/**
@@ -43,13 +44,6 @@ namespace Engine
 		 * \brief Run vertex shader on all vertices.
 		 */
 		void VertexShaderStage();
-
-		/**
-		 * \brief Clip all triangles to the viewing frustum.
-		 * In the case of a triangle overlapping with one of the planes of the frustum
-		 * the methods creates new triangles and add them to the buffer.
-		 */
-		void ClippingStage();
 
 		/**
 		 * \brief Tile or binning rasterization. Assigns all triangles to the proper overlapping tile.
@@ -66,7 +60,17 @@ namespace Engine
 		 */
 		void FragmentShaderStage();
 
+		/**
+		 * \brief Low frequencies pass filter in the image space: FXAA or MSAA
+		 */
 		void AntialisingStage() const;
+
+		/**
+		 * \brief Clip all triangles to the viewing frustum.
+		 * In the case of a triangle overlapping with one of the planes of the frustum
+		 * the methods creates new triangles and add them to the buffer.
+		 */
+		void ClippingStage();
 
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);

@@ -8,7 +8,13 @@ namespace Engine
 	{
 	public:
 		VertexShader(const Camera& camera) : camera(camera) {}
-		virtual ~VertexShader() = default;;
+		virtual ~VertexShader() = default;
+
+		/**
+		 * \brief Transformation per vertex
+		 * \param inVertex Vertex before
+		 * \param outVertex Vertex after
+		 */
 		virtual void Process(const Assets::Vertex& inVertex, Assets::Vertex& outVertex) = 0;
 	protected:
 		const Camera& camera;

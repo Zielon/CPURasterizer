@@ -20,10 +20,10 @@ namespace Engine
 
 		/**
 		 * \brief Perform shading in the world space
-		 * \param v0 
+		 * \param v0 Pixel's triangle
 		 * \param v1 
 		 * \param v2 
-		 * \param pixel 
+		 * \param pixel Pixel
 		 * \return Color of 8 pixels
 		 */
 		virtual AVXVec3f Shade(Assets::Vertex& v0,
@@ -62,6 +62,7 @@ namespace Engine
 
 			AVXVec3f albedo;
 
+			// In the case of albedo texture presence sample it
 			if (material.albedoTexID != -1)
 				for (auto i = 0; i < 8; i++)
 				{
@@ -78,7 +79,7 @@ namespace Engine
 
 			for (const auto& light : lights)
 			{
-				// Sample middle of area light
+				// Sample the middle point of area light
 				glm::vec3 lightPos;
 				if (light.type == 0) // Area light
 					lightPos = light.position + 0.5f * light.v + 0.5f * light.u;
@@ -95,9 +96,7 @@ namespace Engine
 				// Specular
 				AVXVec3f halfVec = lightDir + viewDir;
 				halfVec = Normalize(halfVec);
-				cos = Dot(normal, halfVec);
-				mask = cos < AVXFloat(0);
-				AVXFloat cosBeta = AVX::Select(mask, AVXFloat(0), cos);
+				AVXFloat cosBeta = Dot(normal, halfVec);
 
 				AVXFloat specular;
 				for (auto i = 0; i < 8; i++)

@@ -14,7 +14,7 @@ public:
 		int i[8];
 	};
 
-	__forceinline AVXBool() {}
+	__forceinline AVXBool() = default;
 	__forceinline AVXBool(const AVXBool& copyFrom): m256(copyFrom.m256) {}
 	__forceinline AVXBool(const __m256& val): m256(val) {}
 

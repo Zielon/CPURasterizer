@@ -19,15 +19,8 @@ public:
 	__forceinline AVXInt(const __m256i& val) : m256(val) {}
 	__forceinline AVXInt(const uint32_t& a): m256(_mm256_castps_si256(_mm256_broadcast_ss((const float*)&a))) {}
 
-	__forceinline AVXInt(
-		const uint32_t& a,
-		const uint32_t& b,
-		const uint32_t& c,
-		const uint32_t& d,
-		const uint32_t& e,
-		const uint32_t& f,
-		const uint32_t& g,
-		const uint32_t& h): m256(
+	__forceinline AVXInt(const uint32_t& a, const uint32_t& b, const uint32_t& c, const uint32_t& d,
+	                     const uint32_t& e, const uint32_t& f, const uint32_t& g, const uint32_t& h): m256(
 		_mm256_set_epi32(h, g, f, e, d, c, b, a)) {}
 
 	__forceinline AVXInt& operator =(const AVXInt& copyFrom)

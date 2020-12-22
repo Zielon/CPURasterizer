@@ -26,15 +26,14 @@ namespace AVX
 		return _mm256_blendv_ps(f, t, m);
 	}
 
-	__forceinline AVXFloat operator +(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) + rhs; }
-	__forceinline AVXFloat operator -(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) - rhs; }
-	__forceinline AVXFloat operator *(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) * rhs; }
-
 	__forceinline AVXFloat Rcp(const AVXFloat& rhs)
 	{
 		const AVXFloat r = _mm256_rcp_ps(rhs.m256);
 		return _mm256_sub_ps(_mm256_add_ps(r, r), _mm256_mul_ps(_mm256_mul_ps(r, r), rhs));
 	}
 
+	__forceinline AVXFloat operator +(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) + rhs; }
+	__forceinline AVXFloat operator -(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) - rhs; }
+	__forceinline AVXFloat operator *(const float& lhs, const AVXFloat& rhs) { return AVXFloat(lhs) * rhs; }
 	__forceinline AVXFloat operator /(const float& lhs, const AVXFloat& rhs) { return lhs * Rcp(rhs); }
 }
