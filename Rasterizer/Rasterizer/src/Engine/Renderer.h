@@ -2,7 +2,7 @@
 
 #include <memory>
 
-//#define PARALLEL
+#define PARALLEL
 
 #include "Clipper.h"
 #include "Settings.h"
@@ -28,6 +28,11 @@ namespace Engine
 		void Render(const Settings& settings);
 
 		[[nodiscard]] const uint8_t* GetColorBuffer() const;
+
+		[[nodiscard]] const Settings& GetSettings() const { return settings; }
+
+		static const Renderer* Instance() { return instance; };
+
 	private:
 		/**
 		 * \brief Clear all buffer before rendering a next frame.
@@ -62,7 +67,7 @@ namespace Engine
 		void FragmentShaderStage();
 
 		void AntialisingStage() const;
-		
+
 		void UpdateFrameBuffer();
 		void UpdateState(const Settings& settings);
 		void CopyPixelsToBuffer();
@@ -77,7 +82,7 @@ namespace Engine
 		int height;
 		int tileDimX;
 		int tileDimY;
-
+		static Renderer* instance;
 		Settings settings{};
 
 		// Lock-free distributed structures. Each thread operates on its own bin.

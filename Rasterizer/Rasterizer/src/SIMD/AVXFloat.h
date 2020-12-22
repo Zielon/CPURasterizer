@@ -64,4 +64,9 @@ public:
 	__forceinline AVXBool operator >=(const float& rhs) const { return *this >= AVXFloat(rhs); }
 	__forceinline AVXBool operator <=(const AVXFloat& rhs) const { return AVX::_mm256_cmple_ps(m256, rhs); }
 	__forceinline AVXBool operator <=(const float& rhs) const { return *this <= AVXFloat(rhs); }
+
+	__forceinline AVXFloat& operator +=(const AVXFloat& rhs) { return *this = *this + rhs; }
+	__forceinline AVXFloat& operator +=(const float& rhs) { return *this = *this + rhs; }
+	__forceinline AVXFloat& operator -=(const AVXFloat& rhs) { return *this = *this - rhs; }
+	__forceinline AVXFloat& operator -=(const float& rhs) { return *this = *this - rhs; }
 };

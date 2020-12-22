@@ -13,10 +13,14 @@ namespace Engine
 	public:
 		Sampler(const class Scene& scene): scene(scene) {};
 
-		glm::vec3 Sample(const glm::vec2& texCoord, const Assets::Material& material, Assets::TextureType textureType) const;
+		[[nodiscard]] glm::vec3 Sample(const glm::vec2& texCoord, const Assets::Material& material,
+		                               Assets::TextureType textureType) const;
 	protected:
 		const Scene& scene;
 
-		glm::vec3 Sample(const glm::vec2& texCoord, const Assets::Texture& texture) const;
+		[[nodiscard]] glm::vec3 Sample(const glm::vec2& texCoord, const Assets::Texture& texture) const;
+		[[nodiscard]] glm::vec3 Nearest(float wrappedU, float wrappedV, const Assets::Texture& texture) const;
+		[[nodiscard]] glm::vec3 Linear(float wrappedU, float wrappedV, const Assets::Texture& texture) const;
+		[[nodiscard]] glm::vec3 Trilinear(float wrappedU, float wrappedV, const Assets::Texture& texture) const;
 	};
 }

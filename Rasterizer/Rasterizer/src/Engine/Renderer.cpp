@@ -11,6 +11,8 @@
 
 namespace Engine
 {
+	Renderer* Renderer::instance;
+
 	Renderer::Renderer(const Scene& scene, const Camera& camera) :
 		scene(scene), camera(camera),
 		width(camera.GetWidth()),
@@ -29,6 +31,8 @@ namespace Engine
 		clipper.reset(new Clipper(scene, camera, projectedVertexStorage));
 		rasterizer.reset(new Rasterizer(
 			width, height, rasterTrianglesBuffer, tiles, clippedProjectedVertexBuffer, *depthBuffer));
+
+		instance = this;
 	}
 
 	void Renderer::Render(const Settings& settings)
@@ -116,7 +120,7 @@ namespace Engine
 
 			Assets::Color4b colorByte[8];
 			for (int i = 0; i < 8; i ++)
-				colorByte[i].LDR(shaded.x[i], shaded.y[i], shaded.z[i]);
+				colorByte[i].LDR(shaded.x[i], shaded.y[i], shaded.z[i], settings.useGammaCorrection);
 
 			tiledPixels[pixel.tileId][pixel.intraTileIdx] = _mm256_loadu_si256(reinterpret_cast<__m256i*>(&colorByte));
 		});

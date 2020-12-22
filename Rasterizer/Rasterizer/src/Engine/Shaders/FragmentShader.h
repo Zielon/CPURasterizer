@@ -56,9 +56,9 @@ namespace Engine
 
 			float shininess = 32.0f;
 
-			AVXVec3f color;
 			AVXVec3f eye = AVXVec3f(scene.GetCamera().GetPosition());
 			AVXVec3f viewDir = Normalize(eye - position);
+			normal = Normalize(normal);
 
 			AVXVec3f albedo;
 
@@ -73,8 +73,12 @@ namespace Engine
 			else
 				albedo = AVXVec3f(material.albedo);
 
+			AVXVec3f alpha;
+			AVXVec3f ambient(0.2f);
+
 			for (const auto& light : lights)
 			{
+				// Sample middle of area light
 				glm::vec3 lightPos;
 				if (light.type == 0) // Area light
 					lightPos = light.position + 0.5f * light.v + 0.5f * light.u;
@@ -83,35 +87,26 @@ namespace Engine
 
 				AVXVec3f lightDir = Normalize(AVXVec3f(lightPos) - position);
 
-				// cosTheta
+				// Diffuse
 				AVXFloat cos = Dot(normal, lightDir);
 				AVXBool mask = cos < AVXFloat(0);
 				AVXFloat cosTheta = AVX::Select(mask, AVXFloat(0), cos);
 
-				AVXVec3f reflectDir = Reflect(lightDir * -1.f, normal);
-
-				cos = Dot(reflectDir, viewDir);
+				// Specular
+				AVXVec3f halfVec = lightDir + viewDir;
+				halfVec = Normalize(halfVec);
+				cos = Dot(normal, halfVec);
 				mask = cos < AVXFloat(0);
 				AVXFloat cosBeta = AVX::Select(mask, AVXFloat(0), cos);
 
-				AVXFloat spec = AVXFloat(
-					pow(cosBeta[0], shininess),
-					pow(cosBeta[1], shininess),
-					pow(cosBeta[2], shininess),
-					pow(cosBeta[3], shininess),
-					pow(cosBeta[4], shininess),
-					pow(cosBeta[5], shininess),
-					pow(cosBeta[6], shininess),
-					pow(cosBeta[7], shininess));
+				AVXFloat specular;
+				for (auto i = 0; i < 8; i++)
+					specular[i] = pow(cosBeta[i], shininess);
 
-				auto ambient = albedo * 0.1f;
-				auto diffuse = AVXVec3f(cosTheta) * albedo * 0.8f;
-				auto specular = AVXVec3f(spec) * albedo * 0.9f;
-
-				color = color + ambient + diffuse + specular;
+				alpha += ambient + AVXVec3f(cosTheta) + specular * 0.2f;
 			}
 
-			return color;
+			return albedo * alpha * INVPI;
 		}
 	};
 

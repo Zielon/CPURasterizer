@@ -13,11 +13,12 @@ namespace Engine
 		bool FXAA{};
 		int lightModelId = 1;
 		int textureFilterId{};
-		int sceneId = 11;
+		int sceneId = 5;
 		uint32_t trianglesCount{};
 		uint32_t spheresCount{};
 		float fps{};
-		bool useShadows;
+		bool useShadows{};
+		bool useGammaCorrection = true;
 		bool cullBackFaces = true;
 	};
 }

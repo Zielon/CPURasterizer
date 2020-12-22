@@ -32,7 +32,7 @@ namespace Viewer
 	void Menu::Render()
 	{
 		const static uint32_t cores = std::thread::hardware_concurrency();
-		const static char* filter[2] = { "Nearst", "Linear" };
+		const static char* filter[3] = { "Nearest", "Linear", "Trilinear" };
 		const static char* lightModels[2] = { "Normals", "Phong-Blinn" };
 		const static char* scenes[14] = {
 			"Ajax",
@@ -99,12 +99,13 @@ namespace Viewer
 			ImGui::Text("Texture filter");
 
 			ImGui::PushItemWidth(-1);
-			ImGui::Combo("   ", &settings.textureFilterId, filter, 2);
+			ImGui::Combo("   ", &settings.textureFilterId, filter, 3);
 			ImGui::PopItemWidth();
 
 			ImGui::Checkbox("FXAA", &settings.FXAA);
 			ImGui::Checkbox("Cull back-faces", &settings.cullBackFaces);
 			ImGui::Checkbox("Use shadows", &settings.useShadows);
+			ImGui::Checkbox("Use Gamma Correction", &settings.useGammaCorrection);
 
 			// ==================================
 

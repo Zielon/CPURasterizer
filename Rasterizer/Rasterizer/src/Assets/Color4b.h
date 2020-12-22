@@ -42,11 +42,6 @@ namespace Assets
 			return Color4b(uint8_t(r * fInv), uint8_t(g * fInv), uint8_t(b * fInv));
 		}
 
-		__forceinline Color4b operator >>(const int shift) const
-		{
-			return Color4b(r >> shift, g >> shift, b >> shift, a);
-		}
-
 		[[nodiscard]] __forceinline glm::vec3 ToneMap(const glm::vec3& rgb, float limit) const
 		{
 			const float luminance = 0.299f * rgb.x + 0.587f * rgb.y + 0.114f * rgb.z;
@@ -59,15 +54,25 @@ namespace Assets
 			return pow(ldr, exponent);
 		}
 
-		__forceinline void LDR(float R, float G, float B, float A = 1.0f)
+		__forceinline void LDR(float R, float G, float B, bool gammaCorrection, float A = 1.0f)
 		{
-			const auto ldr = GammaCorrection(ToneMap({ R, G, B }, 1.5f)) * 255.f;
-			const auto rgb = clamp(ldr, 0.f, 255.f);
+			if (gammaCorrection)
+			{
+				const auto ldr = GammaCorrection({ R, G, B }) * 255.f;
+				const auto rgb = clamp(ldr, 0.f, 255.f);
 
-			r = uint8_t(rgb.x);
-			g = uint8_t(rgb.y);
-			b = uint8_t(rgb.z);
-			a = 1;
+				r = uint8_t(rgb.x);
+				g = uint8_t(rgb.y);
+				b = uint8_t(rgb.z);
+				a = 1;
+			}
+			else
+			{
+				r = uint8_t(std::clamp(255.f * R, 0.f, 255.f));
+				g = uint8_t(std::clamp(255.f * G, 0.f, 255.f));
+				b = uint8_t(std::clamp(255.f * B, 0.f, 255.f));
+				a = uint8_t(std::clamp(255.f * A, 0.f, 255.f));
+			}
 		}
 	};
 }

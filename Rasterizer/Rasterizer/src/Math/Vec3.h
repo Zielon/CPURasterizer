@@ -34,6 +34,8 @@ namespace Math
 
 		__forceinline Vec operator +(const Vec& rhs) const { return Vec(x + rhs.x, y + rhs.y, z + rhs.z); }
 		__forceinline Vec operator -(const Vec& rhs) const { return Vec(x - rhs.x, y - rhs.y, z - rhs.z); }
+		__forceinline Vec operator /(const Vec& rhs) const { return Vec(x / rhs.x, y / rhs.y, z / rhs.z); }
+		__forceinline Vec operator /(const T& rhs) const { return Vec(x / rhs, y / rhs, z / rhs); }
 		__forceinline Vec operator *(const Vec& rhs) const { return Vec(x * rhs.x, y * rhs.y, z * rhs.z); }
 		__forceinline Vec operator *(const T& rhs) const { return Vec(x * rhs, y * rhs, z * rhs); }
 
@@ -42,8 +44,23 @@ namespace Math
 			return Vec(x * rhs.x, y * rhs.y, z * rhs.z);
 		}
 
-		__forceinline Vec operator /(const Vec& rhs) const { return Vec(x / rhs.x, y / rhs.y, z / rhs.z); }
-		__forceinline Vec operator /(const T& rhs) const { return Vec(x / rhs, y / rhs, z / rhs); }
+		__forceinline const Vec& operator +=(const Vec& rhs)
+		{
+			x += rhs.x;
+			y += rhs.y;
+			z += rhs.z;
+			
+			return *this;
+		}
+
+		__forceinline const Vec& operator -=(const Vec& rhs)
+		{
+			x -= rhs.x;
+			y -= rhs.y;
+			z -= rhs.z;
+			
+			return *this;
+		}
 	};
 
 	template <class T>
