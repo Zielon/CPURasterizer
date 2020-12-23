@@ -6,7 +6,7 @@ CPU implementation of a very efficient rasterizer which utilizes `AVX2` instruct
 
 ![issues](https://img.shields.io/github/issues/Zielon/CPURasterizer) ![closed](https://img.shields.io/github/issues-closed-raw/Zielon/CPURasterizer) ![release](https://img.shields.io/github/release/Zielon/CPURasterizer)
 
-Current development is available under [project](https://github.com/Zielon/CPURasterizer/projects/1).
+Current development is available under [project](https://github.com/Zielon/CPURasterizer/projects/1). Discussion about the project is available [here](https://github.com/Zielon/CPURasterizer/discussions).
 
 <p align="center">
   <img src="https://github.com/Zielon/CPURasterizer/blob/resources/Resources/cpu.gif?raw=true" width=auto height=auto>
@@ -46,12 +46,12 @@ All dependencies needed for the project can be downloaded using `install.bat` sc
 
 ### Assets
 
-The scene description and assets are taken from [GLSL-PathTracer](https://github.com/knightcrawler25/GLSL-PathTracer) project [4]. The whole dataset can be downloaded from [link](https://drive.google.com/file/d/1UFMMoVb5uB7WIvCeHOfQ2dCQSxNMXluB/view).
+The scene description and assets are taken from [GLSL-PathTracer](https://github.com/knightcrawler25/GLSL-PathTracer) project. The whole dataset can be downloaded from [link](https://drive.google.com/file/d/1UFMMoVb5uB7WIvCeHOfQ2dCQSxNMXluB/view).
 
-Download the assets folder and place it in `PBRVulkan/Assets/Scenes/`. The folder structure has to be as follows:
+Download the assets folder and place it in `/Rasterizer/Assets/Scenes/`. The folder structure has to be as follows:
 
 ```
-PBRVulkan/Assets/Scenes/
+/Rasterizer/Assets/Scenes/
     bedroom/
     coffee_cart/
     HDR/
