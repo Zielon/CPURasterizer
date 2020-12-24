@@ -1,6 +1,7 @@
 #pragma once
 
 #include <future>
+#include <vector>
 
 namespace Assets
 {

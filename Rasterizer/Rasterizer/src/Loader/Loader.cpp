@@ -27,6 +27,7 @@ freely, subject to the following restrictions:
 
 #include "Loader.h"
 
+#include <cstring>
 #include <iostream>
 
 #include "RenderOptions.h"
