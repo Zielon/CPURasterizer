@@ -139,7 +139,13 @@ namespace Engine
 			for (auto j = 0; j < tiles[i].pixels.size(); j++)
 			{
 				const Pixel& pixel = tiles[i].pixels[j];
+#if (CFG_COMPILER & CFG_COMPILER_VC)
 				auto& color = tiledPixels[i][j].m256.m256i_u8;
+#elif (CFG_COMPILER & (CFG_COMPILER_GCC | CFG_COMPILER_CLANG))
+                                auto* color = (const uint8_t*)(&tiledPixels[i][j].m256);
+#else
+#  error Unsupported compiler
+#endif
 
 				if (pixel.coverageMask.GetBit(0) != 0)
 					colorBuffer->SetColor(Assets::Color4b(color[0], color[1], color[2]), pixel.x, pixel.y);
