@@ -10,7 +10,7 @@
 	This is modified version of the original code. Addeed code to build marginal & conditional densities for IBL importance sampling
 */
 
-#include "HDRloader.h"
+#include "HDRLoader.h"
 #include <math.h>
 #include <memory.h>
 #include <cstdio>
