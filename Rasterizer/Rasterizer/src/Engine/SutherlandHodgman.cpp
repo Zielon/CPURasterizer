@@ -75,7 +75,7 @@ namespace Engine
 		return polygon;
 	}
 
-	__forceinline Polygon SutherlandHodgman::ClipPlane(
+	CFG_FORCE_INLINE Polygon SutherlandHodgman::ClipPlane(
 		uint32_t plane, const Polygon& inPolygon, const Predicate& isInside, const Clip& clip)
 	{
 		Polygon outPolygon;
@@ -115,7 +115,7 @@ namespace Engine
 		return outPolygon;
 	}
 
-	__forceinline float SutherlandHodgman::Dot(uint32_t planeCode, const glm::vec4& v)
+	CFG_FORCE_INLINE float SutherlandHodgman::Dot(uint32_t planeCode, const glm::vec4& v)
 	{
 		if (planeCode & LEFT_BIT) return v.x + v.w; /* v * (1 0 0 1)  */
 		if (planeCode & RIGHT_BIT) return v.x - v.w; /* v * (-1 0 0 1) */
@@ -141,7 +141,7 @@ namespace Engine
 		return code;
 	}
 
-	__forceinline float SutherlandHodgman::Point2PlaneDistance(
+	CFG_FORCE_INLINE float SutherlandHodgman::Point2PlaneDistance(
 		uint32_t clipPlane, const glm::vec4& a, const glm::vec4& b)
 	{
 		return Dot(clipPlane, a) / (Dot(clipPlane, a) - Dot(clipPlane, b));

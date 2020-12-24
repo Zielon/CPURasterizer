@@ -4,6 +4,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include "../Config.h"
+
 namespace Engine
 {
 	using Predicate = std::function<bool(const glm::vec4&)>;
@@ -25,10 +27,10 @@ namespace Engine
 		};
 
 		[[nodiscard]] uint32_t Size() const { return points.size(); }
-		__forceinline void Clear() { points.clear(); }
-		__forceinline void Add(const Point& point) { points.push_back(point); }
-		__forceinline Point& operator [](const size_t i) { return points[i]; }
-		__forceinline const Point& operator [](const size_t i) const { return points[i]; }
+		CFG_FORCE_INLINE void Clear() { points.clear(); }
+		CFG_FORCE_INLINE void Add(const Point& point) { points.push_back(point); }
+		CFG_FORCE_INLINE Point& operator [](const size_t i) { return points[i]; }
+		CFG_FORCE_INLINE const Point& operator [](const size_t i) const { return points[i]; }
 
 		void SetFromTriangle(const glm::vec4& v0, const glm::vec4& v1, const glm::vec4& v2)
 		{
@@ -42,7 +44,7 @@ namespace Engine
 	};
 
 	/**
-	 * \brief The Sutherland–Hodgman algorithm is an algorithm used for clipping polygons.
+	 * \brief The Sutherlandï¿½Hodgman algorithm is an algorithm used for clipping polygons.
 	 * It works by extending each line of the convex clip polygon in turn and
 	 * selecting only vertices from the subject polygon that are on the visible side.
 	 * https://chaosinmotion.com/2016/05/22/3d-clipping-in-homogeneous-coordinates/
