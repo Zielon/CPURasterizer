@@ -27,9 +27,11 @@ add_executable(CPURasterizer
   target_compile_definitions(CPURasterizer
       PRIVATE
         IMGUI_IMPL_OPENGL_LOADER_GLAD)
+  target_include_directories(CPURasterizer
+      PRIVATE
+        ${STB_INCLUDE_DIRS})
   target_link_libraries(CPURasterizer
       PRIVATE
-        glad imgui stb tiny_obj_loader
-        glfw
+        glad::glad glfw imgui::imgui tinyobjloader::tinyobjloader
         OpenMP::OpenMP_CXX
         $<$<CXX_COMPILER_ID:GNU>:tbb>)
