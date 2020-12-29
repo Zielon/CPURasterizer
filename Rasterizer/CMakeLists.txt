@@ -6,6 +6,9 @@ endif()
 
 project(CPURasterizer)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # Split dependencies file to make it easier for packagers
 include(CMake/Dependencies.cmake)
 find_package(OpenMP REQUIRED COMPONENTS CXX)
