@@ -42,7 +42,7 @@ All tests were done on CPU Intel i4790k with 4 cores. 60 fps is the maximum for 
 
 ### How to run
 
-All dependencies needed for the project can be downloaded using `install.bat` script. The project has `Visual Studio 2019` solution.
+All dependencies needed for the project can be downloaded using `install.bat` for Windows or `install.sh` for Linux. The project has `Visual Studio 2019` solution and `CMake project`.
 
 ### Assets
 

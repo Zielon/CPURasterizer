@@ -183,6 +183,7 @@
     <ClInclude Include="src\Engine\Samplers\Sampler.h">
       <Filter>Engine\Samplers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />

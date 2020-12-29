@@ -25,6 +25,7 @@
     <ClInclude Include="src\Assets\Mesh.h" />
     <ClInclude Include="src\Assets\Texture.h" />
     <ClInclude Include="src\Assets\Vertex.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Engine\Antialising\Antialising.h" />
     <ClInclude Include="src\Engine\Antialising\FXAA.h" />
     <ClInclude Include="src\Engine\Camera.h" />
