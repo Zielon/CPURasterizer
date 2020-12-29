@@ -6,6 +6,8 @@
 
 #include "Settings.h"
 
+#include "../Config.h"
+
 #include "../SIMD/AVX.h"
 
 namespace Engine
@@ -70,38 +72,38 @@ namespace Engine
 			this->v2 = v2 * fixed;
 		}
 
-		[[nodiscard]] __forceinline int TopLeftEdge(const glm::ivec2& v1, const glm::ivec2& v2) const
+		[[nodiscard]] CFG_FORCE_INLINE int TopLeftEdge(const glm::ivec2& v1, const glm::ivec2& v2) const
 		{
 			return ((v2.y > v1.y) || (v1.y == v2.y && v1.x > v2.x)) ? 0 : -1;
 		}
 
-		[[nodiscard]] __forceinline int EdgeFunc0(const glm::ivec2& p) const
+		[[nodiscard]] CFG_FORCE_INLINE int EdgeFunc0(const glm::ivec2& p) const
 		{
 			return B0 * (p.x - v0.x) + C0 * (p.y - v0.y) + TopLeftEdge(v0, v1);
 		}
 
-		[[nodiscard]] __forceinline int EdgeFunc1(const glm::ivec2& p) const
+		[[nodiscard]] CFG_FORCE_INLINE int EdgeFunc1(const glm::ivec2& p) const
 		{
 			return B1 * (p.x - v1.x) + C1 * (p.y - v1.y) + TopLeftEdge(v1, v2);
 		}
 
-		[[nodiscard]] __forceinline int EdgeFunc2(const glm::ivec2& p) const
+		[[nodiscard]] CFG_FORCE_INLINE int EdgeFunc2(const glm::ivec2& p) const
 		{
 			return B2 * (p.x - v2.x) + C2 * (p.y - v2.y) + TopLeftEdge(v2, v0);
 		}
 
-		[[nodiscard]] __forceinline bool Inside(const glm::ivec2& p) const
+		[[nodiscard]] CFG_FORCE_INLINE bool Inside(const glm::ivec2& p) const
 		{
 			return (EdgeFunc0(p) | EdgeFunc1(p) | EdgeFunc2(p)) >= 0;
 		}
 
-		[[nodiscard]] __forceinline float GetDepth(float z0, float z1, float z2) const
+		[[nodiscard]] CFG_FORCE_INLINE float GetDepth(float z0, float z1, float z2) const
 		{
 			const float lambda2 = 1.0f - lambda0 - lambda1;
 			return lambda0 * z0 + lambda1 * z1 + lambda2 * z2;
 		}
 
-		__forceinline void CalcBarycentricCoord(const int x, const int y)
+		CFG_FORCE_INLINE void CalcBarycentricCoord(const int x, const int y)
 		{
 			lambda0 = (B1 * (x - v2.x) + C1 * (y - v2.y)) * invDet;
 			lambda1 = (B2 * (x - v2.x) + C2 * (y - v2.y)) * invDet;
@@ -280,45 +282,45 @@ namespace Engine
 			, materialId(triangle.materialId)
 			, vertexIds(triangle.vertexIds) { }
 
-		[[nodiscard]] __forceinline AVXInt TopLeftEdge(const AVXVec2i& v1, const AVXVec2i& v2) const
+		[[nodiscard]] CFG_FORCE_INLINE AVXInt TopLeftEdge(const AVXVec2i& v1, const AVXVec2i& v2) const
 		{
 			AVXBool r = ((v2.y > v1.y) | ((v1.y == v2.y) & (v1.x > v2.x)));
 			return AVXInt(r);
 		}
 
-		[[nodiscard]] __forceinline AVXInt EdgeFunc0(const AVXVec2i& p) const
+		[[nodiscard]] CFG_FORCE_INLINE AVXInt EdgeFunc0(const AVXVec2i& p) const
 		{
 			return B0 * (p.x - v0.x) + C0 * (p.y - v0.y) + TopLeftEdge(v0, v1);
 		}
 
-		[[nodiscard]] __forceinline AVXInt EdgeFunc1(const AVXVec2i& p) const
+		[[nodiscard]] CFG_FORCE_INLINE AVXInt EdgeFunc1(const AVXVec2i& p) const
 		{
 			return B1 * (p.x - v1.x) + C1 * (p.y - v1.y) + TopLeftEdge(v1, v2);
 		}
 
-		[[nodiscard]] __forceinline AVXInt EdgeFunc2(const AVXVec2i& p) const
+		[[nodiscard]] CFG_FORCE_INLINE AVXInt EdgeFunc2(const AVXVec2i& p) const
 		{
 			return B2 * (p.x - v2.x) + C2 * (p.y - v2.y) + TopLeftEdge(v2, v0);
 		}
 
-		[[nodiscard]] __forceinline AVXBool Inside(const AVXVec2i& p) const
+		[[nodiscard]] CFG_FORCE_INLINE AVXBool Inside(const AVXVec2i& p) const
 		{
 			return (EdgeFunc0(p) | EdgeFunc1(p) | EdgeFunc2(p)) >= AVXInt(0);
 		}
 
-		[[nodiscard]] __forceinline bool TrivialReject(const AVXVec2i& p) const
+		[[nodiscard]] CFG_FORCE_INLINE bool TrivialReject(const AVXVec2i& p) const
 		{
 			return AVX::Any((EdgeFunc0(p) & EdgeFunc1(p) & EdgeFunc2(p)) < AVXInt(0));
 		}
 
-		[[nodiscard]] __forceinline AVXFloat GetDepth(float z0, float z1, float z2) const
+		[[nodiscard]] CFG_FORCE_INLINE AVXFloat GetDepth(float z0, float z1, float z2) const
 		{
 			const auto One = AVXFloat(1);
 			const AVXFloat lambda2 = One - lambda0 - lambda1;
 			return lambda0 * z0 + lambda1 * z1 + lambda2 * z2;
 		}
 
-		__forceinline void CalcBarycentricCoord(const AVXInt& x, const AVXInt& y)
+		CFG_FORCE_INLINE void CalcBarycentricCoord(const AVXInt& x, const AVXInt& y)
 		{
 			lambda0 = AVXFloat((B1 * (x - v2.x) + C1 * (y - v2.y))) * invDet;
 			lambda1 = AVXFloat((B2 * (x - v2.x) + C2 * (y - v2.y))) * invDet;

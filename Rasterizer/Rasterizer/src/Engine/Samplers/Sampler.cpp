@@ -1,5 +1,7 @@
 #include "Sampler.h"
 
+#include "../../Config.h"
+
 #include "../Scene.h"
 #include "../Renderer.h"
 
@@ -27,7 +29,7 @@ namespace Engine
 		}
 	}
 
-	__forceinline int Floor(float x)
+	CFG_FORCE_INLINE int Floor(float x)
 	{
 		const int i = static_cast<int>(x);
 		return i - (i > x);

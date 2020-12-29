@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "../Config.h"
+
 namespace Assets
 {
 	struct Vertex final
@@ -28,7 +30,7 @@ namespace Assets
 			projectedPosition *= invW;
 		}
 
-		__forceinline Vertex operator*(float t) const
+		CFG_FORCE_INLINE Vertex operator*(float t) const
 		{
 			auto copy = *this;
 
@@ -39,7 +41,7 @@ namespace Assets
 			return copy;
 		}
 
-		__forceinline Vertex operator+(const Vertex& v) const
+		CFG_FORCE_INLINE Vertex operator+(const Vertex& v) const
 		{
 			auto copy = *this;
 
@@ -50,7 +52,7 @@ namespace Assets
 			return copy;
 		}
 
-		__forceinline bool operator==(const Vertex& v) const
+		CFG_FORCE_INLINE bool operator==(const Vertex& v) const
 		{
 			return position == v.position && normal == v.normal && texCoords == v.texCoords;
 		}

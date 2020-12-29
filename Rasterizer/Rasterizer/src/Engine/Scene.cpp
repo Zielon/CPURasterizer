@@ -5,7 +5,7 @@
 #include <utility>
 
 #include "Camera.h"
-#include "../HDR/HDRloader.h"
+#include "../HDR/HDRLoader.h"
 
 #include "../Assets/Vertex.h"
 #include "../Assets/Material.h"
