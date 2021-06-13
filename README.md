@@ -36,9 +36,9 @@ All tests were done on CPU Intel i4790k with 4 cores. 60 fps is the maximum for 
 
 | Scene         | Triangles | Shader | Filter  | FPS |
 | ------------- |-----------|--------|---------|-----
-| Cornell box   | 36        |  Phong | Nearest |60   |
-| Bedroom       | 1491750   |  Phong | Nearest |10.1 |
-| Panther       | 2004842   |  Phong | Nearest | 6.3 |
+| Cornell box   | 85k       |  Phong | Nearest |35   |
+| Bedroom       | 1490k     |  Phong | Nearest |10.1 |
+| Panther       | 2004k     |  Phong | Nearest | 6.3 |
 
 ### How to run
 
