@@ -7,6 +7,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "../path.h"
+
 namespace Viewer
 {
 	class Shader
@@ -14,6 +16,8 @@ namespace Viewer
 	public:
 		Shader(const std::string& vertexPath, const std::string& fragmentPath)
 		{
+			root = Path::Root({ "Rasterizer", "Assets", "Shaders" });
+			
 			std::string vertexCode;
 			std::string fragmentCode;
 
@@ -25,8 +29,8 @@ namespace Viewer
 
 			try
 			{
-				vShaderFile.open("../Assets/Shaders/" + vertexPath);
-				fShaderFile.open("../Assets/Shaders/" + fragmentPath);
+				vShaderFile.open(root / vertexPath);
+				fShaderFile.open(root / fragmentPath);
 
 				std::stringstream vShaderStream, fShaderStream;
 
@@ -77,6 +81,7 @@ namespace Viewer
 
 	private:
 		unsigned int ID;
+		std::filesystem::path root;
 
 		static void CheckCompileErrors(GLuint shader, std::string type)
 		{
