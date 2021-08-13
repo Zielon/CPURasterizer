@@ -18,6 +18,7 @@ namespace Engine
 	protected:
 		const Scene& scene;
 
+		[[nodiscard]] glm::vec3 HDR(const glm::vec2& texCoord) const;
 		[[nodiscard]] glm::vec3 Sample(const glm::vec2& texCoord, const Assets::Texture& texture) const;
 		[[nodiscard]] glm::vec3 Nearest(float wrappedU, float wrappedV, const Assets::Texture& texture) const;
 		[[nodiscard]] glm::vec3 Linear(float wrappedU, float wrappedV, const Assets::Texture& texture) const;

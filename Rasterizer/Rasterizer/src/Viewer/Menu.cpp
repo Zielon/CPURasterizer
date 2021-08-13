@@ -34,7 +34,7 @@ namespace Viewer
 		const static uint32_t cores = std::thread::hardware_concurrency();
 		const static char* filter[3] = { "Nearest", "Linear", "Trilinear" };
 		const static char* lightModels[2] = { "Normals", "Phong-Blinn" };
-		const static char* scenes[14] = {
+		const static char* scenes[18] = {
 			"Ajax",
 			"Bedroom",
 			"Boy",
@@ -48,7 +48,11 @@ namespace Viewer
 			"Spaceship",
 			"Staircase",
 			"Stormtroopers",
-			"Teapot"
+			"Teapot",
+			"Hyperion II",
+			"Mustang",
+			"Mustang Red",
+			"Furnace"
 		};
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -74,6 +78,7 @@ namespace Viewer
 			ImGui::Text("CPU Rasterizer");
 			ImGui::Separator();
 
+			ImGui::Text("Resolution %4ix%4i   ", settings.resolution.x, settings.resolution.y);
 			ImGui::Text("# spheres       %7i  ", settings.spheresCount);
 			ImGui::Text("# triangles     %7i  ", settings.trianglesCount);
 			ImGui::Text("# threads       %7i  ", cores);
@@ -87,7 +92,7 @@ namespace Viewer
 			ImGui::Text("Scenes");
 
 			ImGui::PushItemWidth(-1);
-			ImGui::Combo("", &settings.sceneId, scenes, 14);
+			ImGui::Combo("", &settings.sceneId, scenes, 18);
 			ImGui::PopItemWidth();
 
 			ImGui::Text("Fragment shader");
@@ -102,9 +107,9 @@ namespace Viewer
 			ImGui::Combo("   ", &settings.textureFilterId, filter, 3);
 			ImGui::PopItemWidth();
 
-			ImGui::Checkbox("FXAA", &settings.FXAA);
+			//ImGui::Checkbox("FXAA", &settings.FXAA);
 			ImGui::Checkbox("Cull back-faces", &settings.cullBackFaces);
-			ImGui::Checkbox("Use shadows", &settings.useShadows);
+			//ImGui::Checkbox("Use shadows", &settings.useShadows);
 			ImGui::Checkbox("Use Gamma Correction", &settings.useGammaCorrection);
 
 			// ==================================

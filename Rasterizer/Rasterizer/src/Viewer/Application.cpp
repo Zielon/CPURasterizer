@@ -8,28 +8,42 @@
 #include "../Engine/Camera.h"
 #include "../Engine/Scene.h"
 
+#include "../path.h"
+
 float lastTime = 0;
 long int currentFrame = 0;
 
 namespace Viewer
 {
-	const std::vector<std::string> CONFIGS =
+	static const inline std::vector<std::string> CONFIGS =
 	{
-		"../Assets/Scenes/ajax.scene",
-		"../Assets/Scenes/bedroom.scene",
-		"../Assets/Scenes/boy.scene",
-		"../Assets/Scenes/coffee_cart.scene",
-		"../Assets/Scenes/coffee_maker.scene",
-		"../Assets/Scenes/cornell_box.scene",
-		"../Assets/Scenes/diningroom.scene",
-		"../Assets/Scenes/dragon.scene",
-		"../Assets/Scenes/hyperion.scene",
-		"../Assets/Scenes/panther.scene",
-		"../Assets/Scenes/spaceship.scene",
-		"../Assets/Scenes/staircase.scene",
-		"../Assets/Scenes/stormtrooper.scene",
-		"../Assets/Scenes/teapot.scene"
+		"ajax.scene",
+		"bedroom.scene",
+		"boy.scene",
+		"coffee_cart.scene",
+		"coffee_maker.scene",
+		"cornell_box.scene",
+		"diningroom.scene",
+		"dragon.scene",
+		"hyperion.scene",
+		"panther.scene",
+		"spaceship.scene",
+		"staircase.scene",
+		"stormtrooper.scene",
+		"teapot.scene",
+		"hyperion2.scene",
+		"mustang.scene",
+		"mustang_red.scene",
+		"furnace.scene"
 	};
+
+	static std::string GetScenePath(uint32_t index)
+	{
+		auto root = Path::Root({ "Rasterizer", "Assets", "PBRScenes" });
+		const auto path = root / CONFIGS[index];
+		std::cout << "[SCENE] Scene selected " << path.string() << std::endl;
+		return path.string();
+	}
 
 	Application::Application()
 	{
@@ -40,6 +54,7 @@ namespace Viewer
 		RegisterCallbacks();
 
 		menu->GetSettings().trianglesCount = scene->GetIndexSize() / 3;
+		menu->GetSettings().resolution = scene->GetRendererOptions().resolution;
 	}
 
 	Application::~Application() = default;
@@ -55,7 +70,7 @@ namespace Viewer
 	void Application::CreateRender()
 	{
 		// Renderer composition
-		scene.reset(new Engine::Scene(CONFIGS[settings.sceneId]));
+		scene.reset(new Engine::Scene(GetScenePath(settings.sceneId)));
 		renderer.reset(new Engine::Renderer(*scene, scene->GetCamera()));
 	}
 
@@ -157,6 +172,7 @@ namespace Viewer
 			settings = menu->GetSettings();
 			Recreate();
 			menu->GetSettings().trianglesCount = scene->GetIndexSize() / 3;
+			menu->GetSettings().resolution = scene->GetRendererOptions().resolution;
 		}
 	}
 

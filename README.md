@@ -34,24 +34,22 @@ Except rasterization pipeline the project contains serveral additional features.
 
 All tests were done on CPU Intel i4790k with 4 cores. 60 fps is the maximum for GLFW window.
 
-| Scene         | Triangles | Shader | Filter  | FPS |
-| ------------- |-----------|--------|---------|-----
-| Cornell box   | 85k       |  Phong | Nearest |35   |
-| Bedroom       | 1490k     |  Phong | Nearest |10.1 |
-| Panther       | 2004k     |  Phong | Nearest | 6.3 |
+| Scene         | Triangles | Resolution | Shader | Filter  | FPS |
+| ------------- |-----------|------------|--------|---------|-----
+| Boy           | 85k       |  1280x720  | Phong  | Nearest | 35.2|
+| Bedroom       | 1490k     |  1280x720  | Phong  | Nearest | 10.1|
+| Panther       | 2004k     |  1280x720  | Phong  | Nearest | 6.3 |
 
 ### How to run
 
-All dependencies needed for the project can be downloaded using `install.bat` for Windows or `install.sh` for Linux. The project has `Visual Studio 2019` solution and `CMake project`.
+All dependencies needed for the project can be downloaded using `windows_install.bat` for Windows or `linux_install.sh` for Linux. The project has `Visual Studio 2019` solution and `CMake project`.
 
 ### Assets
 
-The scene description and assets are taken from [GLSL-PathTracer](https://github.com/knightcrawler25/GLSL-PathTracer) project. The whole dataset can be downloaded from [link](https://drive.google.com/file/d/1UFMMoVb5uB7WIvCeHOfQ2dCQSxNMXluB/view).
-
-Download the assets folder and place it in `/Rasterizer/Assets/Scenes/`. The folder structure has to be as follows:
+The scene description and assets are adapted from [GLSL-PathTracer](https://github.com/knightcrawler25/GLSL-PathTracer) project [4]. The [scenes repository](https://github.com/Zielon/PBRScenes) will be automatically cloned during the installation process.
 
 ```
-/Rasterizer/Assets/Scenes/
+Rasterizer/Assets/PBRScenes/
     bedroom/
     coffee_cart/
     HDR/

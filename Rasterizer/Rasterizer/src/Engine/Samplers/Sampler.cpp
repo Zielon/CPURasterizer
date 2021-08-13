@@ -35,6 +35,11 @@ namespace Engine
 		return i - (i > x);
 	}
 
+	glm::vec3 Sampler::HDR(const glm::vec2& texCoord) const
+	{
+		return {};
+	}
+
 	glm::vec3 Sampler::Sample(const glm::vec2& texCoord, const Assets::Texture& texture) const
 	{
 		const auto wrappedU = texCoord.x - Floor(texCoord.x);

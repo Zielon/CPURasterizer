@@ -54,7 +54,7 @@ namespace Engine
 
 			pixel.Interpolate(v0, v1, v2, pixel.lambda0, pixel.lambda1, position, normal, texCoord);
 
-			float shininess = 32.0f;
+			float shininess = 4.0f;
 
 			AVXVec3f eye = AVXVec3f(scene.GetCamera().GetPosition());
 			AVXVec3f viewDir = Normalize(eye - position);
@@ -75,7 +75,7 @@ namespace Engine
 				albedo = AVXVec3f(material.albedo);
 
 			AVXVec3f alpha;
-			AVXVec3f ambient(0.2f);
+			AVXVec3f ambient(0.1f);
 
 			for (const auto& light : lights)
 			{
@@ -102,7 +102,7 @@ namespace Engine
 				for (auto i = 0; i < 8; i++)
 					specular[i] = pow(cosBeta[i], shininess);
 
-				alpha += ambient + AVXVec3f(cosTheta) + specular * 0.2f;
+				alpha += ambient + AVXVec3f(cosTheta) + specular * 0.1f;
 			}
 
 			return albedo * alpha * INVPI;

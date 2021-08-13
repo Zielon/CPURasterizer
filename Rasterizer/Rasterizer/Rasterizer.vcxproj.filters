@@ -184,6 +184,7 @@
       <Filter>Engine\Samplers</Filter>
     </ClInclude>
     <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\path.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />

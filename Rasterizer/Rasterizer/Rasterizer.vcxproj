@@ -53,6 +53,7 @@
     <ClInclude Include="src\Math\Vec.h" />
     <ClInclude Include="src\Math\Vec2.h" />
     <ClInclude Include="src\Math\Vec3.h" />
+    <ClInclude Include="src\path.h" />
     <ClInclude Include="src\SIMD\AVX.h" />
     <ClInclude Include="src\SIMD\AVXBool.h" />
     <ClInclude Include="src\SIMD\AVXCmp.h" />

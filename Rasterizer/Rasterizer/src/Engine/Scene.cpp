@@ -15,12 +15,16 @@
 
 #include "../Loader/Loader.h"
 
+#include "../path.h"
+
 namespace Engine
 {
 	Scene::Scene(std::string config): config(std::move(config))
 	{
 		const auto start = std::chrono::high_resolution_clock::now();
 
+		root = Path::Root({ "Rasterizer", "Assets", "PBRScenes" });
+		
 		Load();
 		Wait();
 		CreateBuffers();
@@ -56,10 +60,16 @@ namespace Engine
 		std::cout << "	# materials: " << materials.size() << std::endl;
 	}
 
-	void Scene::Load()
+	bool Scene::Load()
 	{
 		if (!LoadSceneFromFile(config, *this, options))
-			throw std::runtime_error("[ERROR] File does not exist. See README (Assets section) for more details!");
+		{
+			std::cout << "[ERROR] " + config + " does not exist" << std::endl;
+			std::cout << "[INFO] Download the scenes repository! " << std::endl;
+			return false;
+		}
+
+		return true;
 	}
 
 	void Scene::CreateBuffers()
@@ -101,7 +111,8 @@ namespace Engine
 	{
 		hdrLoader = std::async(std::launch::async, [this, path]()
 		{
-			const auto file = root + path;
+			auto fs = std::filesystem::path(path).make_preferred();
+			const auto file = (root / fs).string();
 			auto* hdr = Assets::HDRLoader::Load(file.c_str());
 
 			if (hdr == nullptr)
@@ -132,7 +143,8 @@ namespace Engine
 		}
 		else
 		{
-			const auto file = root + path;
+			auto fs = std::filesystem::path(path).make_preferred();
+			const auto file = (root / fs).string();
 			id = meshes.size();
 			meshes.emplace_back(new Assets::Mesh(file));
 			meshMap[path] = id;
@@ -152,7 +164,8 @@ namespace Engine
 		}
 		else
 		{
-			const auto file = root + path;
+			auto fs = std::filesystem::path(path).make_preferred();
+			const auto file = (root / fs).string();
 			id = textures.size();
 			textures.emplace_back(new Assets::Texture(file));
 			textureMap[path] = id;

@@ -6,6 +6,7 @@
 #include <string>
 
 #define GLM_FORCE_SWIZZLE 
+#include <filesystem>
 #include <future>
 #include <glm/glm.hpp>
 
@@ -59,7 +60,7 @@ namespace Engine
 
 	private:
 		std::string config;
-		const std::string root = "../Assets/Scenes/";
+		std::filesystem::path root;
 		uint32_t verticesSize{};
 		uint32_t indeciesSize{};
 		std::unique_ptr<class Camera> camera;
@@ -84,7 +85,7 @@ namespace Engine
 		Loader::RenderOptions options;
 
 		void Wait();
-		void Load();
+		bool Load();
 		void Print() const;
 	};
 }

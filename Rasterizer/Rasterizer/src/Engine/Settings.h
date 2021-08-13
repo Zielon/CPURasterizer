@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <glm/vec2.hpp>
 
 constexpr int FIXED_POINT = 4;
 constexpr int TILE = 5;
@@ -20,5 +21,6 @@ namespace Engine
 		bool useShadows{};
 		bool useGammaCorrection = true;
 		bool cullBackFaces = true;
+		glm::ivec2 resolution{};
 	};
 }
