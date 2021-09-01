@@ -44,6 +44,8 @@ All tests were done on CPU Intel i4790k with 4 cores. 60 fps is the maximum for 
 
 All dependencies needed for the project can be downloaded using `windows_install.bat` for Windows or `linux_install.sh` for Linux. The project has `Visual Studio 2019` solution and `CMake project`.
 
+`git-lfs` must be installed in order to fetch scenes repository.
+
 ### Assets
 
 The scene description and assets are adapted from [GLSL-PathTracer](https://github.com/knightcrawler25/GLSL-PathTracer) project [4]. The [scenes repository](https://github.com/Zielon/PBRScenes) will be automatically cloned during the installation process.
